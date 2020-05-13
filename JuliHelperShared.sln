@@ -1,0 +1,18 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.1082
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "JuliHelperShared", "JuliHelperShared\JuliHelperShared.shproj", "{7061EA84-D712-49CE-AEC3-C2CAAEB99B92}"
+EndProject
+Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		JuliHelperShared\JuliHelperShared.projitems*{7061ea84-d712-49ce-aec3-c2caaeb99b92}*SharedItemsImports = 13
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {92FD64C0-02A0-4A54-89DF-41352C40F6F3}
+	EndGlobalSection
+EndGlobal
