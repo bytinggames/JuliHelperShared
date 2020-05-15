@@ -111,7 +111,7 @@ namespace JuliHelper
 
         public override void Draw(SpriteBatch spriteBatch, Color color, float depth = 0f)
         {
-            Draw(color, depth);
+            Draw(color);
 
             if (!closed)
             {
@@ -122,7 +122,7 @@ namespace JuliHelper
             }
         }
 
-        public void Draw(Color color, float depth = 0f)
+        public void Draw(Color color)
         {
             //if (!closed)
             //    color = Color.Yellow;
@@ -143,14 +143,14 @@ namespace JuliHelper
             //spriteBatch.Draw(DrawM.pixel, new Rectangle((int)pos.X, (int)pos.Y, 4, 4), null, color, 0f, Vector2.Zero, SpriteEffects.None, depth); 
         
         }
-        public void DrawOutline(Color color, float depth = 0f)
+        public void DrawOutline(Color color)
         {
             if (closed)
                 DrawM.Vertex.DrawPolygonOutlineClosed(pos, vertices, color);
             else
                 DrawM.Vertex.DrawPolygonOutlineOpen(pos, vertices, color);
         }
-        public void DrawSpriteBatch(SpriteBatch spriteBatch, Color color, float depth = 0f)
+        public void DrawSpriteBatch(SpriteBatch spriteBatch, Color color)
         {
             ////if (!closed)
             ////    color = Color.Yellow;
