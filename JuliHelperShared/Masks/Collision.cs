@@ -540,19 +540,28 @@ namespace JuliHelper
 
             //List<Axis> axes = new List<Axis>();
 
+            int polyAxisCol = 0;
+            int jNearest = -1;
+            int jNearestReversed = -1;
+
             for (int i = 0; i < edges1.Count; i++)
             {
+                int j = 0;
+                int jFinal = 0;
                 //axes.Add(new Axis(edges1[i]));
                 Axis axis = new Axis(edges1[i]);
                 axis.a1 = Vector2.Dot(poly1.pos + poly1.vertices[i], axis.axis);
 
-                axis.b2 = Vector2.Dot(poly2.pos + poly2.vertices[0], axis.axis);
+                axis.b2 = Vector2.Dot(poly2.pos + poly2.vertices[j], axis.axis);
 
-                for (int j = 1; j < poly2.vertices.Count; j++)
+                for (j = 1; j < poly2.vertices.Count; j++)
                 {
                     float dot = Vector2.Dot(poly2.pos + poly2.vertices[j], axis.axis);
                     if (dot > axis.b2)
+                    {
                         axis.b2 = dot;
+                        jFinal = j;
+                    }
                 }
 
                 float dotDir = Vector2.Dot(dir, axis.axis);
@@ -564,6 +573,7 @@ namespace JuliHelper
                     {
                         cr.distance = dist;
                         cr.axisCol = axis.axis;
+                        jNearest = jFinal;
                     }
                 }
                 else if (dotDir > 0)
@@ -572,6 +582,7 @@ namespace JuliHelper
                     {
                         cr.distanceReversed = dist;
                         cr.axisColReversed = axis.axis;
+                        jNearestReversed = jFinal;
                     }
                 }
                 else if (axis.b2 - axis.a1 <= 0) //TODO: CHECK: <= before was < (2017.08.14)
@@ -580,17 +591,22 @@ namespace JuliHelper
             }
             for (int i = 0; i < edges2.Count; i++)
             {
+                int j = 0;
+                int jFinal = 0;
                 //axes.Add(new Axis(edges2[i]));
                 Axis axis = new Axis(edges2[i]);
                 axis.a1 = Vector2.Dot(poly2.pos + poly2.vertices[i], axis.axis);
 
-                axis.b2 = Vector2.Dot(poly1.pos + poly1.vertices[0], axis.axis);
+                axis.b2 = Vector2.Dot(poly1.pos + poly1.vertices[j], axis.axis);
 
-                for (int j = 1; j < poly1.vertices.Count; j++)
+                for (j = 1; j < poly1.vertices.Count; j++)
                 {
                     float dot = Vector2.Dot(poly1.pos + poly1.vertices[j], axis.axis);
                     if (dot > axis.b2)
+                    {
                         axis.b2 = dot;
+                        jFinal = j;
+                    }
                 }
 
                 float dotDir = -Vector2.Dot(dir, axis.axis);
@@ -602,6 +618,8 @@ namespace JuliHelper
                     {
                         cr.distance = dist;
                         cr.axisCol = -axis.axis;
+                        jNearest = jFinal;
+                        polyAxisCol = 1;
                     }
                 }
                 else if (dotDir > 0)
@@ -610,6 +628,7 @@ namespace JuliHelper
                     {
                         cr.distanceReversed = dist;
                         cr.axisColReversed = -axis.axis;
+                        jNearestReversed = jFinal;
                     }
                 }
                 else if (axis.b2 - axis.a1 <= 0) //TODO: CHECK: <= before was < (2017.08.14)
@@ -619,7 +638,9 @@ namespace JuliHelper
             if (cr.distance.HasValue && cr.distanceReversed <= cr.distance)
                 return new CollisionResult();
 
-
+            cr.colCornerPoly = polyAxisCol + 1;
+            cr.colCornerIndex = jNearest;
+            
             cr.distance -= minDist / Math.Abs(Vector2.Dot(cr.axisCol, dir));
             cr.distanceReversed += minDist / Math.Abs(Vector2.Dot(cr.axisColReversed, dir));
 

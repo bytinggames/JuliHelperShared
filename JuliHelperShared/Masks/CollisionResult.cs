@@ -8,10 +8,15 @@ namespace JuliHelper
 {
     public struct CollisionResult
     {
+        // EXPERIMENTAL
+        internal Vector2 colPos;
+
         public bool collision;
         public float? distance;
         public float? distanceReversed;
         public Vector2 axisCol, axisColReversed;
+        internal int colCornerPoly;
+        internal int colCornerIndex;
 
         //public bool inDistance
         //{
@@ -187,6 +192,7 @@ namespace JuliHelper
 
 
         public static float minDist = 0;
+
         /// <summary>
         /// testing
         /// </summary>
