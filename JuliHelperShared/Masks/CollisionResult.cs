@@ -8,9 +8,6 @@ namespace JuliHelper
 {
     public struct CollisionResult
     {
-        // EXPERIMENTAL
-        internal Vector2 colPos;
-
         public bool collision;
         public float? distance;
         public float? distanceReversed;
