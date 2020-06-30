@@ -339,5 +339,11 @@ namespace JuliHelper
         {
             return new Anchor(GetCenter());
         }
+
+        public M_Rectangle Move(Vector2 moveBy)
+        {
+            pos += moveBy;
+            return this;
+        }
     }
 }
