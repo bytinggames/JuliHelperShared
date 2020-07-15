@@ -71,7 +71,7 @@ namespace JuliHelper
 
         Vector2 mbPosPast;
 
-        public EventHandler FinishPlaying;
+        public Action<InputRecorder> FinishPlaying;
 
         public KeyP[] keysInput;
 
@@ -213,7 +213,7 @@ namespace JuliHelper
                         Input.blockInput = false;
 
                         if (FinishPlaying != null)
-                            FinishPlaying(this, EventArgs.Empty);
+                            FinishPlaying(this);
                         return;
                     }
                 }
@@ -316,7 +316,8 @@ namespace JuliHelper
             Initialize();
         }
 
-        public void StartRecording(int seed, bool recordCurrentFrameInputDown = false)
+        //TODO: I made this method private, but maybe it should be public instead (depending on, if it's used anywhere)
+        private void StartRecording(int seed, bool recordCurrentFrameInputDown = false)
         {
             Initialize();
             if (!recordCurrentFrameInputDown)
@@ -505,6 +506,19 @@ namespace JuliHelper
             StartRecording(seed);
         }
 
+        public void RecordAfterPlay(string _filePath)
+        {
+            Dispose();
+
+            if (!File.Exists(_filePath))
+                throw new Exception("it does not make sense, to call this method, when you don't have anything reorded yet to add upon to");
+
+            stream = new FileStream(_filePath, FileMode.Append);
+            writer = new BinaryWriter(stream);
+
+            _recording = true;
+        }
+
         public int? Play(string _filePath)
         {
             Dispose();
@@ -533,6 +547,11 @@ namespace JuliHelper
                 if (disposes[i] != null)
                     disposes[i].Dispose();
             }
+        }
+
+        public string GetFilePath()
+        {
+            return (stream as FileStream).Name;
         }
     }
 }
