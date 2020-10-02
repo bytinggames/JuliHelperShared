@@ -56,7 +56,7 @@ namespace JuliHelper
             for (int i = 0; i < files.Length; i++)
             {
                 if (files[i] != "pixel")
-                    textures.Add(files[i], content.Load<Texture2D>("textures/" + files[i]));
+                    textures.Add(files[i], content.Load<Texture2D>("Textures/" + files[i]));
             }
             
             //Fonts
@@ -72,7 +72,7 @@ namespace JuliHelper
             //Sounds
             files = GetFilesInContent(soundPath, "xnb");
             for (int i = 0; i < files.Length; i++)
-                sounds.Add(files[i], content.Load<SoundEffect>("sounds/" + files[i]));
+                sounds.Add(files[i], content.Load<SoundEffect>("Sounds/" + files[i]));
 
             //Effects
             files = GetFilesInContent(effectPath, "xnb");
