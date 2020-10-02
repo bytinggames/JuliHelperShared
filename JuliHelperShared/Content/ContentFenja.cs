@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -28,13 +29,54 @@ namespace JuliHelper
                             tex.Dispose();
 
                         string path = Path.Combine(contentPath, localPath, f.Name + ".png");
-                        FileInfo info = new FileInfo(path);
+                        //FileInfo info = new FileInfo(path);
                         using (FileStream stream = new FileStream(path, FileMode.Open))
                         {
                             tex = Texture2D.FromStream(gDevice, stream);
                             tex.Name = Path.Combine(localPath, f.Name);
                             f.SetValue(null, tex);
                         }
+                    }
+                },
+                {
+                    typeof(Texture2D[]), f =>
+                    {
+                        List<Texture2D> texs = (f.GetValue(null) as Texture2D[])?.ToList();
+                        if (texs == null)
+                            texs = new List<Texture2D>();
+                        else
+                        {
+                            for (int i = 0; i < texs.Count; i++)
+                            {
+                                if (texs[i] != null)
+                                    texs[i].Dispose();
+			                }
+                            texs.Clear();
+                        }
+                        int index = 0;
+
+                        string GetPath()
+                        {
+                            return Path.Combine(contentPath, localPath, f.Name + "_" + index + ".png");
+                        }
+
+                        string path = GetPath();
+
+                        if (!File.Exists(path))
+                            index++;
+
+                        while (File.Exists(path = GetPath()))
+                        {
+                            using (FileStream stream = new FileStream(path, FileMode.Open))
+                            {
+                                Texture2D tex = Texture2D.FromStream(gDevice, stream);
+                                tex.Name = Path.Combine(localPath, f.Name + "_" + index);
+                                texs.Add(tex);
+                            }
+                            index++;
+                        }
+
+                        f.SetValue(null, texs.ToArray());
                     }
                 }
             };
@@ -63,6 +105,23 @@ namespace JuliHelper
                     typeof(Texture2D), f =>
                     {
                         f.SetValue(null, content.Load<Texture2D>(Path.Combine(localPath, f.Name)));
+                    }
+                },
+                {
+                    typeof(Texture2D[]), f =>
+                    {
+                        List<Texture2D> texs = new List<Texture2D>();
+                        int index = 0;
+                        string name = f.Name + "_" + index;
+                        if (!File.Exists(Path.Combine("Content", localPath,name+".xnb")))
+                            index++;
+
+                        while (File.Exists(Path.Combine("Content", localPath,(name = f.Name + "_"+index)+".xnb")))
+                        {
+                            texs.Add(content.Load<Texture2D>(Path.Combine(localPath, name)));
+                            index++;
+                        }
+                        f.SetValue(null, texs.ToArray());
                     }
                 },
                 {

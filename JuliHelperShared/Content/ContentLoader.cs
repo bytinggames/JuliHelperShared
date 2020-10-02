@@ -51,14 +51,15 @@ namespace JuliHelper
 
         private static void LoadContent(GraphicsDevice device, Random emitterRand, bool loadModels)
         {
+            string[] files;
             //Textures
-            string[] files = GetFilesInContent(texturePath, "xnb");
-            for (int i = 0; i < files.Length; i++)
-            {
-                if (files[i] != "pixel")
-                    textures.Add(files[i], content.Load<Texture2D>("Textures/" + files[i]));
-            }
-            
+            //files = GetFilesInContent(texturePath, "xnb");
+            //for (int i = 0; i < files.Length; i++)
+            //{
+            //    if (files[i] != "pixel")
+            //        textures.Add(files[i], content.Load<Texture2D>("Textures/" + files[i]));
+            //}
+
             //Fonts
             files = GetFilesInContent(fontPath, "xnb");
             for (int i = 0; i < files.Length; i++)
