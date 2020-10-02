@@ -6,7 +6,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using JuliHelper;
-using static JuliHelper.DepthManager;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace JuliHelper
 {
@@ -89,6 +90,12 @@ namespace JuliHelper
             {
                 item.ResetCDepth();
             }
+        }
+
+        public static void BeginWithDepth(this SpriteBatch spriteBatch, Type depthClass, SpriteSortMode sortMode = SpriteSortMode.Deferred, BlendState blendState = null, SamplerState samplerState = null, DepthStencilState depthStencilState = null, RasterizerState rasterizerState = null, Effect effect = null, Matrix? transformMatrix = null)
+        {
+            spriteBatch.Begin(sortMode, blendState, samplerState, depthStencilState, rasterizerState, effect, transformMatrix);
+            BeginDraw(depthClass);
         }
     }
 

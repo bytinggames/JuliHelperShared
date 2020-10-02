@@ -11,7 +11,7 @@ namespace JuliHelper
 {
     public static class Drawer
     {
-        public static Color baseTextColor;
+        public static Color baseTextColor = Color.Black;
         public static char openCode = '<';
         public static char closeCode = '>';
         

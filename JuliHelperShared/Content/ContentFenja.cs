@@ -12,9 +12,24 @@ namespace JuliHelper
 {
     public static class ContentFenja
     {
-        public static void LoadRaw(Type type, string localPath, GraphicsDevice gDevice, string contentPath)
+        public static void Load(Type fieldContainingClass, string contentPath, string localPath, GraphicsDevice gDevice, ContentManager content)
         {
-            var fields = type.GetFields(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+#if DEBUG
+            LoadRaw(fieldContainingClass, localPath, gDevice, contentPath);
+#else
+            LoadProcessed(fieldContainingClass, localPath, content);
+#endif
+
+            Type[] nested = fieldContainingClass.GetNestedTypes();
+            for (int i = 0; i < nested.Length; i++)
+            {
+                Load(nested[i], contentPath, Path.Combine(localPath, nested[i].Name), gDevice, content); 
+            }
+        }
+
+        public static void LoadRaw(Type fieldContainingClass, string localPath, GraphicsDevice gDevice, string contentPath)
+        {
+            var fields = fieldContainingClass.GetFields(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
 
             var switchType = new Dictionary<Type, Action<FieldInfo>>
             {
@@ -45,9 +60,9 @@ namespace JuliHelper
             }
         }
 
-        public static void LoadProcessed(Type type, string localPath, ContentManager content)
+        public static void LoadProcessed(Type fieldContainingClass, string localPath, ContentManager content)
         {
-            var fields = type.GetFields(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+            var fields = fieldContainingClass.GetFields(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
 
             var switchType = new Dictionary<Type, Action<FieldInfo>>
             {

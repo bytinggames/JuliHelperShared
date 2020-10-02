@@ -1,47 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
 using System.Text;
-using Microsoft.Xna.Framework;
 
 namespace JuliHelper
 {
     public class FPS
     {
-        private float fpsTarget, fps, fpsOut;
-        private int frame = 0;
+        public List<long> timestamps = new List<long>();
 
-        //private int framesInSecond, fps;
-        //private TimeSpan timeInSecond;
+        Stopwatch sw;
 
-        public int Fps
+        public void NewFrame()
         {
-            get { return (int)Math.Round(fpsOut); }
+            if (sw == null)
+            {
+                sw = new Stopwatch();
+                sw.Start();
+            }
+
+            timestamps.Add(sw.ElapsedMilliseconds);
+            while (timestamps.Count > 0 && sw.ElapsedMilliseconds - timestamps[0] > 1000)
+            {
+                timestamps.RemoveAt(0);
+            }
         }
 
-        public FPS()
+        public void Pause()
         {
-            fpsTarget = fps = fpsOut = 60;
-            //timeInSecond = new TimeSpan();
+            if (sw != null)
+                sw.Stop();
         }
 
-        public void NewFrame(GameTime gameTime)
+        public void Continue()
         {
-            frame++;
-            if (frame % 30 == 0)
-                fpsOut = fps;
-            //framesInSecond++;
-            //timeInSecond = timeInSecond.Add(gameTime.ElapsedGameTime);
-
-            fpsTarget = (int)Math.Round(1f / gameTime.ElapsedGameTime.TotalSeconds);
-            fps += (fpsTarget - fps) / 5f;
-
-            //while (timeInSecond.TotalMilliseconds >= 1000)
-            //{
-            //    timeInSecond = timeInSecond.Subtract(TimeSpan.FromSeconds(1));
-            //    fps = framesInSecond;
-            //    framesInSecond = 0;
-            //}
+            if (sw != null)
+                sw.Start();
         }
+
+        public int CurrentFPS => sw.Elapsed.TotalSeconds == 0 ? -1 : (int)(timestamps.Count / Math.Min(1d, sw.Elapsed.TotalSeconds));
     }
 }

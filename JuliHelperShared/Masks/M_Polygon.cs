@@ -349,7 +349,7 @@ namespace JuliHelper
 			}
 			return poly;
 		}
-		/*public static M_Polygon GetCircle(Vector2 pos, float radius, int vertices)
+        /*public static M_Polygon GetCircle(Vector2 pos, float radius, int vertices)
         {
             M_Polygon poly = new M_Polygon(pos, new List<Vector2>());
             
@@ -363,11 +363,25 @@ namespace JuliHelper
             return poly;
         }*/
 
-		#region Collision
+        public static M_Polygon GetRectangle(Vector2 pos, Vector2 size, Vector2 originNormalized)
+        {
+            Vector2 originInverse = Vector2.One - originNormalized;
+            Vector2 min = -size * originNormalized;
+            Vector2 max = size * originInverse;
+            return new M_Polygon(pos, new List<Vector2>()
+            {
+                min,
+                new Vector2(max.X, min.Y),
+                max,
+                new Vector2(min.X, max.Y)
+            });
+        }
 
-		#region mask
+        #region Collision
 
-		public override bool ColMask(Mask mask)
+        #region mask
+
+        public override bool ColMask(Mask mask)
         {
             return mask.ColPolygon(this);
         }
