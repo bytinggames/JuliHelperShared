@@ -25,8 +25,8 @@ namespace JuliHelper
                     typeof(Texture2D), f =>
                     {
                         Texture2D tex = f.GetValue(null) as Texture2D;
-                        if (tex != null)
-                            tex.Dispose();
+                        //if (tex != null)
+                        //    tex.Dispose();
 
                         string path = Path.Combine(contentPath, localPath, f.Name + ".png");
                         //FileInfo info = new FileInfo(path);
