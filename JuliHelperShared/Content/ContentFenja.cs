@@ -48,8 +48,8 @@ namespace JuliHelper
                         {
                             for (int i = 0; i < texs.Count; i++)
                             {
-                                if (texs[i] != null)
-                                    texs[i].Dispose();
+                                //if (texs[i] != null)
+                                //    texs[i].Dispose();
 			                }
                             texs.Clear();
                         }
