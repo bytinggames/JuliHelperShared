@@ -9,8 +9,6 @@ namespace JuliHelper
 {
     public abstract class Mask
     {
-        public static float minDist = 0.1f;
-
         protected Vector2 _pos;
 
 
