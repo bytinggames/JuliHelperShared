@@ -15,6 +15,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Content\ContentFenja.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Content\ContentLoader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Content\DynamicContent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Content\TextureAnim.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawing\DepthManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawing\Drawer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)G.cs" />
