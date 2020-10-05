@@ -8,6 +8,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using JuliHelperShared;
+using LD_47;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -16,7 +17,37 @@ namespace JuliHelper
     public static class ContentFenja
     {
         private static Type[] GetNestedTypes(Type ofType) => ofType.GetNestedTypes();
+        private static DateTime exeBuildTime;
 
+        // variable, lastWrittenTo
+        static Dictionary<string, DateTime> changedLoaded = new Dictionary<string, DateTime>();
+
+        public static void Initialize(DateTime _exeBuildDate)
+        {
+            exeBuildTime = _exeBuildDate;
+        }
+
+        static bool IsNew(string path)
+        {
+            DateTime fileTime = new FileInfo(path).LastWriteTimeUtc;
+            if (changedLoaded.ContainsKey(path))
+            {
+                if (fileTime > changedLoaded[path])
+                {
+                    changedLoaded[path] = fileTime;
+                    return true;
+                }
+            }
+            else
+            {
+                if (fileTime > exeBuildTime)
+                {
+                    changedLoaded.Add(path, fileTime);
+                    return true;
+                }
+            }
+            return false;
+        }
 
         public static void LoadRaw(Type fieldContainingClass, string contentPath, string localPath, GraphicsDevice gDevice)
         {
@@ -40,6 +71,9 @@ namespace JuliHelper
                     path = files[0];
                 }
 
+                if (!IsNew(path))
+                    return null;
+
                 using (FileStream stream = new FileStream(path, FileMode.Open))
                 {
                     Texture2D newTex = Texture2D.FromStream(gDevice, stream);
@@ -54,24 +88,25 @@ namespace JuliHelper
                 {
                     typeof(Texture2D), f =>
                     {
+                        Texture2D tex = f.GetValue(null) as Texture2D;
+                        if (tex == null)
+                            return;
+
                         Texture2D newTex = GetTexture(f.Name + ".png");
 
-                        Texture2D tex = f.GetValue(null) as Texture2D;
+                        if (newTex == null)
+                            return;
 
-                        // is a texture already loaded?
-                        if (tex == null)
-                        {
-                            f.SetValue(null, newTex);
-                        }
-                        else
-                        {
-                            tex.SetData(newTex.ToColor());
-                        }
+                        tex.SetData(newTex.ToColor());
                     }
                 },
                 {
                     typeof(Texture2D[]), f =>
                     {
+                        List<Texture2D> texs = (f.GetValue(null) as Texture2D[])?.ToList();
+                        if (texs == null)
+                            return;
+
                         int index = 0;
 
                         List<Texture2D> newTexs = new List<Texture2D>();
@@ -84,53 +119,51 @@ namespace JuliHelper
                             index++;
                         }
 
+                        if (newTexs.All(g => g == null))
+                            return;
 
-                        List<Texture2D> texs = (f.GetValue(null) as Texture2D[])?.ToList();
-                        if (texs == null)
+                        for (int i = 0; i < texs.Count; i++)
                         {
-                            f.SetValue(null, newTexs.ToArray());
-                        }
-                        else
-                        {
-                            for (int i = 0; i < texs.Count; i++)
-                            {
+                            if (newTexs[i] != null)
                                 texs[i].SetData(newTexs[i].ToColor());
-                            }
                         }
                     }
                 },
                 {
                     typeof(TextureAnim), f =>
                     {
+                        TextureAnim ani = f.GetValue(null) as TextureAnim;
+                        if (ani == null)
+                            return;
+
                         Texture2D newTex = GetTexture(f.Name + ".png");
 
                         TextureAnim newAni;
                         string aniPath = GetPath(f.Name + ".ani");
                         if (!File.Exists(aniPath))
                         {
-                            newAni = new TextureAnim(newTex);
+                            if (newTex == null)
+                                return;
+                            newAni = new TextureAnim(ani.Texture);
                         }
                         else
                         {
-                            newAni = new TextureAnim(newTex, File.ReadAllLines(aniPath));
+                            if (newTex == null && !IsNew(aniPath))
+                                return;
+
+                            newAni = new TextureAnim(newTex ?? ani.Texture, File.ReadAllLines(aniPath));
                         }
 
-                        TextureAnim ani = f.GetValue(null) as TextureAnim;
-
-                        // is a texture already loaded?
-                        if (ani == null)
-                        {
-                            f.SetValue(null, newAni);
-                        }
-                        else
-                        {
-                            newAni.CopySettingsTo(ani);
-                        }
+                        newAni.CopySettingsTo(ani);
                     }
                 },
                 {
                     typeof(TextureAnim[]), f =>
                     {
+                        List<TextureAnim> anims = (f.GetValue(null) as TextureAnim[])?.ToList();
+                        if (anims == null)
+                            return;
+
                         int index = 0;
 
                         List<Texture2D> newTexs = new List<Texture2D>();
@@ -149,22 +182,23 @@ namespace JuliHelper
                         {
                             string aniPath = GetPath(f.Name + "_" + i + ".ani");
                             if (!File.Exists(aniPath))
-                                newAnims.Add(new TextureAnim(newTexs[i]));
+                                newAnims.Add(new TextureAnim(newTexs[i] ?? anims[i].Texture));
                             else
-                                newAnims.Add(new TextureAnim(newTexs[i], File.ReadAllLines(aniPath)));
+                            {
+                                if (newTexs[i] == null && !IsNew(aniPath))
+                                    newAnims.Add(null);
+                                else
+                                    newAnims.Add(new TextureAnim(newTexs[i] ?? anims[i].Texture, File.ReadAllLines(aniPath)));
+                            }
                         }
 
-                        List<TextureAnim> anims = (f.GetValue(null) as TextureAnim[])?.ToList();
-                        if (anims == null)
+                        if (newAnims.All(g => g == null))
+                            return;
+
+                        for (int i = 0; i < anims.Count; i++)
                         {
-                            f.SetValue(null, newAnims.ToArray());
-                        }
-                        else
-                        {
-                            for (int i = 0; i < anims.Count; i++)
-                            {
+                            if (newAnims[i] != null)
                                 newAnims[i].CopySettingsTo(anims[i]);
-                            }
                         }
                     }
                 },
@@ -172,8 +206,10 @@ namespace JuliHelper
 
             for (int i = 0; i < fields.Length; i++)
             {
+                if (fields[i].Name.Contains("player"))
+                { }
                 if (switchType.ContainsKey(fields[i].FieldType))
-                    switchType[fields[i].FieldType](fields[i]);
+                        switchType[fields[i].FieldType](fields[i]);
             }
 
             Type[] nested = GetNestedTypes(fieldContainingClass);
@@ -214,6 +250,41 @@ namespace JuliHelper
                     typeof(SpriteFont), f =>
                     {
                         f.SetValue(null, content.Load<SpriteFont>(Path.Combine(localPath, f.Name)));
+                    }
+                },
+                {
+                    typeof(TextureAnim), f =>
+                    {
+                        Texture2D tex = content.Load<Texture2D>(Path.Combine(localPath, f.Name));
+                        TextureAnim ani;
+                        string path = Path.Combine("Content", localPath,f.Name + ".ani");
+                        if (File.Exists(path))
+                            ani = new TextureAnim(tex, File.ReadAllLines(path));
+                        else
+                            ani = new TextureAnim(tex);
+                    }
+                },
+                {
+                    typeof(TextureAnim[]), f =>
+                    {
+                        List<TextureAnim> anis = new List<TextureAnim>();
+                        int index = 0;
+                        string name = f.Name + "_" + index;
+
+                        while (File.Exists(Path.Combine("Content", localPath,(name = f.Name + "_"+index)+".xnb")))
+                        {
+                            Texture2D tex = content.Load<Texture2D>(Path.Combine(localPath, name));
+
+                        TextureAnim ani;
+                        string path = Path.Combine("Content", localPath,f.Name + "_" + index + ".ani");
+                        if (File.Exists(path))
+                            ani = new TextureAnim(tex, File.ReadAllLines(path));
+                        else
+                            ani = new TextureAnim(tex);
+                        anis.Add(ani);
+                            index++;
+                        }
+                        f.SetValue(null, anis.ToArray());
                     }
                 },
             };

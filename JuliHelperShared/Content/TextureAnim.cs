@@ -79,18 +79,23 @@ namespace JuliHelperShared
                 FrameWidth = _frameWidth;
             else
             {
-                FrameWidth = Texture.Height;
+                if (_frameCount != 1)
+                {
+                    FrameWidth = Texture.Height;
 
-                if (Texture.Width / FrameWidth * FrameWidth != Texture.Width)
-                    throw new Exception($"Texture should be {Texture.Width / FrameWidth * FrameWidth} pixels wide, but is {Texture.Width} pixels wide");
+                    if (Texture.Width / FrameWidth * FrameWidth != Texture.Width)
+                        throw new Exception($"Texture should be {Texture.Width / FrameWidth * FrameWidth} pixels wide, but is {Texture.Width} pixels wide");
+                }
+                else
+                {
+                    FrameWidth = Texture.Width;
+                }
             }
             if (_frameHeight != -1)
                 FrameHeight = _frameHeight;
             else
             {
                 FrameHeight = Texture.Height;
-                if (Texture.Height / FrameHeight * FrameHeight != Texture.Height)
-                    throw new Exception($"Texture should be {Texture.Height / FrameHeight * FrameHeight} pixels high, but is {Texture.Height} pixels high");
             }
 
             if (_frameCount != -1)
@@ -103,10 +108,12 @@ namespace JuliHelperShared
 
         public void CopySettingsTo(TextureAnim ani)
         {
-            ani.Texture.SetData(Texture.ToColor());
+            if (Texture != ani.Texture)
+                ani.Texture.SetData(Texture.ToColor());
             ani.FrameWidth = FrameWidth;
             ani.FrameHeight = FrameHeight;
             ani.FrameCount = FrameCount;
+            ani.Fps = Fps;
         }
     }
 
