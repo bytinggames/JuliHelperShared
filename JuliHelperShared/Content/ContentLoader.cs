@@ -53,12 +53,12 @@ namespace JuliHelper
         {
             string[] files;
             //Textures
-            //files = GetFilesInContent(texturePath, "xnb");
-            //for (int i = 0; i < files.Length; i++)
-            //{
-            //    if (files[i] != "pixel")
-            //        textures.Add(files[i], content.Load<Texture2D>("Textures/" + files[i]));
-            //}
+            files = GetFilesInContent(texturePath, "xnb");
+            for (int i = 0; i < files.Length; i++)
+            {
+                if (files[i] != "pixel")
+                    textures.Add(files[i], content.Load<Texture2D>("Textures/" + files[i]));
+            }
 
             //Fonts
             files = GetFilesInContent(fontPath, "xnb");

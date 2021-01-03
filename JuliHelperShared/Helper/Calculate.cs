@@ -785,11 +785,6 @@ namespace JuliHelper
                         return Color.Red;
                 }
 
-                public static Color RandomRGB(Random rand)
-                {
-                    return new Color(rand.Next(256), rand.Next(256), rand.Next(256));
-                }
-
                 public static float GetColorBrightness(this Color color)
                 {
                     Vector3 v = color.ToVector3();
@@ -1524,15 +1519,21 @@ namespace JuliHelper
 
         #region Random
 
-                        public static float NextFloat(this Random rand) => (float)rand.NextDouble();
-                        public static float NextFloat(this Random rand, float min, float max) => (float)rand.NextDouble() * (max - min) + min;
+        public static float NextFloat(this Random rand) => (float)rand.NextDouble();
+        public static float NextFloat(this Random rand, float min, float max) => (float)rand.NextDouble() * (max - min) + min;
+        public static Vector2 NextVector2Box(this Random rand) => new Vector2((float)rand.NextDouble() * 2f - 1f, (float)rand.NextDouble() * 2f - 1f);
+        public static Vector3 NextVector3Box(this Random rand) => new Vector3((float)rand.NextDouble() * 2f - 1f, (float)rand.NextDouble() * 2f - 1f, (float)rand.NextDouble() * 2f - 1f);
+        public static Color NextColor(this Random rand)
+        {
+            return new Color(rand.Next(256), rand.Next(256), rand.Next(256));
+        }
 
         #endregion
 
         #region Float
 
 
-                        [StructLayout(LayoutKind.Explicit)]
+        [StructLayout(LayoutKind.Explicit)]
                         struct FloatIntUnion
                         {
                             [FieldOffset(0)]

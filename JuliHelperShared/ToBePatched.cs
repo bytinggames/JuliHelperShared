@@ -8,7 +8,7 @@ using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Net;
 using System.Reflection;
-using JuliHelper.Helper;
+//using JuliHelper.Helper;
 using System.Security.AccessControl;
 
 namespace JuliHelper
@@ -173,11 +173,12 @@ namespace JuliHelper
 
         private bool HasPermissions(string path)
         {
-            CurrentUserSecurity user = new CurrentUserSecurity();
-            return user.HasAccess(new DirectoryInfo(path), 
-                  FileSystemRights.ReadData | FileSystemRights.CreateDirectories
-                | FileSystemRights.Traverse | FileSystemRights.Delete
-                | FileSystemRights.ReadAndExecute | FileSystemRights.ReadData | FileSystemRights.Write);
+            throw new NotImplementedException();
+            //CurrentUserSecurity user = new CurrentUserSecurity();
+            //return user.HasAccess(new DirectoryInfo(path), 
+            //      FileSystemRights.ReadData | FileSystemRights.CreateDirectories
+            //    | FileSystemRights.Traverse | FileSystemRights.Delete
+            //    | FileSystemRights.ReadAndExecute | FileSystemRights.ReadData | FileSystemRights.Write);
 
             //no acces: FileSystemRights.DeleteSubdirectoriesAndFiles
         }
