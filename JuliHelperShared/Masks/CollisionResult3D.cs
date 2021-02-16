@@ -11,12 +11,18 @@ namespace JuliHelper
         public bool collision;
         public float? distance;
         public float? distanceReversed;
-        public Vector3 axisCol, axisColReversed, colPoint, colPointReversed;
+        public Vector3 axisCol, axisColReversed;
+        /// <summary>
+        /// is calculated by letting one shape move towards another shape, that does not move.
+        /// </summary>
+        public Vector3? colPoint;
 
         public void AxisInvert()
         {
             axisCol = -axisCol;
             axisColReversed = -axisColReversed;
+
+            colPoint = null;
         }
 
         public CollisionResult3D GetAxisInvert()
@@ -48,7 +54,6 @@ namespace JuliHelper
             {
                 distanceReversed = cr.distanceReversed;
                 axisColReversed = cr.axisColReversed;
-                colPointReversed = cr.colPointReversed;
             }
 
             if (!distance.HasValue || (cr.distance.HasValue && cr.distance < distance))
@@ -131,7 +136,6 @@ namespace JuliHelper
                 {
                     distanceReversed = cr.distance;
                     axisColReversed = cr.axisCol;
-                    colPointReversed = cr.colPoint;
                 }
             }
         }
