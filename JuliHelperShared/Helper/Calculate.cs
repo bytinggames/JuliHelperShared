@@ -1393,14 +1393,6 @@ namespace JuliHelper
                             return colorOut;
                         }
 
-        internal static void ChangeVarTemporarily<T>(ref T variable, T tempValue, Action action)
-        {
-            T save = variable;
-            variable = tempValue;
-            action();
-            variable = save;
-        }
-
         public static Color[] OverrideColorsBasic(params Texture2D[] texs)
 		                {
 			                Color[] output = new Color[texs[0].Width * texs[0].Height];
@@ -1597,10 +1589,10 @@ namespace JuliHelper
         #region Variables
 
 
-        public static void ChangeVarTemporarily<T>(ref T variable, T value, Action actionWhile)
+        public static void ChangeVarTemporarily<T>(ref T variable, T tempValue, Action actionWhile)
         {
             T store = variable;
-            variable = value;
+            variable = tempValue;
             actionWhile();
             variable = store;
         }
