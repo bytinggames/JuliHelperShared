@@ -118,390 +118,399 @@ namespace JuliHelper
             return val;
         }
 
-#endregion
+        #endregion
 
         #region Data
 
-                //Bits to Bytes
-                public static byte BitsToByte(bool[] data)
-                {
-                    byte result = 0;
-                    for (int i = 0; i < data.Length && i < 8; i++)
-                    {
-                        if (data[i])
-                            result += (byte)Math.Pow(2, i);
-                    }
-                    return result;
-                }
-                public static byte[] BitsToBytes(bool[] data)
-                {
-                    byte[] result = new byte[(int)Math.Ceiling(data.Length / 8f)];
-                    for (int i = 0; i < data.Length; i++)
-                    {
-                        if (data[i])
-                            result[(int)Math.Floor(i / 8f)] += (byte)Math.Pow(2, i % 8);
-                    }
-                    return result;
-                }
-                public static long BitsToLong(bool[] data)
-                {
-                    long result = 0;
-                    for (int i = 0; i < data.Length && i < 64; i++)
-                    {
-                        if (data[i])
-                            result += (long)Math.Pow(2, i);
-                    }
-                    return result;
-                }
+        //Bits to Bytes
+        public static byte BitsToByte(bool[] data)
+        {
+            byte result = 0;
+            for (int i = 0; i < data.Length && i < 8; i++)
+            {
+                if (data[i])
+                    result += (byte)Math.Pow(2, i);
+            }
+            return result;
+        }
+        public static byte[] BitsToBytes(bool[] data)
+        {
+            byte[] result = new byte[(int)Math.Ceiling(data.Length / 8f)];
+            for (int i = 0; i < data.Length; i++)
+            {
+                if (data[i])
+                    result[(int)Math.Floor(i / 8f)] += (byte)Math.Pow(2, i % 8);
+            }
+            return result;
+        }
+        public static long BitsToLong(bool[] data)
+        {
+            long result = 0;
+            for (int i = 0; i < data.Length && i < 64; i++)
+            {
+                if (data[i])
+                    result += (long)Math.Pow(2, i);
+            }
+            return result;
+        }
 
-                //Bytes to Bits
-                public static bool[] ByteToBits(byte data)
-                {
-                    bool[] result = new bool[8];
-                    for (int i = 0; i < result.Length; i++)
-                    {
-                        result[i] = (data & (1 << i)) != 0;
-                    }
-                    return result;
-                }
-                public static bool[] BytesToBits(byte[] data)
-                {
-                    bool[] result = new bool[8 * data.Length];
-                    for (int i = 0; i < result.Length; i++)
-                    {
-                        result[i] = (data[(int)Math.Floor(i / 8f)] & (1 << (i % 8))) != 0;
-                    }
-                    return result;
-                }
+        //Bytes to Bits
+        public static bool[] ByteToBits(byte data)
+        {
+            bool[] result = new bool[8];
+            for (int i = 0; i < result.Length; i++)
+            {
+                result[i] = (data & (1 << i)) != 0;
+            }
+            return result;
+        }
+        public static bool[] BytesToBits(byte[] data)
+        {
+            bool[] result = new bool[8 * data.Length];
+            for (int i = 0; i < result.Length; i++)
+            {
+                result[i] = (data[(int)Math.Floor(i / 8f)] & (1 << (i % 8))) != 0;
+            }
+            return result;
+        }
 
-                //Bytes to ints
-                public static int[] BytesToInts(byte[] data)
-                {
-                    int[] output = new int[data.Length / 4];
-                    for (int i = 0; i < data.Length; i += 4)
-                    {
-                        output[i / 4] = BitConverter.ToInt32(data, i);
-                    }
-                    return output;
-                }
-                public static byte[] IntsToBytes(int[] data)
-                {
-                    List<byte> output = new List<byte>();
-                    for (int i = 0; i < data.Length; i++)
-                    {
-                        output.AddRange(BitConverter.GetBytes(data[i]));
-                    }
-                    return output.ToArray();
-                }
+        //Bytes to ints
+        public static int[] BytesToInts(byte[] data)
+        {
+            int[] output = new int[data.Length / 4];
+            for (int i = 0; i < data.Length; i += 4)
+            {
+                output[i / 4] = BitConverter.ToInt32(data, i);
+            }
+            return output;
+        }
+        public static byte[] IntsToBytes(int[] data)
+        {
+            List<byte> output = new List<byte>();
+            for (int i = 0; i < data.Length; i++)
+            {
+                output.AddRange(BitConverter.GetBytes(data[i]));
+            }
+            return output.ToArray();
+        }
 
-                #endregion
+        #endregion
 
         #region Old
 
-                //public static Vector2 LengthDir(Vector2 pos1, Vector2 pos2, float speed)
-                //{
-                //    speed = Math.Min(speed, (int)Vector2.Distance(pos1, pos2));
-                //    double radians = Math.Atan2(pos2.Y - pos1.Y, pos2.X - pos1.X);
-                //    return new Vector2((float)(pos1.X + speed * Convert.ToDouble(Math.Cos(radians))), (float)(pos1.Y + speed * Convert.ToDouble(Math.Sin(radians))));
-                //}
+        //public static Vector2 LengthDir(Vector2 pos1, Vector2 pos2, float speed)
+        //{
+        //    speed = Math.Min(speed, (int)Vector2.Distance(pos1, pos2));
+        //    double radians = Math.Atan2(pos2.Y - pos1.Y, pos2.X - pos1.X);
+        //    return new Vector2((float)(pos1.X + speed * Convert.ToDouble(Math.Cos(radians))), (float)(pos1.Y + speed * Convert.ToDouble(Math.Sin(radians))));
+        //}
 
-                //public static int RoundTo(float num, float to)
-                //{
-                //    int back = (int)(Math.Round(num / to) * to);
-                //    return back;
-                //}
+        //public static int RoundTo(float num, float to)
+        //{
+        //    int back = (int)(Math.Round(num / to) * to);
+        //    return back;
+        //}
 
-                //public static Vector2 To2D(int index, int width)
-                //{
-                //    return new Vector2(index % width, (float)Math.Floor((float)index / width));
-                //}
-                //public static int To1D(Vector2 pos, int width)
-                //{
-                //    return (int)Math.Floor(pos.X + (int)pos.Y * width);
-                //}
-                //public static bool[] StringToBoolArray(string bits)
-                //{
-                //    bool[] result = new bool[bits.Length];
-                //    for (int i = 0; i < bits.Length; i++)
-                //    {
-                //        if (bits[i] == '1')
-                //            result[i] = true;
-                //    }
-                //    return result;
-                //}
+        //public static Vector2 To2D(int index, int width)
+        //{
+        //    return new Vector2(index % width, (float)Math.Floor((float)index / width));
+        //}
+        //public static int To1D(Vector2 pos, int width)
+        //{
+        //    return (int)Math.Floor(pos.X + (int)pos.Y * width);
+        //}
+        //public static bool[] StringToBoolArray(string bits)
+        //{
+        //    bool[] result = new bool[bits.Length];
+        //    for (int i = 0; i < bits.Length; i++)
+        //    {
+        //        if (bits[i] == '1')
+        //            result[i] = true;
+        //    }
+        //    return result;
+        //}
 
         #endregion
 
         #region Vectors
 
-                public static Vector2 FloorVector(this Vector2 vec)
+        public static Vector2 FloorVector(this Vector2 vec)
+        {
+            return new Vector2((float)Math.Floor(vec.X), (float)Math.Floor(vec.Y));
+        }
+        public static Vector2 CeilVector(this Vector2 vec)
+        {
+            return new Vector2((float)Math.Ceiling(vec.X), (float)Math.Ceiling(vec.Y));
+        }
+        public static Vector2 RoundVector(this Vector2 vec)
+        {
+            return new Vector2((float)Math.Round(vec.X), (float)Math.Round(vec.Y));
+        }
+        /// <summary>
+        /// use this method, if you have many values either being x.5 or x.0, cause this will prevent unwanted floating point errors
+        /// </summary>
+        public static Vector2 RoundVectorCustom(this Vector2 vec)
+        {
+            return new Vector2((float)Math.Round(vec.X - 0.1f), (float)Math.Round(vec.Y - 0.1f));
+        }
+        public static Vector2 RoundInDirection(this Vector2 vec, Vector2 dir)
+        {
+            return new Vector2((dir.X > 0) ? (float)Math.Ceiling(vec.X) : (float)Math.Floor(vec.X), (dir.Y > 0) ? (float)Math.Ceiling(vec.Y) : (float)Math.Floor(vec.Y));
+        }
+
+        public static Vector2 AbsVector(this Vector2 pos)
+        {
+            return new Vector2(Math.Abs(pos.X), Math.Abs(pos.Y));
+        }
+        public static Vector2 SignVector(this Vector2 pos)
+        {
+            return new Vector2(Math.Sign(pos.X), Math.Sign(pos.Y));
+        }
+
+        public static T EnumIncrement<T>(T src) where T : struct
+        {
+            if (!typeof(T).IsEnum) throw new ArgumentException(String.Format("Argumnent {0} is not an Enum", typeof(T).FullName));
+
+            T[] Arr = (T[])Enum.GetValues(src.GetType());
+            int j = Array.IndexOf<T>(Arr, src) + 1;
+            return (Arr.Length == j) ? Arr[0] : Arr[j];
+        }
+
+        public static Vector2 XPositive(Vector2 vec)
+        {
+            if (vec.X < 0 || (vec.X == 0 && vec.Y < 0))
+                return -vec;
+            return vec;
+        }
+        public static Vector2 YPositive(Vector2 vec)
+        {
+            if (vec.Y < 0 || (vec.Y == 0 && vec.X < 0))
+                return -vec;
+            return vec;
+        }
+
+        public static void VectorRectangle(ref Vector2 pos1, ref Vector2 pos2)
+        {
+            Vector2 _pos1 = pos1;
+            Vector2 _pos2 = pos2;
+            pos1 = MinVector(_pos1, _pos2);
+            pos2 = MaxVector(_pos1, _pos2);
+        }
+
+        public static Vector2 MinVector(this Vector2 vec1, Vector2 vec2)
+        {
+            return new Vector2(Math.Min(vec1.X, vec2.X), Math.Min(vec1.Y, vec2.Y));
+        }
+        public static Vector2 MaxVector(this Vector2 vec1, Vector2 vec2)
+        {
+            return new Vector2(Math.Max(vec1.X, vec2.X), Math.Max(vec1.Y, vec2.Y));
+        }
+        public static Vector2 MinAbsVector(this Vector2 vec1, Vector2 vec2)
+        {
+            return new Vector2(MinAbs(vec1.X, vec2.X), MinAbs(vec1.Y, vec2.Y));
+        }
+        public static Vector2 MaxAbsVector(this Vector2 vec1, Vector2 vec2)
+        {
+            return new Vector2(MaxAbs(vec1.X, vec2.X), MaxAbs(vec1.Y, vec2.Y));
+        }
+        public static Vector2 ClampVector(this Vector2 vec, Vector2 min, Vector2 max)
+        {
+            return new Vector2(Math.Max(Math.Min(vec.X, max.X), min.X), Math.Max(Math.Min(vec.Y, max.Y), min.Y));
+        }
+
+        public static Rectangle NormalizeRectangle(Rectangle rect)
+        {
+            if (rect.Width < 0)
+            {
+                rect.X += rect.Width;
+                rect.Width = -rect.Width;
+            }
+            if (rect.Height < 0)
+            {
+                rect.Y += rect.Height;
+                rect.Height = -rect.Height;
+            }
+            return rect;
+        }
+
+        public static Rectangle CreateRectangle(Vector2 pos1, Vector2 pos2)
+        {
+            if (pos2.X < pos1.X)
+            {
+                float save = pos1.X;
+                pos1.X = pos2.X;
+                pos2.X = save;
+            }
+            if (pos2.Y < pos1.Y)
+            {
+                float save = pos1.Y;
+                pos1.Y = pos2.Y;
+                pos2.Y = save;
+            }
+            return new Rectangle((int)pos1.X, (int)pos1.Y, (int)(pos2.X - pos1.X), (int)(pos2.Y - pos1.Y));
+        }
+
+        public static Rectangle Cut(this Rectangle rect1, Rectangle rect2)
+        {
+            int left = Math.Max(rect1.Left, rect2.Left);
+            int w = Math.Min(rect1.Right, rect2.Right) - left;
+            int top = Math.Max(rect1.Top, rect2.Top);
+            int h = Math.Min(rect1.Bottom, rect2.Bottom) - top;
+            if (w > 0 && h > 0)
+                return new Rectangle(left, top, w, h);
+            else
+                return default(Rectangle);
+        }
+        public static Rectangle Expand(this Rectangle rect1, int x, int y)
+        {
+            if (x > 0)
+                rect1.Width += x;
+            else if (x < 0)
+            {
+                rect1.X += x;
+                rect1.Width -= x;
+            }
+
+            if (y > 0)
+                rect1.Height += y;
+            else if (y < 0)
+            {
+                rect1.Y += y;
+                rect1.Height -= y;
+            }
+
+            return rect1;
+        }
+
+        public static Vector2 ModulateVector(this Vector2 vec, Vector2 mod)
+        {
+            return new Vector2(vec.X % mod.X, vec.Y % mod.Y);
+        }
+        public static Vector2 ModulateVector(this Vector2 vec, float mod)
+        {
+            return new Vector2(vec.X % mod, vec.Y % mod);
+        }
+
+        //Rotation
+        public static Vector2 AngleToVector(float angle)
+        {
+            return new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
+        }
+        public static float VectorToAngle(Vector2 vec)
+        {
+            return (float)Math.Atan2(vec.Y, vec.X);
+        }
+
+        public static float AngleDistance(float angle1, float angle2)
+        {
+            angle1 = angle1 % MathHelper.TwoPi;
+            if (angle1 < 0)
+                angle1 += MathHelper.TwoPi;
+
+            angle2 = angle2 % MathHelper.TwoPi;
+            if (angle2 < 0)
+                angle2 += MathHelper.TwoPi;
+
+            float dist = angle2 - angle1;
+            if (Math.Abs(dist) <= Math.PI)
+                return dist;
+            else
+                return -Math.Sign(dist) * ((float)MathHelper.TwoPi - Math.Abs(dist));
+        }
+
+        public static float AngleDistance(Vector2 v1, Vector2 v2)
+        {
+            return AngleDistance((float)Math.Atan2(v1.Y, v1.X), (float)Math.Atan2(v2.Y, v2.X));
+            //return (float)Math.Acos(Vector2.Dot(v1, v2) / v1.Length() / v2.Length());
+            //return (float)Math.Acos((v1 * v2).Length() / v1.Length() / v2.Length());
+        }
+
+        public static Vector2 InRangeVector(this Vector2 val, Vector2 min, Vector2 max)
+        {
+            if (min.X > max.X || min.Y > max.Y)
+            {
+                throw new Exception("min is greater than max!");
+                //return val;
+            }
+            else
+            {
+                Vector2 range = max - min;
+
+                if (val.X >= max.X)
                 {
-                    return new Vector2((float)Math.Floor(vec.X), (float)Math.Floor(vec.Y));
+                    val.X -= min.X;
+                    val.X %= range.X;
+                    val.X += min.X;
                 }
-                public static Vector2 CeilVector(this Vector2 vec)
+                else if (val.X < min.X)
                 {
-                    return new Vector2((float)Math.Ceiling(vec.X), (float)Math.Ceiling(vec.Y));
-                }
-                public static Vector2 RoundVector(this Vector2 vec)
-                {
-                    return new Vector2((float)Math.Round(vec.X), (float)Math.Round(vec.Y));
-                }
-                /// <summary>
-                /// use this method, if you have many values either being x.5 or x.0, cause this will prevent unwanted floating point errors
-                /// </summary>
-                public static Vector2 RoundVectorCustom(this Vector2 vec)
-                {
-                    return new Vector2((float)Math.Round(vec.X - 0.1f), (float)Math.Round(vec.Y - 0.1f));
-                }
-                public static Vector2 RoundInDirection(this Vector2 vec, Vector2 dir)
-                {
-                    return new Vector2((dir.X > 0) ? (float)Math.Ceiling(vec.X) : (float)Math.Floor(vec.X), (dir.Y > 0) ? (float)Math.Ceiling(vec.Y) : (float)Math.Floor(vec.Y));
+                    val.X -= min.X;
+                    val.X %= range.X;
+                    val.X += range.X;
+                    val.X += min.X;
                 }
 
-                public static Vector2 AbsVector(this Vector2 pos)
+                if (val.Y >= max.Y)
                 {
-                    return new Vector2(Math.Abs(pos.X), Math.Abs(pos.Y));
+                    val.Y -= min.Y;
+                    val.Y %= range.Y;
+                    val.Y += min.Y;
                 }
-                public static Vector2 SignVector(this Vector2 pos)
+                else if (val.Y < min.Y)
                 {
-                    return new Vector2(Math.Sign(pos.X), Math.Sign(pos.Y));
-                }
-
-                public static T EnumIncrement<T>(T src) where T : struct
-                {
-                    if (!typeof(T).IsEnum) throw new ArgumentException(String.Format("Argumnent {0} is not an Enum", typeof(T).FullName));
-
-                    T[] Arr = (T[])Enum.GetValues(src.GetType());
-                    int j = Array.IndexOf<T>(Arr, src) + 1;
-                    return (Arr.Length == j) ? Arr[0] : Arr[j];
+                    val.Y -= min.Y;
+                    val.Y %= range.Y;
+                    val.Y += range.Y;
+                    val.Y += min.Y;
                 }
 
-                public static Vector2 XPositive(Vector2 vec)
-                {
-                    if (vec.X < 0 || (vec.X == 0 && vec.Y < 0))
-                        return -vec;
-                    return vec;
-                }
-                public static Vector2 YPositive(Vector2 vec)
-                {
-                    if (vec.Y < 0 || (vec.Y == 0 && vec.X < 0))
-                        return -vec;
-                    return vec;
-                }
+                return val;
+            }
+        }
 
-                public static void VectorRectangle(ref Vector2 pos1, ref Vector2 pos2)
-                {
-                    Vector2 _pos1 = pos1;
-                    Vector2 _pos2 = pos2;
-                    pos1 = MinVector(_pos1, _pos2);
-                    pos2 = MaxVector(_pos1, _pos2);
-                }
+        public static Vector3 AbsVector(this Vector3 pos)
+        {
+            return new Vector3(Math.Abs(pos.X), Math.Abs(pos.Y), Math.Abs(pos.Z));
+        }
 
-                public static Vector2 MinVector(this Vector2 vec1, Vector2 vec2)
-                {
-                    return new Vector2(Math.Min(vec1.X, vec2.X), Math.Min(vec1.Y, vec2.Y));
-                }
-                public static Vector2 MaxVector(this Vector2 vec1, Vector2 vec2)
-                {
-                    return new Vector2(Math.Max(vec1.X, vec2.X), Math.Max(vec1.Y, vec2.Y));
-                }
-                public static Vector2 MinAbsVector(this Vector2 vec1, Vector2 vec2)
-                {
-                    return new Vector2(MinAbs(vec1.X, vec2.X), MinAbs(vec1.Y, vec2.Y));
-                }
-                public static Vector2 MaxAbsVector(this Vector2 vec1, Vector2 vec2)
-                {
-                    return new Vector2(MaxAbs(vec1.X, vec2.X), MaxAbs(vec1.Y, vec2.Y));
-                }
-                public static Vector2 ClampVector(this Vector2 vec, Vector2 min, Vector2 max)
-                {
-                    return new Vector2(Math.Max(Math.Min(vec.X, max.X), min.X), Math.Max(Math.Min(vec.Y, max.Y), min.Y));
-                }
+        //public static Vector3 GetCoordinateScale(Matrix matrix)
+        //{
+        //    return new Vector3(matrix.Right.Length(), matrix.Up.Length(), matrix.Backward.Length());
+        //}
 
-                public static Rectangle NormalizeRectangle(Rectangle rect)
-                {
-                    if (rect.Width < 0)
-                    {
-                        rect.X += rect.Width;
-                        rect.Width = -rect.Width;
-                    }
-                    if (rect.Height < 0)
-                    {
-                        rect.Y += rect.Height;
-                        rect.Height = -rect.Height;
-                    }
-                    return rect;
-                }
+        public static Vector2 GetNormalizedOrZero(this Vector2 v)
+        {
+            if (v == Vector2.Zero)
+                return Vector2.Zero;
+            else
+                return Vector2.Normalize(v);
+        }
+        public static Vector3 GetNormalizedOrZero(this Vector3 v)
+        {
+            if (v == Vector3.Zero)
+                return Vector3.Zero;
+            else
+                return Vector3.Normalize(v);
+        }
 
-                public static Rectangle CreateRectangle(Vector2 pos1, Vector2 pos2)
-                {
-                    if (pos2.X < pos1.X)
-                    {
-                        float save = pos1.X;
-                        pos1.X = pos2.X;
-                        pos2.X = save;
-                    }
-                    if (pos2.Y < pos1.Y)
-                    {
-                        float save = pos1.Y;
-                        pos1.Y = pos2.Y;
-                        pos2.Y = save;
-                    }
-                    return new Rectangle((int)pos1.X, (int)pos1.Y, (int)(pos2.X - pos1.X), (int)(pos2.Y - pos1.Y));
-                }
+        public static Vector2 GetSize(this Rectangle rectangle)
+        {
+            return new Vector2(rectangle.Width, rectangle.Height);
+        }
 
-                public static Rectangle Cut(this Rectangle rect1, Rectangle rect2)
-                {
-                    int left = Math.Max(rect1.Left, rect2.Left);
-                    int w = Math.Min(rect1.Right, rect2.Right) - left;
-                    int top = Math.Max(rect1.Top, rect2.Top);
-                    int h = Math.Min(rect1.Bottom, rect2.Bottom) - top;
-                    if (w > 0 && h > 0)
-                        return new Rectangle(left, top, w, h);
-                    else
-                        return default(Rectangle);
-                }
-                public static Rectangle Expand(this Rectangle rect1, int x, int y)
-                {
-                    if (x > 0)
-                        rect1.Width += x;
-                    else if (x < 0)
-                    {
-                        rect1.X += x;
-                        rect1.Width -= x;
-                    }
+        public static Vector2 XY(this Vector3 v) => new Vector2(v.X, v.Y);
+        public static Vector2 XZ(this Vector3 v) => new Vector2(v.X, v.Z);
+        public static Vector2 YX(this Vector3 v) => new Vector2(v.Y, v.X);
+        public static Vector2 YZ(this Vector3 v) => new Vector2(v.Y, v.Z);
+        public static Vector2 ZX(this Vector3 v) => new Vector2(v.Z, v.X);
+        public static Vector2 ZY(this Vector3 v) => new Vector2(v.Z, v.Y);
 
-                    if (y > 0)
-                        rect1.Height += y;
-                    else if (y < 0)
-                    {
-                        rect1.Y += y;
-                        rect1.Height -= y;
-                    }
-
-                    return rect1;
-                }
-
-                public static Vector2 ModulateVector(this Vector2 vec, Vector2 mod)
-                {
-                    return new Vector2(vec.X % mod.X, vec.Y % mod.Y);
-                }
-                public static Vector2 ModulateVector(this Vector2 vec, float mod)
-                {
-                    return new Vector2(vec.X % mod, vec.Y % mod);
-                }
-
-                //Rotation
-                public static Vector2 AngleToVector(float angle)
-                {
-                    return new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
-                }
-                public static float VectorToAngle(Vector2 vec)
-                {
-                    return (float)Math.Atan2(vec.Y, vec.X);
-                }
-
-                public static float AngleDistance(float angle1, float angle2)
-                {
-                    angle1 = angle1 % MathHelper.TwoPi;
-                    if (angle1 < 0)
-                        angle1 += MathHelper.TwoPi;
-
-                    angle2 = angle2 % MathHelper.TwoPi;
-                    if (angle2 < 0)
-                        angle2 += MathHelper.TwoPi;
-
-                    float dist = angle2 - angle1;
-                    if (Math.Abs(dist) <= Math.PI)
-                        return dist;
-                    else
-                        return -Math.Sign(dist) * ((float)MathHelper.TwoPi - Math.Abs(dist));
-                }
-
-                public static float AngleDistance(Vector2 v1, Vector2 v2)
-                {
-                    return AngleDistance((float)Math.Atan2(v1.Y, v1.X), (float)Math.Atan2(v2.Y, v2.X));
-                    //return (float)Math.Acos(Vector2.Dot(v1, v2) / v1.Length() / v2.Length());
-                    //return (float)Math.Acos((v1 * v2).Length() / v1.Length() / v2.Length());
-                }
-
-                public static Vector2 InRangeVector(this Vector2 val, Vector2 min, Vector2 max)
-                {
-                    if (min.X > max.X || min.Y > max.Y)
-                    {
-                        throw new Exception("min is greater than max!");
-                        //return val;
-                    }
-                    else
-                    {
-                        Vector2 range = max - min;
-
-                        if (val.X >= max.X)
-                        {
-                            val.X -= min.X;
-                            val.X %= range.X;
-                            val.X += min.X;
-                        }
-                        else if (val.X < min.X)
-                        {
-                            val.X -= min.X;
-                            val.X %= range.X;
-                            val.X += range.X;
-                            val.X += min.X;
-                        }
-
-                        if (val.Y >= max.Y)
-                        {
-                            val.Y -= min.Y;
-                            val.Y %= range.Y;
-                            val.Y += min.Y;
-                        }
-                        else if (val.Y < min.Y)
-                        {
-                            val.Y -= min.Y;
-                            val.Y %= range.Y;
-                            val.Y += range.Y;
-                            val.Y += min.Y;
-                        }
-
-                        return val;
-                    }
-                }
-
-                public static Vector3 AbsVector(this Vector3 pos)
-                {
-                    return new Vector3(Math.Abs(pos.X), Math.Abs(pos.Y), Math.Abs(pos.Z));
-                }
-
-                //public static Vector3 GetCoordinateScale(Matrix matrix)
-                //{
-                //    return new Vector3(matrix.Right.Length(), matrix.Up.Length(), matrix.Backward.Length());
-                //}
-
-                public static Vector2 GetNormalizedOrZero(this Vector2 v)
-                {
-                    if (v == Vector2.Zero)
-                        return Vector2.Zero;
-                    else
-                        return Vector2.Normalize(v);
-                }
-                public static Vector3 GetNormalizedOrZero(this Vector3 v)
-                {
-                    if (v == Vector3.Zero)
-                        return Vector3.Zero;
-                    else
-                        return Vector3.Normalize(v);
-                }
-
-                public static Vector2 GetSize(this Rectangle rectangle)
-                {
-                    return new Vector2(rectangle.Width, rectangle.Height);
-                }
+        public static void SetXY(ref this Vector3 v, Vector2 xy) { v.X = xy.X; v.Y = xy.Y; }
 
         #endregion
 
         #region Rectangles
-        
+
         public static M_Rectangle Encapsulate(this M_Rectangle rect1, M_Rectangle rect2)
         {
             float x1, y1, x2, y2;
@@ -1384,7 +1393,15 @@ namespace JuliHelper
                             return colorOut;
                         }
 
-                        public static Color[] OverrideColorsBasic(params Texture2D[] texs)
+        internal static void ChangeVarTemporarily<T>(ref T variable, T tempValue, Action action)
+        {
+            T save = variable;
+            variable = tempValue;
+            action();
+            variable = save;
+        }
+
+        public static Color[] OverrideColorsBasic(params Texture2D[] texs)
 		                {
 			                Color[] output = new Color[texs[0].Width * texs[0].Height];
 
