@@ -1110,52 +1110,63 @@ namespace JuliHelper
 
         #region Binary Reader/Writer
 
-                        public static void Write(this BinaryWriter writer, bool[] bools)
-                        {
-                            for (int i = 0; i < bools.Length; i++)
-                                writer.Write(bools[i]);
-                        }
-                        public static bool[] ReadBooleans(this BinaryReader reader, int count)
-                        {
-                            bool[] bools = new bool[count];
-                            for (int i = 0; i < bools.Length; i++)
-                            {
-                                bools[i] = reader.ReadBoolean();
-                            }
-                            return bools;
-                        }
+        public static void Write(this BinaryWriter writer, bool[] bools)
+        {
+            for (int i = 0; i < bools.Length; i++)
+                writer.Write(bools[i]);
+        }
+        public static bool[] ReadBooleans(this BinaryReader reader, int count)
+        {
+            bool[] bools = new bool[count];
+            for (int i = 0; i < bools.Length; i++)
+            {
+                bools[i] = reader.ReadBoolean();
+            }
+            return bools;
+        }
 
-                        public static void Write(this BinaryWriter writer, Vector2 vec)
-                        {
-                            writer.Write(vec.X);
-                            writer.Write(vec.Y);
-                        }
-                        public static Vector2 ReadVector2(this BinaryReader reader)
+        public static void Write(this BinaryWriter writer, Vector2 vec)
+        {
+            writer.Write(vec.X);
+            writer.Write(vec.Y);
+        }
+        public static Vector2 ReadVector2(this BinaryReader reader)
                         {
                             return new Vector2(reader.ReadSingle(), reader.ReadSingle());
                         }
 
-                        public static void Write(this BinaryWriter writer, Color color)
-                        {
-                            writer.Write(color.PackedValue);
-                        }
-                        public static Color ReadColor(this BinaryReader reader)
-                        {
-                            Color color = new Color(reader.ReadUInt32());
-                            return color;
-                        }
+        public static void Write(this BinaryWriter writer, Vector3 vec)
+        {
+            writer.Write(vec.X);
+            writer.Write(vec.Y);
+            writer.Write(vec.Z);
+        }
+        public static Vector3 ReadVector3(this BinaryReader reader)
+        {
+            return new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
+        }
 
-                        public static void Write(this BinaryWriter writer, M_Rectangle rect)
-                        {
-                            writer.Write(rect.pos.X);
-                            writer.Write(rect.pos.Y);
-                            writer.Write(rect.size.X);
-                            writer.Write(rect.size.Y);
-                        }
-                        public static M_Rectangle ReadRectangle(this BinaryReader reader)
-                        {
-                            return new M_Rectangle(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
-                        }
+        public static void Write(this BinaryWriter writer, Color color)
+        {
+            writer.Write(color.PackedValue);
+        }
+        public static Color ReadColor(this BinaryReader reader)
+        {
+            Color color = new Color(reader.ReadUInt32());
+            return color;
+        }
+
+        public static void Write(this BinaryWriter writer, M_Rectangle rect)
+        {
+            writer.Write(rect.pos.X);
+            writer.Write(rect.pos.Y);
+            writer.Write(rect.size.X);
+            writer.Write(rect.size.Y);
+        }
+        public static M_Rectangle ReadRectangle(this BinaryReader reader)
+        {
+            return new M_Rectangle(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
+        }
 
 
         #endregion
@@ -1563,6 +1574,19 @@ namespace JuliHelper
                                 u.i--;
                             return u.f;
                         }
+
+        #endregion
+
+        #region Variables
+
+
+        public static void ChangeVarTemporarily<T>(ref T variable, T value, Action actionWhile)
+        {
+            T store = variable;
+            variable = value;
+            actionWhile();
+            variable = store;
+        }
 
         #endregion
     }
