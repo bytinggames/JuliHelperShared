@@ -8,6 +8,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using JuliHelperShared;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -52,6 +53,8 @@ namespace JuliHelper
         {
             var fields = fieldContainingClass.GetFields(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
 
+            bool checkIfNew = false;
+
 
             string GetPath(string fileName)
             {
@@ -70,7 +73,7 @@ namespace JuliHelper
                     path = files[0];
                 }
 
-                if (!IsNew(path))
+                if (checkIfNew && !IsNew(path))
                     return null;
 
                 using (FileStream stream = new FileStream(path, FileMode.Open))
@@ -80,6 +83,23 @@ namespace JuliHelper
                     return newTex;
                 }
             }
+
+            SoundEffect GetSound(string fileName)
+            {
+                string path = GetPath(fileName);
+                if (!File.Exists(path))
+                    throw new Exception("Sound file not found: " + fileName);
+
+                if (checkIfNew && !IsNew(path))
+                    return null;
+
+                using (FileStream stream = new FileStream(path, FileMode.Open))
+                {
+                    SoundEffect newSound = SoundEffect.FromStream(stream);
+                    newSound.Name = Path.Combine(localPath, fileName);
+                    return newSound;
+                }
+            }
             
 
             var switchType = new Dictionary<Type, Action<FieldInfo>>
@@ -87,16 +107,16 @@ namespace JuliHelper
                 {
                     typeof(Texture2D), f =>
                     {
-                        Texture2D tex = f.GetValue(null) as Texture2D;
-                        if (tex == null)
-                            return;
-
                         Texture2D newTex = GetTexture(f.Name + ".png");
 
                         if (newTex == null)
                             return;
 
-                        tex.SetData(newTex.ToColor());
+                        Texture2D tex = f.GetValue(null) as Texture2D;
+                        if (tex == null)
+                            f.SetValue(null, newTex);
+                        else
+                            tex.SetData(newTex.ToColor());
                     }
                 },
                 {
@@ -201,12 +221,25 @@ namespace JuliHelper
                         }
                     }
                 },
+                {
+                    typeof(SoundItem), f =>
+                    {
+                        SoundEffect newSound = GetSound(f.Name + ".wav");
+
+                        if (newSound == null)
+                            return;
+
+                        SoundItem sound = f.GetValue(null) as SoundItem;
+                        if (sound == null)
+                            f.SetValue(null, new SoundItem(newSound));
+                        else
+                            sound.SoundEffect = newSound;
+                    }
+                },
             };
 
             for (int i = 0; i < fields.Length; i++)
             {
-                if (fields[i].Name.Contains("player"))
-                { }
                 if (switchType.ContainsKey(fields[i].FieldType))
                         switchType[fields[i].FieldType](fields[i]);
             }
@@ -305,6 +338,80 @@ namespace JuliHelper
             for (int i = 0; i < nested.Length; i++)
             {
                 LoadProcessed(nested[i], Path.Combine(localPath, nested[i].Name), content);
+            }
+        }
+
+        public static void DisposeContent(Type fieldContainingClass)
+        {
+            var fields = fieldContainingClass.GetFields(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+
+            var switchType = new Dictionary<Type, Action<FieldInfo>>
+            {
+                {
+                    typeof(Texture2D), f =>
+                    {
+                        Texture2D tex = f.GetValue(null) as Texture2D;
+                        if (tex == null)
+                            return;
+
+                        tex.Dispose();
+                    }
+                },
+                {
+                    typeof(Texture2D[]), f =>
+                    {
+                        List<Texture2D> texs = (f.GetValue(null) as Texture2D[])?.ToList();
+                        if (texs == null)
+                            return;
+
+                        for (int i = 0; i < texs.Count; i++)
+                        {
+                            texs[i].Dispose();
+			            }
+                    }
+                },
+                {
+                    typeof(TextureAnim), f =>
+                    {
+                        TextureAnim ani = f.GetValue(null) as TextureAnim;
+                        if (ani == null)
+                            return;
+                        ani.Dispose();
+                    }
+                },
+                {
+                    typeof(TextureAnim[]), f =>
+                    {
+                        List<TextureAnim> anims = (f.GetValue(null) as TextureAnim[])?.ToList();
+                        if (anims == null)
+                            return;
+                        for (int i = 0; i < anims.Count; i++)
+                        {
+                            anims[i].Dispose();
+			            }
+                    }
+                },
+                {
+                    typeof(SoundItem), f =>
+                    {
+                        var item = f.GetValue(null) as SoundItem;
+                        if (item == null)
+                            return;
+                        item.Dispose();
+                    }
+                },
+            };
+
+            for (int i = 0; i < fields.Length; i++)
+            {
+                if (switchType.ContainsKey(fields[i].FieldType))
+                    switchType[fields[i].FieldType](fields[i]);
+            }
+
+            Type[] nested = GetNestedTypes(fieldContainingClass);
+            for (int i = 0; i < nested.Length; i++)
+            {
+                DisposeContent(nested[i]);
             }
         }
     }

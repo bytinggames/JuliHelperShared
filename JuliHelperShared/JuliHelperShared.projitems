@@ -15,6 +15,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Content\ContentFenja.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Content\ContentLoader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Content\DynamicContent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Content\SoundItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Content\TextureAnim.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawing\DepthManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Drawing\Drawer.cs" />
@@ -36,6 +37,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helper\ArrayQuery.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helper\BmpHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helper\Calculate.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helper\CircleTextureGenerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helper\Cloning.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helper\CurrentUserSecurity.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helper\Delegates.cs" />
@@ -47,6 +49,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helper\MyConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helper\FPS.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helper\Short2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helper\WindowHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Input\Input.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Input\InputRecorder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Input\InputRecorderDeprecated.cs" />

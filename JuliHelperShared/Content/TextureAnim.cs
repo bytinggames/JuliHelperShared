@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace JuliHelperShared
 {
-    public class TextureAnim
+    public class TextureAnim : IDisposable
     {
         public Texture2D Texture { get; set; }
         public int FrameWidth { get; set; }
@@ -114,6 +114,11 @@ namespace JuliHelperShared
             ani.FrameHeight = FrameHeight;
             ani.FrameCount = FrameCount;
             ani.Fps = Fps;
+        }
+
+        public void Dispose()
+        {
+            Texture.Dispose();
         }
     }
 
