@@ -1,5 +1,4 @@
-﻿using LD48;
-using Microsoft.Xna.Framework.Audio;
+﻿using Microsoft.Xna.Framework.Audio;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -65,6 +64,8 @@ namespace JuliHelperShared
 
     public class SoundItemCollection : SoundItemAbstract
     {
+        static Random rand = new Random();
+
         private SoundEffect[] soundEffects;
 
         public SoundEffect[] SoundEffects
@@ -96,7 +97,7 @@ namespace JuliHelperShared
             }
         }
 
-        private SoundEffect GetRandomSoundEffect() => soundEffects[G.Rand.Next(soundEffects.Length)];
+        private SoundEffect GetRandomSoundEffect() => soundEffects[rand.Next(soundEffects.Length)];
 
         public override bool Play()
         {
