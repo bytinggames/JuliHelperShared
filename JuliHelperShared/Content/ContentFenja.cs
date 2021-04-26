@@ -100,7 +100,31 @@ namespace JuliHelper
                     return newSound;
                 }
             }
-            
+
+            SoundEffect[] GetSounds(string directoryName)
+            {
+                string path = GetPath(directoryName);
+                if (!Directory.Exists(path))
+                    throw new Exception("Directory could not be found: " + directoryName);
+
+                if (checkIfNew && !IsNew(path))
+                    return null;
+
+                string[]files = Directory.GetFiles(path, "*.wav", SearchOption.TopDirectoryOnly);
+
+                List<SoundEffect> sounds = new List<SoundEffect>();
+                foreach (var file in files)
+                {
+                    using (FileStream stream = new FileStream(file, FileMode.Open))
+                    {
+                        SoundEffect newSound = SoundEffect.FromStream(stream);
+                        newSound.Name = Path.Combine(localPath, directoryName);
+                        sounds.Add(newSound);
+                    }
+                }
+                return sounds.ToArray();
+            }
+
 
             var switchType = new Dictionary<Type, Action<FieldInfo>>
             {
@@ -234,6 +258,21 @@ namespace JuliHelper
                             f.SetValue(null, new SoundItem(newSound));
                         else
                             sound.SoundEffect = newSound;
+                    }
+                },
+                {
+                    typeof(SoundItemCollection), f =>
+                    {
+                        SoundEffect[] newSounds = GetSounds(f.Name);
+
+                        if (newSounds == null)
+                            return;
+
+                        SoundItemCollection sound = f.GetValue(null) as SoundItemCollection;
+                        if (sound == null)
+                            f.SetValue(null, new SoundItemCollection(newSounds));
+                        else
+                            sound.SoundEffects = newSounds;
                     }
                 },
             };

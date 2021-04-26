@@ -97,6 +97,9 @@ namespace JuliHelper
 
             public static void DrawRectangleOutlineOutsideGradient(SpriteBatch spriteBatch, M_Rectangle rect, Color color1, Color color2, float thickness, float step = 1f, bool reachColor2 = true, float depth = 0f)
             {
+                if (step <= 0)
+                    throw new Exception("step shouldn't be smaller or equal to 0");
+
                 rect = (M_Rectangle)rect.Clone();
                 float colorEnd = reachColor2 ? (thickness - step) : thickness;
                 float i = 0;
