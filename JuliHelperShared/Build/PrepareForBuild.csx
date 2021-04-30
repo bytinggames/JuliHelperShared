@@ -3,10 +3,6 @@ using System.Collections.Generic;
 
 string contentDir = Path.Combine(Environment.CurrentDirectory, "LD48", "Content");
 
-//string contentDirRelease = Path.Combine(contentDir, "Release");
-//if (!Directory.Exists(contentDirRelease))
-//    Directory.CreateDirectory(contentDirRelease);
-
 string mgcbPath = Path.Combine(contentDir, "ContentGenerated_do-not-edit.mgcb");
 string contentListPath = Path.Combine(contentDir, "ContentListGenerated_do-not-edit.txt");
 
