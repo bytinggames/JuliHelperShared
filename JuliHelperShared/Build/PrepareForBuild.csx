@@ -1,7 +1,9 @@
 ﻿using System.IO;
 using System.Collections.Generic;
 
-string contentDir = Path.Combine(Environment.CurrentDirectory, "LD48", "Content");
+string projectName = Args[0];
+
+string contentDir = Path.Combine(Environment.CurrentDirectory, projectName, "Content");
 
 string mgcbPath = Path.Combine(contentDir, "ContentGenerated_do-not-edit.mgcb");
 string contentListPath = Path.Combine(contentDir, "ContentListGenerated_do-not-edit.txt");
