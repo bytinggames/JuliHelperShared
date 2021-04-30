@@ -290,7 +290,7 @@ namespace JuliHelper
             }
         }
 
-        public static void LoadProcessed(Type fieldContainingClass, string localPath, ContentManager content)
+        public static void LoadProcessed(Type fieldContainingClass, string localPath, ContentManager content, string[] files = null)
         {
             var fields = fieldContainingClass.GetFields(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
 
@@ -356,6 +356,49 @@ namespace JuliHelper
                             index++;
                         }
                         f.SetValue(null, anis.ToArray());
+                    }
+                },
+                {
+                    typeof(SoundEffect), f =>
+                    {
+                        f.SetValue(null, content.Load<SoundEffect>(Path.Combine(localPath, f.Name)));
+                    }
+                },
+                {
+                    typeof(SoundItem), f =>
+                    {
+                        SoundEffect newSound = content.Load<SoundEffect>(Path.Combine(localPath, f.Name));
+
+                        if (newSound == null)
+                            return;
+
+                        SoundItem sound = f.GetValue(null) as SoundItem;
+                        if (sound == null)
+                            f.SetValue(null, new SoundItem(newSound));
+                        else
+                            sound.SoundEffect = newSound;
+                    }
+                },
+                {
+                    typeof(SoundItemCollection), f =>
+                    {
+                        string directory = Path.Combine(localPath, f.Name).Replace('\\', '/');
+                        if (files == null)
+                            return;
+                        var matches = files.Where(f => f.StartsWith(directory));
+
+                        List<SoundEffect> sounds = new List<SoundEffect>();
+                        foreach (var file in matches)
+                        {
+                            int dot = file.LastIndexOf('.');
+                            sounds.Add(content.Load<SoundEffect>(file.Remove(dot)));
+                        }
+
+                        SoundItemCollection sound = f.GetValue(null) as SoundItemCollection;
+                        if (sound == null)
+                            f.SetValue(null, new SoundItemCollection(sounds.ToArray()));
+                        else
+                            sound.SoundEffects = sounds.ToArray();
                     }
                 },
             };

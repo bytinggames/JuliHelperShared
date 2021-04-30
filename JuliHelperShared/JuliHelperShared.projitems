@@ -100,8 +100,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)ToBePatched.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)Build\PrepareForBuild.csx" />
+    <None Include="$(MSBuildThisFileDirectory)Build\PrepareForBuild.ps1" />
     <None Include="$(MSBuildThisFileDirectory)lib\NAudio.dll" />
     <None Include="$(MSBuildThisFileDirectory)lib\NVorbis.dll" />
     <None Include="$(MSBuildThisFileDirectory)lib\NVorbis.NAudioSupport.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Build\readme.txt" />
   </ItemGroup>
 </Project>

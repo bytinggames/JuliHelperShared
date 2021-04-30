@@ -17,7 +17,7 @@ namespace JuliHelperShared
         int centerX => window.Position.X + window.ClientBounds.Width / 2;
         int centerY => window.Position.Y + window.ClientBounds.Height / 2;
 
-        int rememberWindowWidth, rememberWindowHeight;
+        int rememberWindowWidth = 1920/2, rememberWindowHeight = 1080 / 2;
 
         public WindowHelper(GraphicsDeviceManager graphics, GameWindow window)
         {
@@ -32,6 +32,7 @@ namespace JuliHelperShared
             {
                 graphics.PreferredBackBufferWidth = rememberWindowWidth;
                 graphics.PreferredBackBufferHeight = rememberWindowHeight;
+                graphics.IsFullScreen = false;
                 graphics.ApplyChanges();
 
                 Point pos = new Point((screenWidth - rememberWindowWidth) / 2, (screenHeight - rememberWindowHeight) / 2);
@@ -44,8 +45,8 @@ namespace JuliHelperShared
                 rememberWindowHeight = graphics.PreferredBackBufferHeight;
 
                 graphics.PreferredBackBufferWidth = screenWidth;
-                graphics.PreferredBackBufferWidth = screenHeight;
-                //graphics.IsFullScreen = true;
+                graphics.PreferredBackBufferHeight = screenHeight;
+                graphics.IsFullScreen = true;
                 graphics.ApplyChanges();
 
                 //Point pos = new Point(0, 0);

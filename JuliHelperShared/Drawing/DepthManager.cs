@@ -102,7 +102,7 @@ namespace JuliHelper
     public class DepthLayer
     {
         float depth;
-        //float cDepth;
+        float cDepth;
 
         public DepthLayer(float _depth)
         {
@@ -111,9 +111,8 @@ namespace JuliHelper
 
         public float GetDrawDepth()
         {
-            return depth;
-            //cDepth = Calculate.NextAfter(cDepth, 1f);
-            //return cDepth;
+            cDepth = Calculate.NextAfter(cDepth, 1f);
+            return cDepth;
         }
 
         public static implicit operator float(DepthLayer _depth)
@@ -128,7 +127,7 @@ namespace JuliHelper
 
         internal void ResetCDepth()
         {
-            //cDepth = depth;
+            cDepth = depth;
         }
 
         //public void Set()
