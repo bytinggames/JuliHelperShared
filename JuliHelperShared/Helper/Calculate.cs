@@ -507,6 +507,15 @@ namespace JuliHelper
 
         public static void SetXY(ref this Vector3 v, Vector2 xy) { v.X = xy.X; v.Y = xy.Y; }
 
+        public static Vector3 GetNonParallelVector(this Vector3 v)
+        {
+            if (v.X == 0 && v.Y == 0)
+                return new Vector3(0, v.Z, 0);
+            else
+                return new Vector3(-v.Y, v.X, v.Z);
+            // see https://math.stackexchange.com/a/3122025
+        }
+
         #endregion
 
         #region Rectangles

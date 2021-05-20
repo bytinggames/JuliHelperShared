@@ -88,7 +88,7 @@ namespace JuliHelper
             {
                 string path = GetPath(fileName);
                 if (!File.Exists(path))
-                    throw new Exception("Sound file not found: " + fileName);
+                    return null;
 
                 if (checkIfNew && !IsNew(path))
                     return null;
@@ -124,7 +124,7 @@ namespace JuliHelper
                 }
                 return sounds.ToArray();
             }
-
+            
 
             var switchType = new Dictionary<Type, Action<FieldInfo>>
             {
@@ -251,7 +251,11 @@ namespace JuliHelper
                         SoundEffect newSound = GetSound(f.Name + ".wav");
 
                         if (newSound == null)
-                            return;
+                        {
+                            newSound = GetSound(f.Name + ".ogg");
+                            if (newSound == null)
+                                throw new Exception("Sound file not found: " + f.Name);
+                        }
 
                         SoundItem sound = f.GetValue(null) as SoundItem;
                         if (sound == null)
@@ -385,7 +389,7 @@ namespace JuliHelper
                         string directory = Path.Combine(localPath, f.Name).Replace('\\', '/');
                         if (files == null)
                             return;
-                        var matches = files.Where(f => f.StartsWith(directory));
+                        var matches = files.Where(f2 => f2.StartsWith(directory));
 
                         List<SoundEffect> sounds = new List<SoundEffect>();
                         foreach (var file in matches)

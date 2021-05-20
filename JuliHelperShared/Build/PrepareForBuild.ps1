@@ -1,5 +1,5 @@
 # get to solution level
-cd ..
+cd ..;
 
 $ide = $args[0];
 $ide = $ide.Remove($ide.Length - 1);

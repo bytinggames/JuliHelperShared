@@ -61,6 +61,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Input\KeyString.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Masks\Animation\SpriteSkin.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Masks\Collision.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Masks\CollisionResultPolygonExtended.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Masks\CollisionResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Masks\CollisionResult3D.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Masks\Mask.cs" />
@@ -100,6 +101,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ToBePatched.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)Build\.gitignore" />
     <None Include="$(MSBuildThisFileDirectory)Build\PrepareForBuild.csx" />
     <None Include="$(MSBuildThisFileDirectory)Build\PrepareForBuild.ps1" />
     <None Include="$(MSBuildThisFileDirectory)lib\NAudio.dll" />

@@ -11,9 +11,9 @@ namespace JuliHelperShared
         private float pitch = 0f;
         private float pan = 0f;
 
-        public float Volume { get => volume; set => volume = Math.Clamp(value, 0f, 1f); }
-        public float Pitch { get => pitch; set => pitch = Math.Clamp(value, -1f, 1f); }
-        public float Pan { get => pan; set => pan = Math.Clamp(value, -1f, 1f); }
+        public float Volume { get => volume; set => volume = Math.Min(Math.Max(value, 0f), 1f); }
+        public float Pitch { get => pitch; set => pitch = Math.Min(Math.Max(value, -1f), 1f); }
+        public float Pan { get => pan; set => pan = Math.Min(Math.Max(value, -1f), 1f); }
 
         public abstract void Dispose();
 
@@ -56,9 +56,9 @@ namespace JuliHelperShared
             if (soundEffect == null)
                 return false;
             return soundEffect.Play(
-                Math.Clamp(Volume + relativeVolume, 0f, 1f)
-                , Math.Clamp(Pitch + relativePitch, -1f, 1f)
-                , Math.Clamp(Pan + relativePan, -1f, 1f));
+                Math.Min(Math.Max(Volume + relativeVolume, 0f), 1f)
+                , Math.Min(Math.Max(Pitch + relativePitch, -1f), 1f)
+                , Math.Min(Math.Max(Pan + relativePan, -1f), 1f));
         }
     }
 
@@ -106,9 +106,9 @@ namespace JuliHelperShared
         public override bool Play(float relativeVolume, float relativePitch, float relativePan)
         {
             return GetRandomSoundEffect().Play(
-                Math.Clamp(Volume + relativeVolume, 0f, 1f)
-                , Math.Clamp(Pitch + relativePitch, -1f, 1f)
-                , Math.Clamp(Pan + relativePan, -1f, 1f));
+                Math.Min(Math.Max(Volume + relativeVolume, 0f), 1f)
+                , Math.Min(Math.Max(Pitch + relativePitch, -1f), 1f)
+                , Math.Min(Math.Max(Pan + relativePan, -1f), 1f));
         }
     }
 }

@@ -1214,6 +1214,189 @@ namespace JuliHelper
             return cr;
         }
 
+        public static CollisionResultPolygonExtended DistPolygonCircleExtended(M_Polygon polygon, M_Circle circle, Vector2 dir)
+        {
+            dir = -dir; //- for polygon, circle order change
+
+            CollisionResultPolygonExtended cr = new CollisionResultPolygonExtended();
+
+            if (dir == Vector2.Zero)
+            {
+                cr.collision = ColPolygonCircle(polygon, circle);
+                return cr;
+            }
+
+            if (polygon.vertices.Count == 0)
+                return cr;
+
+            float? cDist = null;
+
+            //find start on edge
+            List<Vector2> edges2 = polygon.GetEdges();
+
+            //Init for [0]
+            Vector2 e = Vector2.Normalize(edges2[0]);
+            Vector2 p = circle.pos - polygon.pos - polygon.vertices[0];
+
+            Vector2 pDist;
+            float pDist_e;
+
+            int i = 0;
+            bool noEdge = false;
+
+            float radius = circle.radius + minDist;
+
+            while (true)
+            {
+                //edge check
+                if (!noEdge)
+                {
+                    Vector2 ne = new Vector2(e.Y, -e.X); //rotate counter-clockwise for the normal pointing out of the polygon
+                    float p_ne = Vector2.Dot(p, ne);
+
+                    float dir_ne = Vector2.Dot(dir, ne);
+
+                    if (dir_ne != 0)
+                    {
+                        bool forward = dir_ne < 0;
+                        Vector2 cDir = dir;
+                        if (!forward)
+                            cDir *= -1f;
+
+                        //if (dir_ne < 0) //dir against ne? (pointing to the top side of the edge)
+                        //{
+                        //if (forward)
+                        cDist = (radius - ne.X * p.X - ne.Y * p.Y) / (ne.X * cDir.X + ne.Y * cDir.Y);
+                        //else
+                        //    cDist = (-circle.radius - ne.X * p.X - ne.Y * p.Y) / (-ne.X * cDir.X - ne.Y * cDir.Y);
+
+                        pDist = p + cDir * (float)cDist;
+                        pDist_e = Vector2.Dot(pDist, e);
+
+                        if (pDist_e >= 0 && pDist_e <= edges2[i].Length())
+                        {
+                            if (forward)
+                            {
+                                //cDist -= minDist / cDir.Length();
+                            }
+                            if (!forward)
+                            {
+                                cDist *= -1f;
+                                //cDist += minDist / cDir.Length();
+                            }
+
+                            if (forward)
+                            {
+                                if (!cr.distance.HasValue)
+                                {
+                                    cr.axisCol = -ne; //- for polygon, circle order change
+                                    cr.distance = cDist;
+                                    cr.colVertexIndex = i + pDist_e / edges2[i].Length();
+                                }
+                            }
+                            else if (!cr.distanceReversed.HasValue)
+                            {
+                                cr.distanceReversed = cDist;
+                                cr.axisColReversed = -ne;
+                            }
+
+                            if (cr.distance.HasValue && cr.distanceReversed.HasValue)
+                            {
+                                cr.SetCollisionFromDist();
+                                return cr;
+                            }
+                        }
+                        //}
+                    }
+                }
+
+                //next corner check
+                noEdge = false;
+                int j = i + 1;
+                if (j == polygon.vertices.Count)
+                    j = 0;
+                else if (j == edges2.Count)
+                {
+                    if (!polygon.closed)//???????is this necessary?
+                        noEdge = true;
+                    //else
+                    //    j = 0;
+                }
+                //cDist = GetDistCircle(circle.pos.X, circle.pos.Y, polygon.vertices[i].X + polygon.pos.X, polygon.vertices[i].Y + polygon.pos.Y, dir.X, dir.Y, circle.radius);
+
+                p = circle.pos - polygon.pos - polygon.vertices[j];
+
+                Vector2 oldE = e;
+                if (!noEdge)
+                    e = Vector2.Normalize(edges2[j]);
+                else
+                    e = new Vector2(-oldE.Y, oldE.X);//Vector2.Zero;
+
+                if ((polygon.endCorner || j != polygon.vertices.Count - 1) && (polygon.startCorner || j != 0))
+                {
+                    float?[] cDists = ABCFormula(dir.X * dir.X + dir.Y * dir.Y, 2 * (p.X * dir.X + p.Y * dir.Y), p.X * p.X + p.Y * p.Y - radius * radius);
+
+                    for (int k = 0; k < cDists.Length; k++)
+                    {
+                        //Vector2 cDir = dir;
+                        //if (k == 0)
+                        //    cDir *= -1f;
+
+                        if (cDists[k].HasValue)
+                        {
+                            //check if the distancePoint is not in the prev voroni region
+                            pDist = circle.pos + dir * (float)cDists[k] - polygon.pos - polygon.vertices[j];
+                            if (j == 0 && !polygon.closed)
+                                pDist_e = Vector2.Dot(pDist, new Vector2(e.Y, -e.X));
+                            else
+                                pDist_e = Vector2.Dot(pDist, oldE);
+
+                            if (pDist_e > 0) //is pos right (clockwise) from the previous edge?
+                            {
+
+                                pDist = p + dir * (float)cDists[k];
+                                pDist_e = Vector2.Dot(pDist, e);
+
+                                //if (pDist_e <= 0) //TODO: check if replaced one works -v
+                                if (pDist_e < 0) //is pos left (counter-clockwise) from the next edge?
+                                {
+
+                                    if (k == 0)
+                                    {
+                                        //cDists[k] += minDist / dir.Length();
+                                        if (!cr.distanceReversed.HasValue)
+                                        {
+                                            cr.distanceReversed = cDists[k];
+                                            cr.axisColReversed = Vector2.Normalize(polygon.pos + polygon.vertices[j] - cr.distanceReversed.Value * dir - circle.pos);
+                                        }
+                                    }
+                                    else if (!cr.distance.HasValue)
+                                    {
+                                        //cDists[k] -= minDist / dir.Length();
+                                        cr.distance = cDists[k];
+                                        cr.axisCol = Vector2.Normalize(polygon.pos + polygon.vertices[j] - cr.distance.Value * dir - circle.pos);
+                                        cr.colVertexIndex = j;
+                                    }
+
+                                    if (cr.distance.HasValue && cr.distanceReversed.HasValue)
+                                    {
+                                        cr.SetCollisionFromDist();
+                                        return cr;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                i = j;
+
+                if (i == 0)
+                    break;
+            }
+            return cr;
+        }
+
 
         public static bool ColPolygonSprite(M_Polygon polygon, Sprite sprite)
         {

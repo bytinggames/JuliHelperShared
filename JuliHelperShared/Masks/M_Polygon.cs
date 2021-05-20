@@ -465,6 +465,11 @@ namespace JuliHelper
             return Collision.DistPolygonCircle(this, circle);
         }
 
+        public CollisionResultPolygonExtended DistToCircleExtended(M_Circle circle, Vector2 dir)
+        {
+            return Collision.DistPolygonCircleExtended(this, circle, dir);
+        }
+
         #endregion
 
         #region sprite

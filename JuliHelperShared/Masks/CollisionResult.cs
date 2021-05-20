@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace JuliHelper
 {
-    public struct CollisionResult
+    public class CollisionResult
     {
         public bool collision;
         public float? distance;

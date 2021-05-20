@@ -21,13 +21,35 @@ namespace JuliHelper
         {
             axisCol = -axisCol;
             axisColReversed = -axisColReversed;
+            colPoint = null; // use AxisInvert(Vector3) for keeping colPoint
+        }
 
-            colPoint = null;
+        public void AxisInvert(Vector3 newDir)
+        {
+            // set colPoint to the collision of the other shape
+            if (distance.HasValue)
+            {
+                if (colPoint.HasValue)
+                {
+                    colPoint += newDir * distance.Value;
+                }
+            }
+            else
+                colPoint = null;
+
+            axisCol = -axisCol;
+            axisColReversed = -axisColReversed;
         }
 
         public CollisionResult3D GetAxisInvert()
         {
             AxisInvert();
+            return this;
+        }
+
+        public CollisionResult3D GetAxisInvert(Vector3 newDir)
+        {
+            AxisInvert(newDir);
             return this;
         }
 

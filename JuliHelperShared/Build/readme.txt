@@ -11,3 +11,4 @@
 </ItemGroup>
 "
 3. old Content.mgcb can be deleted. But it can also persist if you want to build custom data from directories other than Fonts, Music, Sounds and Textures
+4. copy the .gitignore from this folder to your Content directory. I recommend adding it to your visual studio directory directly.
