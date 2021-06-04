@@ -73,7 +73,7 @@ namespace JuliHelper
             if (val > 1)
                 val = (float)Math.Floor(val);
             else
-                val = (float)Math.Pow(2, Math.Floor(Math.Log(val, 2)));
+                val = MathF.Pow(2, MathF.Floor(MathF.Log(val, 2)));
             return val;
         }
         public static float ToGoodPixelScaleCeilingPow(float val)
@@ -81,7 +81,7 @@ namespace JuliHelper
             if (val > 1)
                 val = (float)Math.Ceiling(val);
             else
-                val = (float)Math.Pow(2, Math.Ceiling(Math.Log(val, 2)));
+                val = MathF.Pow(2, MathF.Ceiling(MathF.Log(val, 2)));
             return val;
         }
         public static float ToGoodPixelScaleRoundPow(float val)
@@ -89,7 +89,7 @@ namespace JuliHelper
             if (val > 1)
                 val = (float)Math.Round(val);
             else
-                val = (float)Math.Pow(2, Math.Round(Math.Log(val, 2)));
+                val = MathF.Pow(2, MathF.Round(MathF.Log(val, 2)));
             return val;
         }
 
@@ -265,6 +265,11 @@ namespace JuliHelper
         public static Vector2 SignVector(this Vector2 pos)
         {
             return new Vector2(Math.Sign(pos.X), Math.Sign(pos.Y));
+        }
+
+        public static Vector3 SignVector(this Vector3 pos)
+        {
+            return new Vector3(Math.Sign(pos.X), Math.Sign(pos.Y), Math.Sign(pos.Z));
         }
 
         public static T EnumIncrement<T>(T src) where T : struct

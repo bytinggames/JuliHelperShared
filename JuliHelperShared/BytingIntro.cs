@@ -96,11 +96,11 @@ namespace JuliHelper
 
             for (int i = 0; i < 12; i++)
             {
-                teeth[i].pos.Y = (float)Math.Pow(i - 5.5f, 2) * 1.5f - 60 - 8;//14;
+                teeth[i].pos.Y = MathF.Pow(i - 5.5f, 2) * 1.5f - 60 - 8;//14;
             }
             for (int i = 0; i < 11; i++)
             {
-                teeth[i + 12].pos.Y = -(float)Math.Pow(i - 5, 2) * 1.5f + 52.5f + 8;// 37.5;
+                teeth[i + 12].pos.Y = -MathF.Pow(i - 5, 2) * 1.5f + 52.5f + 8;// 37.5;
             }
 
             for (int i = 0; i < teeth.Count; i++)

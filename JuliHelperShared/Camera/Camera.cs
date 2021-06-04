@@ -216,9 +216,9 @@ namespace JuliHelper.Camera
                 float dz = (targetZoom / zoom);
 
                 if (dz > 1 || !zoomSpeedOut.HasValue)
-                    dz = (float)Math.Pow(dz, zoomSpeed);
+                    dz = MathF.Pow(dz, zoomSpeed);
                 else
-                    dz = (float)Math.Pow(dz, zoomSpeedOut.Value);
+                    dz = MathF.Pow(dz, zoomSpeedOut.Value);
                 zoom *= dz;
 
                 //dist = targetZoom - zoom;
@@ -350,7 +350,7 @@ namespace JuliHelper.Camera
         public float GetStepZoom(float zoom)
         {
             float n = (float)Math.Floor(Math.Log(zoom, zoomStep));
-            return (float)Math.Pow(zoomStep, n);
+            return MathF.Pow(zoomStep, n);
         }
 
         public void CenterCamera(int levelW, int levelH, int displayW, int displayH)

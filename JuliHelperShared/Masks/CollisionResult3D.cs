@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace JuliHelper
 {
-    public struct CollisionResult3D
+    public class CollisionResult3D
     {
         public bool collision;
         public float? distance;
@@ -16,6 +16,13 @@ namespace JuliHelper
         /// is calculated by letting one shape move towards another shape, that does not move.
         /// </summary>
         public Vector3? colPoint;
+
+        /// <summary>
+        /// -1: none
+        /// 0,1,2: vertex.
+        /// 3,4,5: edge.
+        /// 6: face</summary>
+        public int colTriangleIndex = -1;
 
         public void AxisInvert()
         {
@@ -78,11 +85,9 @@ namespace JuliHelper
                 axisColReversed = cr.axisColReversed;
             }
 
-            if (!distance.HasValue || (cr.distance.HasValue && cr.distance < distance))
+            if ((!distance.HasValue && cr.distance.HasValue) || (cr.distance.HasValue && cr.distance < distance))
             {
-                distance = cr.distance;
-                axisCol = cr.axisCol;
-                colPoint = cr.colPoint;
+                CopyForwardValues(cr);
 
                 return true;
             }
@@ -96,8 +101,7 @@ namespace JuliHelper
 
             if (!distance.HasValue || (cr.distance.HasValue && cr.distance > distance))
             {
-                distance = cr.distance;
-                axisCol = cr.axisCol;
+                CopyForwardValues(cr);
             }
 
             if (!distanceReversed.HasValue || (cr.distanceReversed.HasValue && cr.distanceReversed > distanceReversed))
@@ -123,8 +127,7 @@ namespace JuliHelper
             }
             else if (!distance.HasValue || (cr.distance.HasValue && cr.distance > distance))
             {
-                distance = cr.distance;
-                axisCol = cr.axisCol;
+                CopyForwardValues(cr);
             }
 
             if (!cr.distanceReversed.HasValue)
@@ -149,9 +152,7 @@ namespace JuliHelper
             {
                 if (!distance.HasValue || cr.distance.Value < distance.Value)
                 {
-                    distance = cr.distance;
-                    axisCol = cr.axisCol;
-                    colPoint = cr.colPoint;
+                    CopyForwardValues(cr);
                 }
 
                 if (!distanceReversed.HasValue || cr.distance.Value > distanceReversed.Value)
@@ -160,6 +161,14 @@ namespace JuliHelper
                     axisColReversed = cr.axisCol;
                 }
             }
+        }
+
+        private void CopyForwardValues(CollisionResult3D cr)
+        {
+            distance = cr.distance;
+            axisCol = cr.axisCol;
+            colPoint = cr.colPoint;
+            colTriangleIndex = cr.colTriangleIndex;
         }
 
         public bool MinResultIfCollisionInPresentOrFuture(CollisionResult3D cr)

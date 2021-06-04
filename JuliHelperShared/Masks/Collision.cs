@@ -1598,7 +1598,7 @@ namespace JuliHelper
 
                 Vector2 yPosIn2 = Vector2.Transform(Vector2.Zero, transform1);
 
-                float radiusSquared = (float)Math.Pow(circle.radius, 2);
+                float radiusSquared = MathF.Pow(circle.radius, 2);
 
                 for (int y1 = 0; y1 < sprite.sizey; y1++)
                 {

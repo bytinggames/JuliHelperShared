@@ -214,18 +214,18 @@ namespace JuliHelper.ThreeD
                     if (Global2.randomAnimation == 1 || Global2.randomAnimation == 3)
                     {
                         rotation = Quaternion.CreateFromAxisAngle(Vector3.Normalize(new Vector3((float)rand.NextDouble() - 0.5f, (float)rand.NextDouble() - 0.5f, (float)rand.NextDouble() - 0.5f)),
-                            MathHelper.PiOver2 * (float)Math.Pow(rand.NextDouble(), 1f) * (float)(Math.Sin(Game1.frame / 25f * (float)rand.NextDouble() + (float)rand.NextDouble() * MathHelper.TwoPi)));
+                            MathHelper.PiOver2 * MathF.Pow(rand.NextDouble(), 1f) * (float)(Math.Sin(Game1.frame / 25f * (float)rand.NextDouble() + (float)rand.NextDouble() * MathHelper.TwoPi)));
                     }
                     if (Global2.randomAnimation == 2 || Global2.randomAnimation == 3)
                         scale = new Vector3(
-                            1 + 0.5f * (float)Math.Pow(rand.NextDouble(), 3) * (float)(Math.Sin(Game1.frame / 25f * (float)rand.NextDouble() + (float)rand.NextDouble() * MathHelper.TwoPi)),
-                            1 + 0.5f * (float)Math.Pow(rand.NextDouble(), 3) * (float)(Math.Sin(Game1.frame / 25f * (float)rand.NextDouble() + (float)rand.NextDouble() * MathHelper.TwoPi)),
-                            1 + 0.5f * (float)Math.Pow(rand.NextDouble(), 3) * (float)(Math.Sin(Game1.frame / 25f * (float)rand.NextDouble() + (float)rand.NextDouble() * MathHelper.TwoPi)));
+                            1 + 0.5f * MathF.Pow(rand.NextDouble(), 3) * (float)(Math.Sin(Game1.frame / 25f * (float)rand.NextDouble() + (float)rand.NextDouble() * MathHelper.TwoPi)),
+                            1 + 0.5f * MathF.Pow(rand.NextDouble(), 3) * (float)(Math.Sin(Game1.frame / 25f * (float)rand.NextDouble() + (float)rand.NextDouble() * MathHelper.TwoPi)),
+                            1 + 0.5f * MathF.Pow(rand.NextDouble(), 3) * (float)(Math.Sin(Game1.frame / 25f * (float)rand.NextDouble() + (float)rand.NextDouble() * MathHelper.TwoPi)));
                     //if (Global2.randomAnimation == 3)
                     //    translation = new Vector3(
-                    //        (float)Math.Pow(rand.NextDouble(), 4) * (float)(Math.Sin(Game1.frame / 25f * (float)rand.NextDouble() + (float)rand.NextDouble() * MathHelper.TwoPi)),
-                    //        (float)Math.Pow(rand.NextDouble(), 4) * (float)(Math.Sin(Game1.frame / 25f * (float)rand.NextDouble() + (float)rand.NextDouble() * MathHelper.TwoPi)),
-                    //        (float)Math.Pow(rand.NextDouble(), 4) * (float)(Math.Sin(Game1.frame / 25f * (float)rand.NextDouble() + (float)rand.NextDouble() * MathHelper.TwoPi)));
+                    //        MathF.Pow(rand.NextDouble(), 4) * (float)(Math.Sin(Game1.frame / 25f * (float)rand.NextDouble() + (float)rand.NextDouble() * MathHelper.TwoPi)),
+                    //        MathF.Pow(rand.NextDouble(), 4) * (float)(Math.Sin(Game1.frame / 25f * (float)rand.NextDouble() + (float)rand.NextDouble() * MathHelper.TwoPi)),
+                    //        MathF.Pow(rand.NextDouble(), 4) * (float)(Math.Sin(Game1.frame / 25f * (float)rand.NextDouble() + (float)rand.NextDouble() * MathHelper.TwoPi)));
 
                 }
             }

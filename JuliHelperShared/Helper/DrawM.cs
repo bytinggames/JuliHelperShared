@@ -296,7 +296,7 @@ namespace JuliHelper
                 }
 
                 int diamInt = radius * 2;
-                float radiusSquared = (float)Math.Pow(radius, 2);
+                float radiusSquared = MathF.Pow(radius, 2);
                 tex = new Texture2D(gDevice, diamInt, diamInt);
                 Color[] data = new Color[diamInt * diamInt];
 
@@ -329,7 +329,7 @@ namespace JuliHelper
                 }
 
                 int diamInt = radius * 2;
-                float radiusSquared = (float)Math.Pow(radius, 2);
+                float radiusSquared = MathF.Pow(radius, 2);
                 tex = new Texture2D(gDevice, diamInt, diamInt);
                 Color[] data = new Color[diamInt * diamInt];
 
@@ -343,7 +343,7 @@ namespace JuliHelper
                         dist = (float)Math.Sqrt(dist) / radius;
                         Vector3 colorV = color1.ToVector3() * (1f - dist) + color2.ToVector3() * dist;
                         if (powColor)
-                            colorV = new Vector3((float)Math.Pow(colorV.X, 2), (float)Math.Pow(colorV.Y, 2), (float)Math.Pow(colorV.Z, 2));
+                            colorV = new Vector3(MathF.Pow(colorV.X, 2), MathF.Pow(colorV.Y, 2), MathF.Pow(colorV.Z, 2));
                         data[i] = new Color(colorV);
                     }
 
