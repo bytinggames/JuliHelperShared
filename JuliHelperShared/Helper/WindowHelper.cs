@@ -17,7 +17,8 @@ namespace JuliHelperShared
         int centerX => window.Position.X + window.ClientBounds.Width / 2;
         int centerY => window.Position.Y + window.ClientBounds.Height / 2;
 
-        int rememberWindowWidth = 1920/2, rememberWindowHeight = 1080 / 2;
+        int rememberWindowWidth = 1920 / 2, rememberWindowHeight = 1080 / 2;
+        bool rememberRealFullscreen = true; // wether graphics.IsFullScreen is used for fullscreen mode
 
         public WindowHelper(GraphicsDeviceManager graphics, GameWindow window)
         {
@@ -25,15 +26,25 @@ namespace JuliHelperShared
             this.window = window;
         }
 
+        private bool IsFullScreenFilled()
+        {
+            return graphics.IsFullScreen
+                || graphics.PreferredBackBufferWidth == screenWidth
+                && graphics.PreferredBackBufferHeight == screenHeight;
+        }
 
         public void ToggleFullscreen()
         {
-            if (graphics.IsFullScreen)
+            if (IsFullScreenFilled())
             {
+                rememberRealFullscreen = graphics.IsFullScreen;
+
                 graphics.PreferredBackBufferWidth = rememberWindowWidth;
                 graphics.PreferredBackBufferHeight = rememberWindowHeight;
                 graphics.IsFullScreen = false;
                 graphics.ApplyChanges();
+
+                window.IsBorderless = false;
 
                 Point pos = new Point((screenWidth - rememberWindowWidth) / 2, (screenHeight - rememberWindowHeight) / 2);
                 pos.X += centerX / screenWidth * screenWidth;
@@ -44,32 +55,36 @@ namespace JuliHelperShared
                 rememberWindowWidth = graphics.PreferredBackBufferWidth;
                 rememberWindowHeight = graphics.PreferredBackBufferHeight;
 
+                window.IsBorderless = true;
+
                 graphics.PreferredBackBufferWidth = screenWidth;
                 graphics.PreferredBackBufferHeight = screenHeight;
-                graphics.IsFullScreen = true;
+                graphics.IsFullScreen = rememberRealFullscreen;
                 graphics.ApplyChanges();
 
-                //Point pos = new Point(0, 0);
-                //pos.X += centerX / screenWidth * screenWidth;
-                //window.Position = pos;
+                if (!graphics.IsFullScreen)
+                {
+                    Point pos = new Point(0, 0);
+                    pos.X += centerX / screenWidth * screenWidth;
+                    window.Position = pos;
+                }
             }
 
-        }
-
-        public void SwapScreen()
-        {
-            if (centerX < screenWidth)
-                window.Position = new Point(window.Position.X + screenWidth, window.Position.Y);
-            else
-                window.Position = new Point(window.Position.X - screenWidth, window.Position.Y);
         }
 
         public void UpdateBasicInputFunctions()
         {
             if (Input.f11.pressed)
                 ToggleFullscreen();
-            if (Input.right.pressed || Input.left.pressed)
-                SwapScreen();
+            if (Input.leftControl.down || Input.rightControl.down)
+            {
+                if (Input.left.pressed)
+                    window.Position = new Point(window.Position.X - screenWidth, window.Position.Y);
+                if (Input.right.pressed)
+                    window.Position = new Point(window.Position.X + screenWidth, window.Position.Y);
+                if (Input.down.pressed)
+                    window.Position = new Point((screenWidth - graphics.PreferredBackBufferWidth) / 2, (screenHeight - graphics.PreferredBackBufferHeight) / 2);
+            }
         }
     }
 }
