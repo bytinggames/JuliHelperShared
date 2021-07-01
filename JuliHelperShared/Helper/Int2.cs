@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 
 namespace JuliHelper
 {
-    public struct Int2
+    public struct Int2 : IComparable<Int2>
     {
         private int x, y;
 
@@ -129,6 +130,17 @@ namespace JuliHelper
             int save = x;
             x = y;
             y = save;
+        }
+
+        public int CompareTo([AllowNull] Int2 other)
+        {
+            int ySign = Math.Sign(y - other.y);
+            if (ySign == 0)
+            {
+                return Math.Sign(x - other.x);
+            }
+            else
+                return ySign;
         }
     }
 }

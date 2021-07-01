@@ -35,7 +35,7 @@ namespace JuliHelper
             return new M_Rectangle(pos, Vector2.Zero);
         }
 
-        public override M_Rectangle GetRectangle()
+        public override M_Rectangle GetBoundingRectangle()
         {
             return new M_Rectangle(pos, Vector2.Zero);
         }

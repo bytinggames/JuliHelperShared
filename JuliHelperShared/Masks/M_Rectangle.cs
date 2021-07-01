@@ -81,7 +81,7 @@ namespace JuliHelper
         {
             return size;
         }
-        public override M_Rectangle GetRectangle()
+        public override M_Rectangle GetBoundingRectangle()
         {
             return this;
         }

@@ -23,7 +23,7 @@ namespace JuliHelper
 
         public override Vector2 GetSize()
         {
-            return GetRectangle().size;
+            return GetBoundingRectangle().size;
         }
 
         public override Vector2 GetSizeTransformed()
@@ -61,10 +61,10 @@ namespace JuliHelper
 
         public override M_Rectangle GetNoMatrixRectangle()
         {
-            return GetRectangle();
+            return GetBoundingRectangle();
         }
 
-        public override M_Rectangle GetRectangle()
+        public override M_Rectangle GetBoundingRectangle()
         {
             Vector2 minPos, maxPos;
             if (vertices.Count > 0)

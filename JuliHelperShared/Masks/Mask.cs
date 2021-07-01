@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace JuliHelper
 {
-    public abstract class Mask
+    public abstract class Mask : IBoundingRectangle
     {
         protected Vector2 _pos;
 
@@ -33,7 +33,7 @@ namespace JuliHelper
         public abstract Vector2 GetSizeTransformed();
         public abstract Vector2 GetRealPos();
         public abstract M_Rectangle GetNoMatrixRectangle();
-        public abstract M_Rectangle GetRectangle();
+        public abstract M_Rectangle GetBoundingRectangle();
 
         public Vector2 GetCenter()
         {
@@ -68,7 +68,7 @@ namespace JuliHelper
 
         public virtual void Draw(SpriteBatch spriteBatch, Color color, float depth = 0f)
         {
-            M_Rectangle rect = GetRectangle();
+            M_Rectangle rect = GetBoundingRectangle();
             spriteBatch.Draw(DrawM.pixel, rect.pos, new Rectangle(0, 0, 1, 1), color, 0f, Vector2.Zero, rect.size, SpriteEffects.None, depth);
         }
 

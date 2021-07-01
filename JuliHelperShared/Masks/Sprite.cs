@@ -277,13 +277,13 @@ namespace JuliHelper
 
         public override Vector2 GetSizeTransformed()
         {
-            return GetRectangle().size;
+            return GetBoundingRectangle().size;
         }
         public override Vector2 GetSize()
         {
             return new Vector2(sizex, sizey);
         }
-        public override M_Rectangle GetRectangle()
+        public override M_Rectangle GetBoundingRectangle()
         {
             if (rotation == 0 && scale == Vector2.One)
             {

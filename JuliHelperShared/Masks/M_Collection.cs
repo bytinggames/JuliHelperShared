@@ -87,13 +87,13 @@ namespace JuliHelper
             return rect;
         }
 
-        public override M_Rectangle GetRectangle()
+        public override M_Rectangle GetBoundingRectangle()
         {
             Vector2 min = Vector2.Zero, max = Vector2.Zero;
 
             for (int i = 0; i < masks.Count; i++)
             {
-                M_Rectangle cRect = masks[i].GetRectangle();
+                M_Rectangle cRect = masks[i].GetBoundingRectangle();
                 if (i == 0)
                 {
                     min = cRect.pos;

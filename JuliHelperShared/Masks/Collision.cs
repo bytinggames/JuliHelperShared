@@ -270,7 +270,7 @@ namespace JuliHelper
 
         public static bool ColVectorSprite(Vector2 vec, Sprite sprite) //TODO: test
         {
-            M_Rectangle rect = sprite.GetRectangle();
+            M_Rectangle rect = sprite.GetBoundingRectangle();
 
             if (ColVectorRectangle(vec, rect))
             {
@@ -383,7 +383,7 @@ namespace JuliHelper
 
         public static bool ColRectangleSprite(M_Rectangle rect, Sprite sprite) //TODO: fix precision error (bottom of rectangle is 1 px smaller than given)
         {
-            M_Rectangle rect2 = sprite.GetRectangle();
+            M_Rectangle rect2 = sprite.GetBoundingRectangle();
 
             if (ColRectangleRectangle(rect2, rect))
             {
@@ -465,7 +465,7 @@ namespace JuliHelper
         public static CollisionResult DistPolygonPolygon(M_Polygon poly1, M_Polygon poly2)
         {
             CollisionResult cr = new CollisionResult();
-
+            
             List<Vector2> edges1 = poly1.GetEdges();
             List<Vector2> edges2 = poly2.GetEdges();
             List<Vector2> axes = new List<Vector2>();
@@ -1587,7 +1587,7 @@ namespace JuliHelper
 
         public static bool ColCircleSprite(M_Circle circle, Sprite sprite)
         {
-            M_Rectangle rect = sprite.GetRectangle();
+            M_Rectangle rect = sprite.GetBoundingRectangle();
 
             if (ColRectangleCircle(rect, circle))
             {
@@ -1664,8 +1664,8 @@ namespace JuliHelper
 
         public static bool ColSpriteSpriteIdentity(Sprite sprite1, Sprite sprite2)
         {
-            M_Rectangle rect1 = sprite1.GetRectangle();
-            M_Rectangle rect2 = sprite2.GetRectangle();
+            M_Rectangle rect1 = sprite1.GetBoundingRectangle();
+            M_Rectangle rect2 = sprite2.GetBoundingRectangle();
             if (ColRectangleRectangle(rect1, rect2))
             {
                 int xdiff = (int)(rect2.pos.X - rect1.pos.X);
@@ -1695,8 +1695,8 @@ namespace JuliHelper
 
         public static bool ColSpriteSpriteTransformed(Sprite sprite1, Sprite sprite2)
         {
-            M_Rectangle rect1 = sprite1.GetRectangle();
-            M_Rectangle rect2 = sprite2.GetRectangle();
+            M_Rectangle rect1 = sprite1.GetBoundingRectangle();
+            M_Rectangle rect2 = sprite2.GetBoundingRectangle();
 
             if (ColRectangleRectangle(rect1, rect2))
             {

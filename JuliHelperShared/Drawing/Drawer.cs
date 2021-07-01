@@ -800,7 +800,7 @@ namespace JuliHelper
                 color = Color.White;
 
             Texture2D tex = new Texture2D(gDevice, (int)Math.Ceiling(mask.GetSize().X), (int)Math.Ceiling(mask.GetSize().Y));
-            Vector2 topLeft = mask.GetRectangle().pos - mask.pos;
+            Vector2 topLeft = mask.GetBoundingRectangle().pos - mask.pos;
 
             Color[] data = new Color[tex.Width * tex.Height];
 

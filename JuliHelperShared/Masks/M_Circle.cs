@@ -26,14 +26,14 @@ namespace JuliHelper
             return new Vector2(radius * 2f, radius * 2f);
         }
 
-        public override M_Rectangle GetRectangle()
+        public override M_Rectangle GetBoundingRectangle()
         {
             return new M_Rectangle(pos - new Vector2(radius), new Vector2(radius * 2));
         }
 
         public override M_Rectangle GetNoMatrixRectangle()
         {
-            return GetRectangle();
+            return GetBoundingRectangle();
         }
 
         public override Vector2 GetRealPos()
