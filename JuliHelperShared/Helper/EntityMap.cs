@@ -7,14 +7,14 @@ namespace JuliHelper
 {
     class EntityMap<T> where T : IBoundingRectangle
     {
-        public int FieldSize { get; private set; }
+        public float FieldSize { get; private set; }
         public Dictionary<Int2, List<T>> Grid { get; private set; } = new Dictionary<Int2, List<T>>();
         public List<T> Entities { get; private set; } = new List<T>();
 
         bool boundsSet = false;
         public int minX, minY, maxX, maxY;
 
-        public EntityMap(int fieldSize)
+        public EntityMap(float fieldSize)
         {
             FieldSize = fieldSize;
         }
