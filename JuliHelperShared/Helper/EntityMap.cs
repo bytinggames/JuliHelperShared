@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace JuliHelper
 {
-    class EntityMap<T> where T : IBoundingRectangle
+    public class EntityMap<T> where T : IBoundingRectangle
     {
         public float FieldSize { get; private set; }
         public Dictionary<Int2, List<T>> Grid { get; private set; } = new Dictionary<Int2, List<T>>();

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace JuliHelper
 {
-    interface IBoundingRectangle
+    public interface IBoundingRectangle
     {
         public M_Rectangle GetBoundingRectangle();
     }
