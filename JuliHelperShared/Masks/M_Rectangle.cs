@@ -56,6 +56,12 @@ namespace JuliHelper
             Initialize(pos, size);
         }
 
+        public static M_Rectangle FromPoints(Vector2 a, Vector2 b)
+        {
+            M_Rectangle rect = new M_Rectangle(a, b - a);
+            return rect;
+        }
+
         public void Initialize(Vector2 pos, Vector2 size)
         {
             if (size.X < 0)

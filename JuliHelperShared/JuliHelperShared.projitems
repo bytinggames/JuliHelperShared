@@ -44,6 +44,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helper\DrawM.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helper\IBoundingRectangle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helper\Int2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helper\LinqExtension.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helper\MeshBatch.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helper\MeshBatchBoneItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helper\MeshBatchItem.cs" />
