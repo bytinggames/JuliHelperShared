@@ -106,8 +106,7 @@ namespace JuliHelper
 
         public override int GetHashCode()
         {
-            return x.GetHashCode() ^ y.GetHashCode();
-            //return base.GetHashCode();
+            return HashCode.Combine(x, y);
         }
 
         public override bool Equals(object obj)

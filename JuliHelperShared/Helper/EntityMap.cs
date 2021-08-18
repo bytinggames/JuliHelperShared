@@ -9,19 +9,23 @@ namespace JuliHelper
     {
         public float FieldSize { get; private set; }
         public Dictionary<Int2, List<T>> Grid { get; private set; } = new Dictionary<Int2, List<T>>();
-        public List<T> Entities { get; private set; } = new List<T>();
 
-        bool boundsSet = false;
-        public int minX, minY, maxX, maxY;
+        public bool BoundsSet { get; private set; } = false;
+
+        private int minX, minY, maxX, maxY;
+
+        public int MinX => minX;
+        public int MinY => minY;
+        public int MaxX => maxX;
+        public int MaxY => maxY;
 
         public EntityMap(float fieldSize)
         {
             FieldSize = fieldSize;
         }
 
-        public void Add(T entity)
+        public virtual void Add(T entity)
         {
-            Entities.Add(entity);
             AddToGrid(entity);
         }
 
@@ -42,11 +46,9 @@ namespace JuliHelper
             AddToGrid(entity);
         }
 
-        public bool Remove(T entity)
+        public virtual bool Remove(T entity)
         {
-            bool anyFail = RemoveFromGrid(entity);
-            Entities.Remove(entity);
-            return !anyFail;
+            return !RemoveFromGrid(entity);
         }
 
         /// <summary>Does not remove from Entities list.</summary>
@@ -118,11 +120,11 @@ namespace JuliHelper
             {
                 Grid.Add(c, new List<T>() { entity });
 
-                if (!boundsSet)
+                if (!BoundsSet)
                 {
-                    boundsSet = true;
                     minX = maxX = c.X;
                     minY = maxY = c.Y;
+                    BoundsSet = true;
                 }
                 else
                 {
