@@ -30,5 +30,7 @@ namespace JuliHelper
 
             return !anyFail;
         }
+
+        public override IEnumerable<T> GetEntities() => Entities.AsEnumerable();
     }
 }

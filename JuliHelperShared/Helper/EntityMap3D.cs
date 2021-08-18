@@ -66,35 +66,11 @@ namespace JuliHelper
             return !anyFail;
         }
 
-        public IEnumerable<Int3> GetCoords(T entity)
+        public IEnumerable<Int3> GetCoords(IBoundingBox boundingBoxObject)
         {
-            return GetCoords(entity.GetBoundingBox());
+            return GetCoords(boundingBoxObject.GetBoundingBox());
         }
 
-        public IEnumerable<T> GetEntities(IEnumerable<Int3> coords)
-        {
-            HashSet<T> done = new HashSet<T>();
-            foreach (var c in coords)
-            {
-                foreach (var e in GetEntities(c))
-                {
-                    if (!done.Contains(e))
-                    {
-                        done.Add(e);
-                        yield return e;
-                    }
-                }
-            }
-        }
-
-        public IEnumerable<T> GetEntities(T searchingEntity, Vector3 movement)
-        {
-            return GetEntities(searchingEntity.GetBoundingBox().Expand(movement));
-        }
-        public IEnumerable<T> GetEntities(BoundingBox boundingBox)
-        {
-            return GetEntities(GetCoords(boundingBox));
-        }
 
         public IEnumerable<Int3> GetCoords(BoundingBox boundingBox)
         {
@@ -108,7 +84,7 @@ namespace JuliHelper
             Int3 c = new Int3(x1, y1, z1);
             for (; c.Z < z2; c.Z++)
             {
-                for (; c.Y < y2; c.Y++)
+                for (c.Y = y1; c.Y < y2; c.Y++)
                 {
                     for (c.X = x1; c.X < x2; c.X++)
                     {
@@ -167,6 +143,8 @@ namespace JuliHelper
             return false;
         }
 
+        public IEnumerable<T> this[Int3 c] => GetEntities(c);
+        public IEnumerable<T> this[int x, int y, int z] => GetEntities(x, y, z);
         public IEnumerable<T> GetEntities(Int3 c)
         {
             if (Grid.TryGetValue(c, out List<T> list))
@@ -174,13 +152,62 @@ namespace JuliHelper
             else
                 return Enumerable.Empty<T>();
         }
+        public bool CoordContainsAny(Int3 c) => Grid.ContainsKey(c);
 
         public IEnumerable<T> GetEntities(int x, int y, int z) => GetEntities(new Int3(x, y, z));
 
-        public IEnumerable<Int3> GetCoords(Vector3 rayOrigin, Vector3 rayDirection)
+        public virtual IEnumerable<T> GetEntities()
         {
-            // TODO: get level bounds
+            return GetEntities(GetUsedCoords());
+        }
 
+        public IEnumerable<T> GetEntities(BoundingBox boundingBox)
+        {
+            return GetEntities(GetCoords(boundingBox));
+        }
+
+        public IEnumerable<T> GetEntities(Vector3 pos, Vector3 movement)
+        {
+            return GetEntities(GetCoords(pos, movement, movement.Length()));
+        }
+
+        /// <summary>Not as efficient as <see cref="GetEntities(Vector3, Vector3)"/>.</summary>
+        public IEnumerable<T> GetEntities(BoundingBox boundingBox, Vector3 movement)
+        {
+            return GetEntities(boundingBox.Expand(movement));
+        }
+
+        /// <summary>Not as efficient as <see cref="GetEntities(Vector3, Vector3)"/>.</summary>
+        public IEnumerable<T> GetEntities(IBoundingBox boundingBoxObject, Vector3 movement)
+        {
+            var box = boundingBoxObject.GetBoundingBox();
+
+            // if it's a dot, call a faster method
+            if (box.Min == box.Max)
+                return GetEntities(box.Min, movement);
+
+            return GetEntities(box.Expand(movement));
+        }
+
+        public IEnumerable<T> GetEntities(IEnumerable<Int3> coords)
+        {
+            HashSet<T> done = new HashSet<T>();
+            foreach (var c in coords)
+            {
+                foreach (var e in GetEntities(c))
+                {
+                    if (!done.Contains(e))
+                    {
+                        done.Add(e);
+                        yield return e;
+                    }
+                }
+            }
+        }
+
+        /// <summary>rayDirection must not be normalized.</summary>
+        public IEnumerable<Int3> GetCoords(Vector3 rayOrigin, Vector3 rayDirection, float rayLength)
+        {
             float x = rayOrigin.X / FieldSize.X;
             float y = rayOrigin.Y / FieldSize.Y;
             float z = rayOrigin.Z / FieldSize.Z;
@@ -195,8 +222,99 @@ namespace JuliHelper
             int cy = (int)Math.Floor(y);
             int cz = (int)Math.Floor(z);
 
-            while (x >= min.X && y >= min.Y  && z >= min.Z
-                && x < max.X + 1 && y < max.Y + 1 && z < max.Z + 1)
+            Int3 maxEnd = max + new Int3(1);
+
+            while (x >= min.X && y >= min.Y && z >= min.Z
+                && x < maxEnd.X && y < maxEnd.Y && z < maxEnd.Z)
+            {
+                // parts inside the tile
+                float x1 = x - cx;
+                float y1 = y - cy;
+                float z1 = z - cz;
+
+                yield return new Int3(cx, cy, cz);
+
+                if (rayLength <= 0)
+                    yield break;
+
+                float remainingX = dx >= 0 ? 1f - x1 : x1;
+                float remainingY = dy >= 0 ? 1f - y1 : y1;
+                float remainingZ = dz >= 0 ? 1f - z1 : z1;
+
+                float timeToX = remainingX / dxAbs;
+                float timeToY = remainingY / dyAbs;
+                float timeToZ = remainingZ / dzAbs;
+
+                if (timeToY < timeToX)
+                {
+                    if (timeToY < timeToZ)
+                        MoveToY();
+                    else
+                        MoveToZ();
+                }
+                else
+                {
+                    if (timeToX < timeToZ)
+                        MoveToX();
+                    else
+                        MoveToZ();
+                }
+
+                void MoveToX()
+                {
+                    Move(timeToX);
+                    x = MathF.Round(x);
+                    cx += Math.Sign(dx);
+                }
+
+                void MoveToY()
+                {
+                    Move(timeToY);
+                    y = MathF.Round(y);
+                    cy += Math.Sign(dy);
+                }
+
+                void MoveToZ()
+                {
+                    Move(timeToZ);
+                    z = MathF.Round(z);
+                    cz += Math.Sign(dz);
+                }
+
+                void Move(float time)
+                {
+                    x += time * dx;
+                    y += time * dy;
+                    z += time * dz;
+
+                    rayLength -= timeToZ;
+                }
+            }
+        }
+
+        /// <summary>rayDirection must not be normalized.</summary>
+        public IEnumerable<Int3> GetCoords(Vector3 rayOrigin, Vector3 rayDirection)
+        {
+            float x = rayOrigin.X / FieldSize.X;
+            float y = rayOrigin.Y / FieldSize.Y;
+            float z = rayOrigin.Z / FieldSize.Z;
+            float dx = rayDirection.X / FieldSize.X;
+            float dy = rayDirection.Y / FieldSize.Y;
+            float dz = rayDirection.Z / FieldSize.Z;
+            float dxAbs = Math.Abs(dx);
+            float dyAbs = Math.Abs(dy);
+            float dzAbs = Math.Abs(dz);
+
+            int cx = (int)Math.Floor(x);
+            int cy = (int)Math.Floor(y);
+            int cz = (int)Math.Floor(z);
+
+            Int3 maxEnd = max + new Int3(1);
+
+
+
+            while ((dx > 0 || x >= min.X) && (dy > 0 || y >= min.Y) && (dz > 0 || z >= min.Z)
+                && (dx < 0 || x < maxEnd.X) && (dy < 0 || y < maxEnd.Y) && (dz < 0 || z < maxEnd.Z))
             {
                 // parts inside the tile
                 float x1 = x - cx;
@@ -230,31 +348,37 @@ namespace JuliHelper
 
                 void MoveToX()
                 {
-                    x += timeToX * dx;
-                    y += timeToX * dy;
-                    z += timeToZ * dz;
+                    Move(timeToX);
                     x = MathF.Round(x);
                     cx += Math.Sign(dx);
                 }
 
                 void MoveToY()
                 {
-                    x += timeToY * dx;
-                    y += timeToY * dy;
-                    z += timeToY * dz;
+                    Move(timeToY);
                     y = MathF.Round(y);
                     cy += Math.Sign(dy);
                 }
 
                 void MoveToZ()
                 {
-                    x += timeToX * dx;
-                    y += timeToX * dy;
-                    z += timeToZ * dz;
+                    Move(timeToZ);
                     z = MathF.Round(z);
                     cz += Math.Sign(dz);
                 }
+
+                void Move(float time)
+                {
+                    x += time * dx;
+                    y += time * dy;
+                    z += time * dz;
+                }
             }
+        }
+
+        public IEnumerable<Int3> GetUsedCoords()
+        {
+            return Grid.Keys;
         }
     }
 }
