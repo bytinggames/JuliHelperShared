@@ -380,5 +380,49 @@ namespace JuliHelper
         {
             return Grid.Keys;
         }
+
+        public IEnumerable<(T, T)> GetNearPairs()
+        {
+            HashSet<(T, T)> done = new HashSet<(T, T)>();
+
+            foreach (Int3 c in GetUsedCoords())
+            {
+                foreach (var triA in this[c])
+                {
+                    foreach (var triB in this[c])
+                    {
+                        if (EqualityComparer<T>.Default.Equals(triA, triB)) // same triangle
+                            continue;
+                        if (!done.Contains((triB, triA)) && done.Add((triA, triB)))
+                        {
+                            yield return (triA, triB);
+                        }
+                    }
+                }
+            }
+        }
+
+        public IEnumerable<(T, T)> GetNearPairs(Func<T, T, bool> isPairable)
+        {
+            HashSet<(T, T)> done = new HashSet<(T, T)>();
+
+            foreach (Int3 c in GetUsedCoords())
+            {
+                foreach (var triA in this[c])
+                {
+                    foreach (var triB in this[c])
+                    {
+                        if (EqualityComparer<T>.Default.Equals(triA, triB)) // same triangle
+                            continue;
+                        if (!isPairable(triA, triB))
+                            continue;
+                        if (!done.Contains((triB, triA)) && done.Add((triA, triB)))
+                        {
+                            yield return (triA, triB);
+                        }
+                    }
+                }
+            }
+        }
     }
 }
