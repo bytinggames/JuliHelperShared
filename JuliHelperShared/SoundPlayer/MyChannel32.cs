@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if !CONTENT
+
+using System;
 using System.Collections.Generic;
 using NAudio.Wave.SampleProviders;
 
@@ -315,3 +317,5 @@ namespace JuliHelper.Audio
         }
     }
 }
+
+#endif
