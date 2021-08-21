@@ -5,11 +5,6 @@ using System.Linq;
 
 namespace JuliHelper
 {
-    interface IBoundingRectangle
-    {
-        public M_Rectangle GetBoundingRectangle();
-    }
-
     class Map<T> where T : IBoundingRectangle
     {
         public int FieldSize { get; private set; }

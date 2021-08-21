@@ -1,6 +1,4 @@
-﻿#if !CONTENT
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using NAudio.Utils;
@@ -47,5 +45,3 @@ namespace JuliHelper.Audio
         }
     }
 }
-
-#endif

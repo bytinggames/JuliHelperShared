@@ -1,5 +1,4 @@
-﻿#if !CONTENT
-
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -244,7 +243,8 @@ namespace JuliHelper.Audio
             
             if (!alreadyPlaying)
             {
-                string file = Path.Combine(G.exeDir, "Content", "Music", cue + ".ogg");
+                string exeDir = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+                string file = Path.Combine(exeDir, "Content", "Music", cue + ".ogg");
                 musicInstances.Add(new Music(cue, file, volume));
             }
         }
@@ -268,8 +268,9 @@ namespace JuliHelper.Audio
                     }
                 }
             }
-            
-            string file = Path.Combine(G.exeDir, "Content","Music", cue + ".ogg");
+
+            string exeDir = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+            string file = Path.Combine(exeDir, "Content","Music", cue + ".ogg");
             musicInstances.Add(new Music(cue, file, volume));
         }
 
@@ -385,5 +386,3 @@ namespace JuliHelper.Audio
         }
     }
 }
-
-#endif
