@@ -205,18 +205,37 @@ namespace JuliHelper
             }
         }
 
+        public IEnumerable<T> GetEntities(IEnumerable<Int3> coords, Func<Int3, bool> continueCondition)
+        {
+            HashSet<T> done = new HashSet<T>();
+            foreach (var c in coords)
+            {
+                if (!continueCondition(c))
+                    yield break;
+
+                foreach (var e in GetEntities(c))
+                {
+                    if (!done.Contains(e))
+                    {
+                        done.Add(e);
+                        yield return e;
+                    }
+                }
+            }
+        }
+
         /// <summary>rayDirection must not be normalized.</summary>
-        public IEnumerable<Int3> GetCoords(Vector3 rayOrigin, Vector3 rayDirection, float rayLength)
+        public IEnumerable<Int3> GetCoords(Vector3 rayOrigin, Vector3 rayDirection, float rayLength = float.MaxValue)
         {
             float x = rayOrigin.X / FieldSize.X;
             float y = rayOrigin.Y / FieldSize.Y;
             float z = rayOrigin.Z / FieldSize.Z;
-            float dx = rayDirection.X;
-            float dy = rayDirection.Y;
-            float dz = rayDirection.Z;
-            float dxAbs = Math.Abs(rayDirection.X);
-            float dyAbs = Math.Abs(rayDirection.Y);
-            float dzAbs = Math.Abs(rayDirection.Z);
+            float dx = rayDirection.X / FieldSize.X;
+            float dy = rayDirection.Y / FieldSize.Y;
+            float dz = rayDirection.Z / FieldSize.Z;
+            float dxAbs = Math.Abs(dx);
+            float dyAbs = Math.Abs(dy);
+            float dzAbs = Math.Abs(dz);
 
             int cx = (int)Math.Floor(x);
             int cy = (int)Math.Floor(y);
@@ -224,8 +243,10 @@ namespace JuliHelper
 
             Int3 maxEnd = max + new Int3(1);
 
-            while (x >= min.X && y >= min.Y && z >= min.Z
-                && x < maxEnd.X && y < maxEnd.Y && z < maxEnd.Z)
+
+
+            while ((dx > 0 || x >= min.X) && (dy > 0 || y >= min.Y) && (dz > 0 || z >= min.Z)
+                && (dx < 0 || x < maxEnd.X) && (dy < 0 || y < maxEnd.Y) && (dz < 0 || z < maxEnd.Z))
             {
                 // parts inside the tile
                 float x1 = x - cx;
@@ -287,91 +308,7 @@ namespace JuliHelper
                     y += time * dy;
                     z += time * dz;
 
-                    rayLength -= timeToZ;
-                }
-            }
-        }
-
-        /// <summary>rayDirection must not be normalized.</summary>
-        public IEnumerable<Int3> GetCoords(Vector3 rayOrigin, Vector3 rayDirection)
-        {
-            float x = rayOrigin.X / FieldSize.X;
-            float y = rayOrigin.Y / FieldSize.Y;
-            float z = rayOrigin.Z / FieldSize.Z;
-            float dx = rayDirection.X / FieldSize.X;
-            float dy = rayDirection.Y / FieldSize.Y;
-            float dz = rayDirection.Z / FieldSize.Z;
-            float dxAbs = Math.Abs(dx);
-            float dyAbs = Math.Abs(dy);
-            float dzAbs = Math.Abs(dz);
-
-            int cx = (int)Math.Floor(x);
-            int cy = (int)Math.Floor(y);
-            int cz = (int)Math.Floor(z);
-
-            Int3 maxEnd = max + new Int3(1);
-
-
-
-            while ((dx > 0 || x >= min.X) && (dy > 0 || y >= min.Y) && (dz > 0 || z >= min.Z)
-                && (dx < 0 || x < maxEnd.X) && (dy < 0 || y < maxEnd.Y) && (dz < 0 || z < maxEnd.Z))
-            {
-                // parts inside the tile
-                float x1 = x - cx;
-                float y1 = y - cy;
-                float z1 = z - cz;
-
-                yield return new Int3(cx, cy, cz);
-
-                float remainingX = dx >= 0 ? 1f - x1 : x1;
-                float remainingY = dy >= 0 ? 1f - y1 : y1;
-                float remainingZ = dz >= 0 ? 1f - z1 : z1;
-
-                float timeToX = remainingX / dxAbs;
-                float timeToY = remainingY / dyAbs;
-                float timeToZ = remainingZ / dzAbs;
-
-                if (timeToY < timeToX)
-                {
-                    if (timeToY < timeToZ)
-                        MoveToY();
-                    else
-                        MoveToZ();
-                }
-                else
-                {
-                    if (timeToX < timeToZ)
-                        MoveToX();
-                    else
-                        MoveToZ();
-                }
-
-                void MoveToX()
-                {
-                    Move(timeToX);
-                    x = MathF.Round(x);
-                    cx += Math.Sign(dx);
-                }
-
-                void MoveToY()
-                {
-                    Move(timeToY);
-                    y = MathF.Round(y);
-                    cy += Math.Sign(dy);
-                }
-
-                void MoveToZ()
-                {
-                    Move(timeToZ);
-                    z = MathF.Round(z);
-                    cz += Math.Sign(dz);
-                }
-
-                void Move(float time)
-                {
-                    x += time * dx;
-                    y += time * dy;
-                    z += time * dz;
+                    rayLength -= time;
                 }
             }
         }
