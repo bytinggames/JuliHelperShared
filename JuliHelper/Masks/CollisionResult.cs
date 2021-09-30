@@ -12,8 +12,8 @@ namespace JuliHelper
         public float? distance;
         public float? distanceReversed;
         public Vector2 axisCol, axisColReversed;
-        internal int colCornerPoly;
-        internal int colCornerIndex;
+        public int colCornerPoly;
+        public int colCornerIndex;
 
         //public bool inDistance
         //{

@@ -79,7 +79,7 @@ namespace JuliHelper
             if (cr.collision)
                 collision = true;
 
-            if (!distanceReversed.HasValue || (cr.distanceReversed.HasValue && cr.distanceReversed < distanceReversed))
+            if (!distanceReversed.HasValue || (cr.distanceReversed.HasValue && cr.distanceReversed > distanceReversed))
             {
                 distanceReversed = cr.distanceReversed;
                 axisColReversed = cr.axisColReversed;

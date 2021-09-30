@@ -328,6 +328,12 @@ namespace JuliHelper
                     }
                 },
                 {
+                    typeof(MyFont), f =>
+                    {
+                        f.SetValue(null, new MyFont(content.Load<SpriteFont>(Path.Combine(localPath, f.Name))));
+                    }
+                },
+                {
                     typeof(TextureAnim), f =>
                     {
                         Texture2D tex = content.Load<Texture2D>(Path.Combine(localPath, f.Name));

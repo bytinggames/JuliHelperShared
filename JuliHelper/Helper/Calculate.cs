@@ -118,6 +118,27 @@ namespace JuliHelper
             return val;
         }
 
+        public static float MoveTo(float val, float goal, float speed)
+        {
+            if (val == goal)
+                return val;
+
+            if (val < goal)
+            {
+                val += speed;
+                if (val > goal)
+                    return goal;
+                return val;
+            }
+            else
+            {
+                val -= speed;
+                if (val < goal)
+                    return goal;
+                return val;
+            }
+        }
+
         #endregion
 
         #region Data
@@ -422,6 +443,10 @@ namespace JuliHelper
             else
                 return -Math.Sign(dist) * ((float)MathHelper.TwoPi - Math.Abs(dist));
         }
+        public static float AngleDistanceAbs(float angle1, float angle2)
+        {
+            return MathF.Abs(AngleDistance(angle1, angle2));
+        }
 
         public static float AngleDistance(Vector2 v1, Vector2 v2)
         {
@@ -531,6 +556,11 @@ namespace JuliHelper
             float angle = MathF.Acos(dot);
             Vector3 axis = Vector3.Normalize(Vector3.Cross(from, to));
             return Matrix.CreateFromAxisAngle(axis, angle);
+        }
+
+        public static Vector3 Sqrt(this Vector3 v)
+        {
+            return new Vector3(MathF.Sqrt(v.X), MathF.Sqrt(v.Y), MathF.Sqrt(v.Z));
         }
 
         #endregion

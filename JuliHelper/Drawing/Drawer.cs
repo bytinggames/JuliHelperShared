@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace JuliHelper
@@ -22,6 +23,7 @@ namespace JuliHelper
 
         public static SpriteBatch batch;
         public static GraphicsDevice gDevice => batch.GraphicsDevice;
+        private static ContentManager content;
 
         private static Texture2D pixel;
         private static Texture2D Pixel => pixel;
@@ -126,9 +128,10 @@ namespace JuliHelper
         }
 
 
-        public static void Initialize(SpriteBatch _spriteBatch)
+        public static void Initialize(SpriteBatch _spriteBatch, ContentManager _content)
         {
             batch = _spriteBatch;
+            content = _content;
             depth = new DepthLayer(0);
             
             pixel = new Texture2D(_spriteBatch.GraphicsDevice, 1, 1);
@@ -264,13 +267,13 @@ namespace JuliHelper
             batch.DrawString(_font, _text, pos, color, _rotation, origin, scale, _effects, depth);
         }
 
-        public static void DrawCoded(this SpriteFont _font, string _text, Anchor _anchor, float align = 0f, Color? _color = null, Vector2? _scale = null, float _rotation = 0f, SpriteEffects _effects = SpriteEffects.None)
+        public static void DrawCoded(this MyFont _font, string _text, Anchor _anchor, float align = 0f, Color? _color = null, Vector2? _scale = null, float _rotation = 0f, SpriteEffects _effects = SpriteEffects.None)
         {
-            Vector2 size = _font.MeasureStringCoded(_text);
+            Vector2 size = _font.Font.MeasureStringCoded(_text);
             Vector2 pos = _anchor.pos - size * (_anchor.origin - new Vector2(align, 0));
             _font.DrawCoded(_text, pos, align, _color, _scale, _rotation, _effects);
         }
-        public static void DrawCoded(this SpriteFont _font, string _text, Vector2 _position, float align = 0f, Color? _color = null, Vector2? _scale = null, float _rotation = 0f, SpriteEffects _effects = SpriteEffects.None)
+        public static void DrawCoded(this MyFont _font, string _text, Vector2 _position, float align = 0f, Color? _color = null, Vector2? _scale = null, float _rotation = 0f, SpriteEffects _effects = SpriteEffects.None)
         {
             Line outlineSave = outline;
             Line underlineSave = underline;
@@ -295,7 +298,7 @@ namespace JuliHelper
 
                 for (int l = 0; l < lines.Length; l++)
                 {
-                    Vector2 size = _font.MeasureStringCoded(lines[l]) * _scale.Value;
+                    Vector2 size = _font.Font.MeasureStringCoded(lines[l]) * _scale.Value;
                     _position.X = left - size.X * align;
 
 
@@ -307,9 +310,9 @@ namespace JuliHelper
                         string codeless = RemoveCodes(split[i]);
                         if (codeless != "")
                         {
-                            Vector2 cSize = _font.MeasureString(codeless) * _scale.Value;
+                            Vector2 cSize = _font.Font.MeasureString(codeless) * _scale.Value;
 
-                            DrawCodedPart(batch, _font, split[i], _position, color, depth, _scale.Value);
+                            DrawCodedPart(batch, _font.Font, split[i], _position, color, depth, _scale.Value);
 
                             _position.X += cSize.X;
                         }
@@ -451,11 +454,11 @@ namespace JuliHelper
                                                     if (split[i][k] == '=')
                                                     {
                                                         string name = split[i].Substring(k + 1, strEnd - k - 1);
-                                                        Texture2D tex = ContentLoader.textures[name];
+                                                        Texture2D tex = content.Load<Texture2D>("Textures/" + name);
 
                                                         c = GetRelativeColor(c);
 
-                                                        tex.Draw((_position + new Vector2(offsets[0], (_font.LineSpacing - tex.Height) / 2f + offsets[1])).RoundVectorCustom()
+                                                        tex.Draw((_position + new Vector2(offsets[0], _font.DefaultCharacterYOffset + _font.DefaultCharacterHeight / 2 - tex.Height / 2f + offsets[1])).RoundVectorCustom()
                                                             , c, (!paramsCut ? (Rectangle?)null : new Rectangle(cuts[0], cuts[1], cuts[2], cuts[3])));
                                                         _position.X += (paramsCut ? cuts[2] : tex.Width) + offsets[0] + offsets[2];
                                                     }
@@ -472,11 +475,11 @@ namespace JuliHelper
                                     case 'f':
                                         if (!closeCommand)
                                         {
-                                            _font.TextSetFat(1);
+                                            _font.Font.TextSetFat(1);
                                         }
                                         else
                                         {
-                                            _font.TextSetFat(0);
+                                            _font.Font.TextSetFat(0);
                                         }
                                         break;
                                 }
@@ -493,10 +496,10 @@ namespace JuliHelper
 
                     }
 
-                    _position.Y += _font.LineSpacing * _scale.Value.Y;
+                    _position.Y += _font.Font.LineSpacing * _scale.Value.Y;
                 }
 
-                _font.TextSetFat(0);
+                _font.Font.TextSetFat(0);
             }
         }
 
