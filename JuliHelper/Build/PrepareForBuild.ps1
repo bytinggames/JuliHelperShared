@@ -19,7 +19,7 @@ $projects = Get-Content '*.sln' |
     }
 
 
-$index = $projects.Name.IndexOf("JuliHelperShared");
+$index = $projects.Name.IndexOf("JuliHelper");
 $path = $projects.File[$index];
 $path = (get-item $path).Directory.FullName;
 $path += "\Build\PrepareForBuild.csx";
