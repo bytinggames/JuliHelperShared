@@ -9,49 +9,37 @@ namespace JuliHelper
 {
     public struct Int2 : IComparable<Int2>
     {
-        private int x, y;
-
-        public int X
-        {
-            get { return x; }
-            set { x = value; }
-        }
-
-        public int Y
-        {
-            get { return y; }
-            set { y = value; }
-        }
+        public int X, Y;
 
         public Int2(int xy)
         {
-            this.x = this.y = xy;
+            this.X = this.Y = xy;
         }
         public Int2(int x, int y)
         {
-            this.x = x;
-            this.y = y;
+            this.X = x;
+            this.Y = y;
         }
 
         public Int2(Vector2 vec)
         {
-            this.x = (int)vec.X;
-            this.y = (int)vec.Y;
+            this.X = (int)vec.X;
+            this.Y = (int)vec.Y;
         }
 
         public Vector2 ToVector2()
         {
-            return new Vector2(x, y);
+            return new Vector2(X, Y);
         }
 
         public bool SetInRect(int minX, int minY, int maxX, int maxY)
         {
-            int x2 = x;
-            int y2 = y;
-            x = Math.Min(maxX, Math.Max(minX, x));
-            y = Math.Min(maxY, Math.Max(minY, y));
+            int x2 = X;
+            int y2 = Y;
+            X = Math.Min(maxX, Math.Max(minX, X));
+            Y = Math.Min(maxY, Math.Max(minY, Y));
 
-            return x2 != x || y2 != y;
+            return x2 != X || y2 != Y;
         }
 
         //public override bool Equals(object obj)
@@ -62,11 +50,11 @@ namespace JuliHelper
 
         public static bool operator ==(Int2 v1, Int2 v2)
         {
-            return v1.x == v2.x && v1.y == v2.y;
+            return v1.X == v2.X && v1.Y == v2.Y;
         }
         public static bool operator !=(Int2 v1, Int2 v2)
         {
-            return v1.x != v2.x || v1.y != v2.y;
+            return v1.X != v2.X || v1.Y != v2.Y;
         }
 
         public static Int2 operator +(Int2 v1, Int2 v2)
@@ -101,12 +89,12 @@ namespace JuliHelper
 
         public static Int2 operator *(Int2 v1, int i2)
         {
-            return new Int2(v1.x * i2, v1.y * i2);
+            return new Int2(v1.X * i2, v1.Y * i2);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(x, y);
+            return HashCode.Combine(X, Y);
         }
 
         public override bool Equals(object obj)
@@ -116,27 +104,27 @@ namespace JuliHelper
 
         public override string ToString()
         {
-            return x + " " + y;
+            return X + " " + Y;
         }
 
         public float Length()
         {
-            return (float)Math.Sqrt(x * x + y * y);
+            return (float)Math.Sqrt(X * X + Y * Y);
         }
 
         public void SwapXY()
         {
-            int save = x;
-            x = y;
-            y = save;
+            int save = X;
+            X = Y;
+            Y = save;
         }
 
         public int CompareTo([AllowNull] Int2 other)
         {
-            int ySign = Math.Sign(y - other.y);
+            int ySign = Math.Sign(Y - other.Y);
             if (ySign == 0)
             {
-                return Math.Sign(x - other.x);
+                return Math.Sign(X - other.X);
             }
             else
                 return ySign;

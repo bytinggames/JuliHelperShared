@@ -19,6 +19,9 @@ namespace JuliHelper
         public int MaxX => maxX;
         public int MaxY => maxY;
 
+        private Int2 Min => new Int2(minX, minY);
+        private Int2 Max => new Int2(maxX, maxY);
+
         public EntityMap(float fieldSize)
         {
             FieldSize = fieldSize;
@@ -84,9 +87,32 @@ namespace JuliHelper
             }
         }
 
+        public IEnumerable<T> GetEntities(IEnumerable<Int2> coords, Func<Int2, bool> continueCondition)
+        {
+            HashSet<T> done = new HashSet<T>();
+            foreach (var c in coords)
+            {
+                if (!continueCondition(c))
+                    yield break;
+
+                foreach (var e in GetEntities(c))
+                {
+                    if (!done.Contains(e))
+                    {
+                        done.Add(e);
+                        yield return e;
+                    }
+                }
+            }
+        }
+
         public IEnumerable<T> GetEntities(T searchingEntity, Vector2 movement)
         {
-            return GetEntities(searchingEntity.GetBoundingRectangle().CloneRectangle().Expand(movement));
+            return GetEntities(searchingEntity.GetBoundingRectangle(), movement);
+        }
+        public IEnumerable<T> GetEntities(M_Rectangle boundingBox, Vector2 movement)
+        {
+            return GetEntities(boundingBox.CloneRectangle().Expand(movement));
         }
         public IEnumerable<T> GetEntities(M_Rectangle boundingBox)
         {
@@ -155,6 +181,9 @@ namespace JuliHelper
             return false;
         }
 
+        public IEnumerable<T> this[Int2 c] => GetEntities(c);
+        public IEnumerable<T> this[int x, int y] => GetEntities(x, y);
+        public IEnumerable<T> GetEntities(int x, int y) => GetEntities(new Int2(x, y));
         public IEnumerable<T> GetEntities(Int2 c)
         {
             if (Grid.TryGetValue(c, out List<T> list))
@@ -163,7 +192,7 @@ namespace JuliHelper
                 return Enumerable.Empty<T>();
         }
 
-        public IEnumerable<T> GetEntities(int x, int y) => GetEntities(new Int2(x, y));
+        public bool CoordContainsAny(Int2 c) => Grid.ContainsKey(c);
 
         public IEnumerable<Int2> GetCoords(Vector2 rayOrigin, Vector2 rayDirection)
         {
@@ -210,6 +239,128 @@ namespace JuliHelper
                     cx += Math.Sign(dx);
                 }
 
+            }
+        }
+
+        public virtual IEnumerable<T> GetEntities()
+        {
+            return GetEntities(GetUsedCoords());
+        }
+
+        public IEnumerable<T> GetEntities(Vector2 pos, Vector2 movement)
+        {
+            return GetEntities(GetCoords(pos, movement, movement.Length()));
+        }
+        /// <summary>rayDirection must not be normalized.</summary>
+        public IEnumerable<Int2> GetCoords(Vector2 rayOrigin, Vector2 rayDirection, float rayLength = float.MaxValue)
+        {
+            float x = rayOrigin.X / FieldSize;
+            float y = rayOrigin.Y / FieldSize;
+            float dx = rayDirection.X / FieldSize;
+            float dy = rayDirection.Y / FieldSize;
+            float dxAbs = Math.Abs(dx);
+            float dyAbs = Math.Abs(dy);
+
+            int cx = (int)Math.Floor(x);
+            int cy = (int)Math.Floor(y);
+
+            Int2 maxEnd = Max + new Int2(1);
+
+
+
+            while ((dx > 0 || x >= Min.X) && (dy > 0 || y >= Min.Y)
+                && (dx < 0 || x < maxEnd.X) && (dy < 0 || y < maxEnd.Y))
+            {
+                // parts inside the tile
+                float x1 = x - cx;
+                float y1 = y - cy;
+
+                yield return new Int2(cx, cy);
+
+                if (rayLength <= 0)
+                    yield break;
+
+                float remainingX = dx >= 0 ? 1f - x1 : x1;
+                float remainingY = dy >= 0 ? 1f - y1 : y1;
+
+                float timeToX = remainingX / dxAbs;
+                float timeToY = remainingY / dyAbs;
+
+                if (timeToY < timeToX)
+                    MoveToY();
+                else
+                    MoveToX();
+
+                void MoveToX()
+                {
+                    Move(timeToX);
+                    x = MathF.Round(x);
+                    cx += Math.Sign(dx);
+                }
+
+                void MoveToY()
+                {
+                    Move(timeToY);
+                    y = MathF.Round(y);
+                    cy += Math.Sign(dy);
+                }
+
+                void Move(float time)
+                {
+                    x += time * dx;
+                    y += time * dy;
+
+                    rayLength -= time;
+                }
+            }
+        }
+
+        public IEnumerable<Int2> GetUsedCoords()
+        {
+            return Grid.Keys;
+        }
+
+        public IEnumerable<(T, T)> GetNearPairs()
+        {
+            HashSet<(T, T)> done = new HashSet<(T, T)>();
+
+            foreach (Int2 c in GetUsedCoords())
+            {
+                foreach (var triA in this[c])
+                {
+                    foreach (var triB in this[c])
+                    {
+                        if (EqualityComparer<T>.Default.Equals(triA, triB)) // same triangle
+                            continue;
+                        if (!done.Contains((triB, triA)) && done.Add((triA, triB)))
+                        {
+                            yield return (triA, triB);
+                        }
+                    }
+                }
+            }
+        }
+
+        public IEnumerable<(T, T)> GetNearPairs(Func<T, T, bool> isPairable)
+        {
+            HashSet<(T, T)> done = new HashSet<(T, T)>();
+
+            foreach (Int2 c in GetUsedCoords())
+            {
+                foreach (var triA in this[c])
+                {
+                    foreach (var triB in this[c])
+                    {
+                        if (EqualityComparer<T>.Default.Equals(triA, triB)) // same triangle
+                            continue;
+                        if (!isPairable(triA, triB))
+                            continue;
+                        if (!done.Contains((triB, triA)) && done.Add((triA, triB)))
+                        {
+                            yield return (triA, triB);
+                        }
+                    }
+                }
             }
         }
     }

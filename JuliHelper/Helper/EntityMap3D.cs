@@ -152,7 +152,6 @@ namespace JuliHelper
             else
                 return Enumerable.Empty<T>();
         }
-        public bool CoordContainsAny(Int3 c) => Grid.ContainsKey(c);
 
         public IEnumerable<T> GetEntities(int x, int y, int z) => GetEntities(new Int3(x, y, z));
 
@@ -160,6 +159,8 @@ namespace JuliHelper
         {
             return GetEntities(GetUsedCoords());
         }
+
+        public bool CoordContainsAny(Int3 c) => Grid.ContainsKey(c);
 
         public IEnumerable<T> GetEntities(BoundingBox boundingBox)
         {
