@@ -66,11 +66,28 @@ namespace JuliHelper
             return !anyFail;
         }
 
+        public Int3 GetCoord(Vector3 pos)
+        {
+            return new Int3(
+             (int)Math.Floor(pos.X / FieldSize.X),
+             (int)Math.Floor(pos.Y / FieldSize.Y),
+             (int)Math.Floor(pos.Z / FieldSize.Z));
+        }
+
+        public IEnumerable<Int3> GetCoords(Vector3 pos)
+        {
+            yield return GetCoord(pos);
+        }
         public IEnumerable<Int3> GetCoords(IBoundingBox boundingBoxObject)
         {
             return GetCoords(boundingBoxObject.GetBoundingBox());
         }
 
+
+        public IEnumerable<Int3> GetCoords(BoundingBox boundingBox, Vector3 movement)
+        {
+            return GetCoords(boundingBox.Expand(movement));
+        }
 
         public IEnumerable<Int3> GetCoords(BoundingBox boundingBox)
         {
@@ -165,6 +182,11 @@ namespace JuliHelper
         public IEnumerable<T> GetEntities(BoundingBox boundingBox)
         {
             return GetEntities(GetCoords(boundingBox));
+        }
+
+        public IEnumerable<T> GetEntities(Vector3 pos)
+        {
+            return GetEntities(GetCoords(pos));
         }
 
         public IEnumerable<T> GetEntities(Vector3 pos, Vector3 movement)
