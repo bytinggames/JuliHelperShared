@@ -9,10 +9,18 @@ string mgcbPath = Path.Combine(contentDir, "ContentGenerated_do-not-edit.mgcb");
 string contentListPath = Path.Combine(contentDir, "ContentListGenerated_do-not-edit.txt");
 
 
-string[] pngs = Directory.GetFiles(Path.Combine(contentDir, "Textures"), "*.png", SearchOption.AllDirectories);
-string[] wavs = Directory.GetFiles(Path.Combine(contentDir, "Sounds"), "*.wav", SearchOption.AllDirectories);
-string[] songs = Directory.GetFiles(Path.Combine(contentDir, "Music"), "*.ogg", SearchOption.AllDirectories);
-string[] copies = Directory.GetFiles(Path.Combine(contentDir, "Fonts"), "*.xnb", SearchOption.AllDirectories);
+string[] pngs = GetFiles("Textures", "png");
+string[] wavs = GetFiles("Sounds", "wav");
+string[] songs = GetFiles("Music", "ogg");
+string[] copies = GetFiles("Fonts", "xnb");
+
+string[] GetFiles(string name, string extension)
+{
+    string dir = Path.Combine(contentDir, name);
+    if (!Directory.Exists(dir))
+        return new string[0];
+    return Directory.GetFiles(dir, "*." + extension, SearchOption.AllDirectories);
+}
 
 
 string[][] filesArray = new string[][]{
