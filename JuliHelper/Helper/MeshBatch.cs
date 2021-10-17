@@ -83,7 +83,7 @@ namespace JuliHelper
                     Matrix cWorld;
                     //TODO: better "non" bone detection (see marian)
                     if (!model.Meshes[i].Effects[j].CurrentTechnique.Name.Contains("Bone")) //TODO: in animation matrix remove parentBone.Transform, so that it can be multiplied here always
-                        cWorld = model.Meshes[i].ParentBone.Transform * world;
+                        cWorld = model.Meshes[i].ParentBone.ModelTransform * world;
                     else
                         cWorld = world;
 
@@ -97,7 +97,7 @@ namespace JuliHelper
         {
             for (int i = 0; i < model.Meshes.Count; i++)
                 for (int j = 0; j < model.Meshes[i].MeshParts.Count; j++)
-                    Draw(new MeshBatchItem(model.Meshes[i].MeshParts[j], model.Meshes[i].Effects[j], model.Meshes[i].ParentBone.Transform * world, 0));
+                    Draw(new MeshBatchItem(model.Meshes[i].MeshParts[j], model.Meshes[i].Effects[j], model.Meshes[i].ParentBone.ModelTransform * world, 0));
         }
 
         public void Draw2(Model model, Matrix world)

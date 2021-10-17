@@ -506,7 +506,7 @@ namespace JuliHelper.ThreeD
         {
             foreach (var mesh in model.Meshes)
             {
-                mesh.ParentBone.Transform = world;
+                mesh.ParentBone.ModelTransform = world;
             }
         }
 
@@ -519,7 +519,7 @@ namespace JuliHelper.ThreeD
 
             foreach (var mesh in model.Meshes)
             {
-                mesh.ParentBone.Transform *= matrix;
+                mesh.ParentBone.ModelTransform *= matrix;
             }
         }
 

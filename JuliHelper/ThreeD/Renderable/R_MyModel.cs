@@ -24,7 +24,7 @@ namespace JuliHelper.ThreeD
                 foreach (var part in mesh.MeshParts)
                 {
                     //TODO: add textures
-                    meshes.Add(new R_MyMesh(part, mesh.ParentBone.Transform, action));
+                    meshes.Add(new R_MyMesh(part, mesh.ParentBone.ModelTransform, action));
                 }
             }
         }
