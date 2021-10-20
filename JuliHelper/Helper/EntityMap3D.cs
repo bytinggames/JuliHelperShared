@@ -91,6 +91,15 @@ namespace JuliHelper
 
         public IEnumerable<Int3> GetCoords(BoundingBox boundingBox)
         {
+            if (!float.IsFinite(boundingBox.Min.X)
+                || !float.IsFinite(boundingBox.Min.Y)
+                || !float.IsFinite(boundingBox.Min.Z)
+                || !float.IsFinite(boundingBox.Max.X)
+                || !float.IsFinite(boundingBox.Max.Y)
+                || !float.IsFinite(boundingBox.Max.Z))
+                yield break;
+
+
             int x1 = (int)Math.Floor(boundingBox.Min.X / FieldSize.X);
             int y1 = (int)Math.Floor(boundingBox.Min.Y / FieldSize.Y);
             int z1 = (int)Math.Floor(boundingBox.Min.Z / FieldSize.Z);

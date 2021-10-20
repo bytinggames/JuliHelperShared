@@ -50,6 +50,11 @@ namespace JuliHelper
             }                                       // near, far plane
         }
 
+        public static void UsingCustomBasicEffect(BasicEffect _basicEffect, Action doStuff)
+        {
+            Calculate.ChangeVarTemporarily(ref basicEffect, _basicEffect, doStuff);
+        }
+
         public class Sprite
         {
             public static Color baseTextColor = Color.Black;

@@ -1700,6 +1700,14 @@ namespace JuliHelper
             variable = store;
         }
 
+        public static void ChangeVarTemporarily<T>(T getVariable, Action<T> setVariable, T tempValue, Action actionWhile)
+        {
+            T store = getVariable;
+            setVariable(tempValue);
+            actionWhile();
+            setVariable(store);
+        }
+
         #endregion
     }
 
