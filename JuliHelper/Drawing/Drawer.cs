@@ -267,13 +267,13 @@ namespace JuliHelper
             batch.DrawString(_font, _text, pos, color, _rotation, origin, scale, _effects, depth);
         }
 
-        public static void DrawCoded(this MyFont _font, string _text, Anchor _anchor, float align = 0f, Color? _color = null, Vector2? _scale = null, float _rotation = 0f, SpriteEffects _effects = SpriteEffects.None)
+        public static void DrawCoded(this MyFont _font, string _text, Anchor _anchor, float align = 0f, Color? _color = null, Vector2? _scale = null, float _rotation = 0f, SpriteEffects _effects = SpriteEffects.None, long time = 0)
         {
             Vector2 size = _font.Font.MeasureStringCoded(_text);
             Vector2 pos = _anchor.pos - size * (_anchor.origin - new Vector2(align, 0));
-            _font.DrawCoded(_text, pos, align, _color, _scale, _rotation, _effects);
+            _font.DrawCoded(_text, pos, align, _color, _scale, _rotation, _effects, time);
         }
-        public static void DrawCoded(this MyFont _font, string _text, Vector2 _position, float align = 0f, Color? _color = null, Vector2? _scale = null, float _rotation = 0f, SpriteEffects _effects = SpriteEffects.None)
+        public static void DrawCoded(this MyFont _font, string _text, Vector2 _position, float align = 0f, Color? _color = null, Vector2? _scale = null, float _rotation = 0f, SpriteEffects _effects = SpriteEffects.None, long time = 0)
         {
             Line outlineSave = outline;
             Line underlineSave = underline;
@@ -416,6 +416,11 @@ namespace JuliHelper
 
                                         break;
                                     case 't':
+
+                                        bool animation = split[i][1] == 'a';
+                                        if (animation)
+                                            split[i] = split[i].Remove(1, 1);
+
                                         int strEnd = split[i].IndexOf('>', 1);
 
 
@@ -454,12 +459,32 @@ namespace JuliHelper
                                                     if (split[i][k] == '=')
                                                     {
                                                         string name = split[i].Substring(k + 1, strEnd - k - 1);
-                                                        Texture2D tex = content.Load<Texture2D>("Textures/" + name);
 
                                                         c = GetRelativeColor(c);
 
-                                                        tex.Draw((_position + new Vector2(offsets[0], _font.DefaultCharacterYOffset + _font.DefaultCharacterHeight / 2 - tex.Height / 2f + offsets[1])).RoundVectorCustom()
-                                                            , c, (!paramsCut ? (Rectangle?)null : new Rectangle(cuts[0], cuts[1], cuts[2], cuts[3])));
+                                                        Texture2D tex = content.Load<Texture2D>("Textures/" + name);
+                                                        Vector2 pos = (_position + new Vector2(offsets[0], _font.DefaultCharacterYOffset + _font.DefaultCharacterHeight / 2 - tex.Height / 2f + offsets[1])).RoundVectorCustom();
+                                                        Rectangle? sourceRect = null;
+
+                                                        if (animation)
+                                                        {
+                                                            // load source rect
+                                                            AnimationData animationData = AnimationData.GetAnimationData(content, "Textures/" + name);
+                                                            sourceRect = animationData.GetSourceRectangle(time);
+                                                        }
+
+                                                        if (paramsCut)
+                                                        {
+                                                            if (sourceRect == null)
+                                                                sourceRect = new Rectangle(cuts[0], cuts[1], cuts[2], cuts[3]);
+                                                            else
+                                                            {
+                                                                sourceRect = new Rectangle(sourceRect.Value.X + cuts[0], sourceRect.Value.Y + cuts[1], cuts[2], cuts[3]);
+                                                            }
+                                                        }
+
+                                                        tex.Draw(pos, c, sourceRect);
+
                                                         _position.X += (paramsCut ? cuts[2] : tex.Width) + offsets[0] + offsets[2];
                                                     }
                                                     break;
