@@ -418,8 +418,19 @@ namespace JuliHelper
                                     case 't':
 
                                         bool animation = split[i][1] == 'a';
+                                        string animationTagName = null;
                                         if (animation)
-                                            split[i] = split[i].Remove(1, 1);
+                                        {
+                                            int cutCount = 1;
+                                            if (split[i][2] == '#') // animation tag name
+                                            {
+                                                int index = split[i].IndexOf('#', 3);
+                                                animationTagName = split[i].Substring(3, index - 3);
+                                                cutCount += animationTagName.Length + 2/*# #*/;
+                                            }
+
+                                            split[i] = split[i].Remove(1, cutCount);
+                                        }
 
                                         int strEnd = split[i].IndexOf('>', 1);
 
@@ -444,6 +455,9 @@ namespace JuliHelper
                                         {
                                             switch (split[i][k])
                                             {
+                                                case 'a':
+
+                                                    break;
                                                 case ',':
                                                 case '=':
                                                     if (k > comma+ 1)
@@ -470,7 +484,7 @@ namespace JuliHelper
                                                         {
                                                             // load source rect
                                                             AnimationData animationData = AnimationData.GetAnimationData(content, "Textures/" + name);
-                                                            sourceRect = animationData.GetSourceRectangle(time);
+                                                            sourceRect = animationData.GetSourceRectangle(time, animationTagName);
                                                         }
 
                                                         if (paramsCut)
