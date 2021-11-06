@@ -36,7 +36,7 @@ namespace JuliHelper
             }
         }
 
-        public Rectangle GetSourceRectangle(long time)
+        private Rectangle GetSourceRectangle(long time)
         {
             time %= TotalDuration;
             foreach (var f in frames.Values)
