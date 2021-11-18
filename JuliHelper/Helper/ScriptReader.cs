@@ -45,6 +45,15 @@ namespace JuliHelper
             return str.Substring(start);
         }
 
+        public void Move(int moveBy)
+        {
+            i += moveBy;
+            if (i < 0)
+                i = 0;
+            if (i > str.Length)
+                i = str.Length;
+        }
+
         public string ReadToChar(char untilChar)
         {
             int start = i;
@@ -58,6 +67,15 @@ namespace JuliHelper
                 }
             }
             throw new ScriptReaderException("char " + untilChar + " not found in " + str + " after position " + start);
+        }
+
+        public string ReadToChar(out char? foundChar, params char[] chars)
+        {
+            int start = i;
+            string str = ReadToCharOrEnd(out foundChar, chars);
+            if (foundChar == null)
+                throw new ScriptReaderException("chars " + string.Join(", ", chars) + " not found in " + str + " after position " + start);
+            return str;
         }
 
         public string ReadUntilClosed(char open, char close, int openCounter = 1)
