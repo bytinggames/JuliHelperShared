@@ -54,23 +54,25 @@ namespace JuliHelper
             if (animationTagName == null)
                 return GetSourceRectangle(time);
 
-            if (meta == null)
-                throw new Exception("meta is null");
-            if (meta.frameTags == null)
-                throw new Exception("meta.frameTags is null");
-            var tag = meta.frameTags.Find(f => f.name == animationTagName);
-            if (tag == null)
-                throw new Exception("couldn't find tag " + animationTagName);
+            var tag = GetFrameTag(animationTagName);
 
-            int tagFramesCount = tag.to - tag.from + 1;
-            int tagTotalDuration = tag.TotalDuration;
+            return GetSourceRectangle(time, tag);
+        }
+
+        public Rectangle GetSourceRectangle(long time, Meta.FrameTag frameTag)
+        {
+            if (frameTag == null)
+                return GetSourceRectangle(time);
+
+            int tagFramesCount = frameTag.to - frameTag.from + 1;
+            int tagTotalDuration = frameTag.TotalDuration;
 
             time %= tagTotalDuration;
 
-            if (tag.direction != "forward")
+            if (frameTag.direction != "forward")
                 time = tagTotalDuration - time; // reverse time
 
-            foreach (var f in frames.Values.Skip(tag.from).Take(tagFramesCount))
+            foreach (var f in frames.Values.Skip(frameTag.from).Take(tagFramesCount))
             {
                 time -= f.duration;
                 if (time < 0)
@@ -78,6 +80,18 @@ namespace JuliHelper
             }
 
             throw new Exception();
+        }
+
+        public Meta.FrameTag GetFrameTag(string animationTagName)
+        {
+            if (meta == null)
+                throw new Exception("meta is null");
+            if (meta.frameTags == null)
+                throw new Exception("meta.frameTags is null");
+            var tag = meta.frameTags.Find(f => f.name == animationTagName);
+            if (tag == null)
+                throw new Exception("couldn't find tag " + animationTagName);
+            return tag;
         }
 
         public class Frame

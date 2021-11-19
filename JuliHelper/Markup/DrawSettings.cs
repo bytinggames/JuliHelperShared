@@ -16,6 +16,7 @@ namespace JuliHelper.Markup
         public Vector2 Scale { get; set; }
         public float Rotation { get; }
         public SpriteEffects Effects { get; }
+        public long Time { get; set; }
 
         public DrawSettings(MyFont myFont, Anchor anchor, Color? textColor = null, float align = 0.5f, Vector2? scale = null, float rotation = 0f, SpriteEffects effects = SpriteEffects.None)
         {

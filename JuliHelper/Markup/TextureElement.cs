@@ -15,12 +15,12 @@ namespace JuliHelper.Markup
         public Color Color { get; set; } = Color.White;
         public Rectangle? SourceRectangle { get; set; } = null;
 
-        public TextureElement(ContentManager content, string tex)
+        public TextureElement(ContentManager content, string texName)
         {
-            Texture = content.Load<Texture2D>("Textures/" + tex);
+            Texture = content.Load<Texture2D>("Textures/" + texName);
         }
 
-        public Vector2 GetSize(DrawSettings settings)
+        public virtual Vector2 GetSize(DrawSettings settings)
         {
             if (SourceRectangle == null)
                 return Texture.GetSize();
@@ -28,7 +28,7 @@ namespace JuliHelper.Markup
                 return SourceRectangle.Value.Size.ToVector2();
         }
 
-        public void Draw(DrawSettings settings)
+        public virtual void Draw(DrawSettings settings)
         {
             Texture.Draw(settings.Anchor, Color, SourceRectangle, settings.Scale, settings.Rotation, settings.Effects);
         }
