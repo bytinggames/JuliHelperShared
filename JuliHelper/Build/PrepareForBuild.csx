@@ -10,9 +10,14 @@ string contentListPath = Path.Combine(contentDir, "ContentListGenerated_do-not-e
 
 
 string[] pngs = GetFiles("Textures", "png");
-string[] wavs = GetFiles("Sounds", "wav");
+string[] soundsWav = GetFiles("Sounds", "wav");
+string[] soundsOgg = GetFiles("Sounds", "ogg");
 string[] songs = GetFiles("Music", "ogg");
-string[] copies = GetFiles("Fonts", "xnb");
+string[] fonts = GetFiles("Fonts", "spritefont");
+
+List<string> copies = new List<string>();
+copies.AddRange(GetFiles("Fonts", "xnb"));
+copies.AddRange(GetFiles("Textures", "json"));
 
 string[] GetFiles(string name, string extension)
 {
@@ -24,7 +29,7 @@ string[] GetFiles(string name, string extension)
 
 
 string[][] filesArray = new string[][]{
-    pngs, wavs, songs, copies
+    pngs, soundsWav, soundsOgg, songs, fonts, copies.ToArray()
 };
 
 
@@ -90,7 +95,7 @@ using (StreamWriter sw = new StreamWriter(fs))
 ");
     }
 
-    foreach (var wav in wavs)
+    foreach (var wav in soundsWav)
     {
         sw.WriteLine($@"
 #begin {wav}
@@ -98,6 +103,17 @@ using (StreamWriter sw = new StreamWriter(fs))
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:{wav}
+");
+    }
+
+    foreach (var ogg in soundsOgg)
+    {
+        sw.WriteLine($@"
+#begin {ogg}
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:{ogg}
 ");
     }
 
@@ -112,6 +128,18 @@ using (StreamWriter sw = new StreamWriter(fs))
 
 ");
     }
+    foreach (var font in fonts)
+    {
+        sw.WriteLine($@"
+#begin {font}
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:{font}
+");
+    }
+
     foreach (var copy in copies)
     {
         sw.WriteLine($@"

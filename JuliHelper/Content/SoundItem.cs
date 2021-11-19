@@ -21,8 +21,15 @@ namespace JuliHelperShared
         public abstract bool Play(float relativeVolume, float relativePitch, float relativePan);
     }
 
+    public static class SoundMaster
+    {
+        public static bool Muted { get; set; }
+    }
+
     public class SoundItem : SoundItemAbstract
     {
+        public static bool Muted;
+
         private SoundEffect soundEffect;
 
         public SoundEffect SoundEffect
@@ -49,12 +56,20 @@ namespace JuliHelperShared
         {
             if (soundEffect == null)
                 return false;
+
+            if (SoundMaster.Muted)
+                return true;
+
             return soundEffect.Play(Volume, Pitch, Pan);
         }
         public override bool Play(float relativeVolume, float relativePitch, float relativePan)
         {
             if (soundEffect == null)
                 return false;
+
+            if (SoundMaster.Muted)
+                return true;
+
             return soundEffect.Play(
                 Math.Min(Math.Max(Volume + relativeVolume, 0f), 1f)
                 , Math.Min(Math.Max(Pitch + relativePitch, -1f), 1f)
@@ -101,10 +116,16 @@ namespace JuliHelperShared
 
         public override bool Play()
         {
+            if (SoundMaster.Muted)
+                return true;
+
             return GetRandomSoundEffect().Play(Volume, Pitch, Pan);
         }
         public override bool Play(float relativeVolume, float relativePitch, float relativePan)
         {
+            if (SoundMaster.Muted)
+                return true;
+
             return GetRandomSoundEffect().Play(
                 Math.Min(Math.Max(Volume + relativeVolume, 0f), 1f)
                 , Math.Min(Math.Max(Pitch + relativePitch, -1f), 1f)

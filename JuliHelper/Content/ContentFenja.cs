@@ -68,7 +68,7 @@ namespace JuliHelper
                 {
                     string[] files = System.IO.Directory.GetFiles(System.IO.Path.GetDirectoryName(path), fileName + "#*.png");
                     if (files.Length != 1)
-                        throw new Exception(files.Length + " matching files found for " + fileName);
+                        throw new ContentFenjaException(files.Length + " matching files found for " + fileName);
 
                     path = files[0];
                 }
@@ -134,7 +134,7 @@ namespace JuliHelper
                         Texture2D newTex = GetTexture(f.Name + ".png");
 
                         if (newTex == null)
-                            return;
+                            throw new ContentFenjaException("Couldn't load Texture2D.");
 
                         Texture2D tex = f.GetValue(null) as Texture2D;
                         if (tex == null)
@@ -148,7 +148,7 @@ namespace JuliHelper
                     {
                         List<Texture2D> texs = (f.GetValue(null) as Texture2D[])?.ToList();
                         if (texs == null)
-                            return;
+                            throw new ContentFenjaException("Couldn't load Texture2Ds.");
 
                         int index = 0;
 
@@ -163,7 +163,7 @@ namespace JuliHelper
                         }
 
                         if (newTexs.All(g => g == null))
-                            return;
+                            throw new ContentFenjaException("Couldn't load Texture2Ds.");
 
                         for (int i = 0; i < texs.Count; i++)
                         {
@@ -177,7 +177,7 @@ namespace JuliHelper
                     {
                         TextureAnim ani = f.GetValue(null) as TextureAnim;
                         if (ani == null)
-                            return;
+                            throw new ContentFenjaException("Couldn't load TextureAnim.");
 
                         Texture2D newTex = GetTexture(f.Name + ".png");
 
@@ -186,13 +186,13 @@ namespace JuliHelper
                         if (!File.Exists(aniPath))
                         {
                             if (newTex == null)
-                                return;
+                            throw new ContentFenjaException("Couldn't load TextureAnim.");
                             newAni = new TextureAnim(ani.Texture);
                         }
                         else
                         {
                             if (newTex == null && !IsNew(aniPath))
-                                return;
+                            throw new ContentFenjaException("Couldn't load TextureAnim.");
 
                             newAni = new TextureAnim(newTex ?? ani.Texture, File.ReadAllLines(aniPath));
                         }
@@ -205,7 +205,7 @@ namespace JuliHelper
                     {
                         List<TextureAnim> anims = (f.GetValue(null) as TextureAnim[])?.ToList();
                         if (anims == null)
-                            return;
+                            throw new ContentFenjaException("Couldn't load TextureAnims.");
 
                         int index = 0;
 
@@ -236,7 +236,7 @@ namespace JuliHelper
                         }
 
                         if (newAnims.All(g => g == null))
-                            return;
+                            throw new ContentFenjaException("Couldn't load TextureAnims.");
 
                         for (int i = 0; i < anims.Count; i++)
                         {
@@ -270,7 +270,7 @@ namespace JuliHelper
                         SoundEffect[] newSounds = GetSounds(f.Name);
 
                         if (newSounds == null)
-                            return;
+                            throw new ContentFenjaException("Couldn't load SoundItemCollection.");
 
                         SoundItemCollection sound = f.GetValue(null) as SoundItemCollection;
                         if (sound == null)
@@ -380,7 +380,7 @@ namespace JuliHelper
                         SoundEffect newSound = content.Load<SoundEffect>(Path.Combine(localPath, f.Name));
 
                         if (newSound == null)
-                            return;
+                            throw new ContentFenjaException("Couldn't load sound effect.");
 
                         SoundItem sound = f.GetValue(null) as SoundItem;
                         if (sound == null)
@@ -394,7 +394,7 @@ namespace JuliHelper
                     {
                         string directory = Path.Combine(localPath, f.Name).Replace('\\', '/');
                         if (files == null)
-                            return;
+                            throw new ContentFenjaException("Couldn't load SoundItemCollection.");
                         var matches = files.Where(f2 => f2.StartsWith(directory));
 
                         List<SoundEffect> sounds = new List<SoundEffect>();
@@ -444,7 +444,7 @@ namespace JuliHelper
                     {
                         Texture2D tex = f.GetValue(null) as Texture2D;
                         if (tex == null)
-                            return;
+                            throw new ContentFenjaException("Couldn't load Texture2D.");
 
                         tex.Dispose();
                     }
@@ -454,7 +454,7 @@ namespace JuliHelper
                     {
                         List<Texture2D> texs = (f.GetValue(null) as Texture2D[])?.ToList();
                         if (texs == null)
-                            return;
+                            throw new ContentFenjaException("Couldn't load Texture2Ds.");
 
                         for (int i = 0; i < texs.Count; i++)
                         {
@@ -467,7 +467,7 @@ namespace JuliHelper
                     {
                         TextureAnim ani = f.GetValue(null) as TextureAnim;
                         if (ani == null)
-                            return;
+                            throw new ContentFenjaException("Couldn't load animation.");
                         ani.Dispose();
                     }
                 },
@@ -476,7 +476,7 @@ namespace JuliHelper
                     {
                         List<TextureAnim> anims = (f.GetValue(null) as TextureAnim[])?.ToList();
                         if (anims == null)
-                            return;
+                            throw new ContentFenjaException("Couldn't load animations.");
                         for (int i = 0; i < anims.Count; i++)
                         {
                             anims[i].Dispose();
@@ -488,7 +488,7 @@ namespace JuliHelper
                     {
                         var item = f.GetValue(null) as SoundItem;
                         if (item == null)
-                            return;
+                            throw new ContentFenjaException("Couldn't load SoundItem.");
                         item.Dispose();
                     }
                 },
@@ -505,6 +505,15 @@ namespace JuliHelper
             {
                 DisposeContent(nested[i]);
             }
+        }
+    }
+
+    public class ContentFenjaException : Exception
+    {
+        public ContentFenjaException(string message)
+            :base(message)
+        {
+
         }
     }
 }
