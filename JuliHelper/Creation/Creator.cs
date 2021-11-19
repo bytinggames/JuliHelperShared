@@ -67,7 +67,7 @@ namespace JuliHelper.Creation
         }
 
         /// <summary>"Type(ctorArg1)(ctorArg2)_Prop(val)_Method(arg1)(arg2)"</summary>
-        private object CreateObject(ScriptReader reader, Type objectBaseType, object[] firstCtorParamValues = null)
+        private object CreateObject(ScriptReader reader, Type objectBaseType)
         {
             string typeStr = reader.ReadToChar(open);
 
@@ -94,7 +94,7 @@ namespace JuliHelper.Creation
             if (!objectBaseType.IsAssignableFrom(type))
                 throw new Exception("type " + nameof(type)  + " is not assignable to " + objectBaseType);
             
-            object obj = CreateObject(type, reader, firstCtorParamValues);
+            object obj = CreateObject(type, reader);
 
             char? c;
 
@@ -146,41 +146,36 @@ namespace JuliHelper.Creation
         }
 
         /// <summary>"ctorArg1,ctorArg2"</summary>
-        private object CreateObject(Type type, ScriptReader reader, object[] firstCtorParamValues = null)
+        private object CreateObject(Type type, ScriptReader reader)
         {
-            object[] args = GetParametersForConstructor(reader, type, firstCtorParamValues);
+            object[] args = GetParametersForConstructor(reader, type);
 
             return Activator.CreateInstance(type, args);
         }
 
         /// <summary>"ctorArg1,ctorArg2"</summary>
-        private object[] GetParametersForConstructor(ScriptReader reader, Type constructorType, object[] firstCtorParamValues = null)
+        private object[] GetParametersForConstructor(ScriptReader reader, Type constructorType)
         {
-            firstCtorParamValues ??= new object[0];
-
-            //if (argsStr == "" || argsStr == null)
-            //    return firstCtorParamValues;
-
             var ctors = constructorType.GetConstructors();
 
             string[] split = GetParameterStrings(reader);
 
-            ConstructorInfo ctorInfo = GetMatchingConstructor(firstCtorParamValues.Length, ctors, split);
+            ConstructorInfo ctorInfo = GetMatchingConstructor(ctors, split);
             if (ctorInfo == null)
                 throw new Exception("no matching constructor not found");
 
-            var parameterInfos = ctorInfo.GetParameters().Skip(firstCtorParamValues.Length).ToArray();
+            var parameterInfos = ctorInfo.GetParameters().ToArray();
 
-            return firstCtorParamValues.Concat(GetParameters(split, parameterInfos.Select(f => f.ParameterType).ToArray())).ToArray();
+            return GetParameters(split, parameterInfos.Select(f => f.ParameterType).ToArray());
         }
 
-        private ConstructorInfo GetMatchingConstructor(int firstCtorParamValuesCount, ConstructorInfo[] ctors, string[] split)
+        private ConstructorInfo GetMatchingConstructor(ConstructorInfo[] ctors, string[] split)
         {
             foreach (var ctor in ctors)
             {
                 var parameters = ctor.GetParameters();
                 int parametersForSplitArray = 0;
-                for (int i = firstCtorParamValuesCount; i < parameters.Length; i++)
+                for (int i = 0; i < parameters.Length; i++)
                 {
                     if (!AutoParameters.ContainsKey(parameters[i].ParameterType))
                         parametersForSplitArray++;
