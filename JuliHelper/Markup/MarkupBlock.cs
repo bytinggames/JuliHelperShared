@@ -6,7 +6,7 @@ using System.Text;
 
 namespace JuliHelper.Markup
 {
-    public abstract class BlockLeaf : ILeaf
+    public abstract class MarkupBlock : ILeaf
     {
         public float MarginRight { get; set; }
         public float MarginLeft { get; set; }
@@ -23,7 +23,7 @@ namespace JuliHelper.Markup
         /// <summary>No PaddingBottom support for SubSizeUnion yet.</summary>
         public float PaddingBottom { get; set; }
 
-        private ElementContainer subContainer;
+        private MarkupRoot subContainer;
 
         public bool SubSizeUnion { get; set; } = false;
 
@@ -33,7 +33,7 @@ namespace JuliHelper.Markup
 
         public void Sub(Creator creator, string text)
         {
-            subContainer = new ElementContainer(creator, text);
+            subContainer = new MarkupRoot(creator, text);
         }
 
         public void SubAnchor(float x, float y)
@@ -43,7 +43,7 @@ namespace JuliHelper.Markup
         }
 
 
-        public void Draw(DrawSettings settings)
+        public void Draw(MarkupSettings settings)
         {
             if (MarginLeft == 0 && MarginRight == 0)
                 InnerDraw(settings);
@@ -56,7 +56,7 @@ namespace JuliHelper.Markup
                 settings.Anchor.pos = temp;
             }
         }
-        private void InnerDraw(DrawSettings settings)
+        private void InnerDraw(MarkupSettings settings)
         {
             float tempX = settings.Anchor.X;
             if (SubSizeUnion && subContainer != null)
@@ -83,9 +83,9 @@ namespace JuliHelper.Markup
             settings.Anchor.X = tempX;
         }
 
-        protected abstract void DrawChild(DrawSettings settings);
+        protected abstract void DrawChild(MarkupSettings settings);
 
-        public Vector2 GetSize(DrawSettings settings)
+        public Vector2 GetSize(MarkupSettings settings)
         {
             Vector2 size = GetSizeChild(settings);
 
@@ -100,6 +100,6 @@ namespace JuliHelper.Markup
             return size;
         }
 
-        protected abstract Vector2 GetSizeChild(DrawSettings settings);
+        protected abstract Vector2 GetSizeChild(MarkupSettings settings);
     }
 }

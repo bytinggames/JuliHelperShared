@@ -5,11 +5,11 @@ using System.Collections.Generic;
 namespace JuliHelper.Markup
 {
     [CreatorShortcut("c")]
-    public class ColorElement : ElementCollection
+    public class MarkupColor : MarkupCollection
     {
         Color textColor;
 
-        public ColorElement(Creator creator, string hexColor, string text)
+        public MarkupColor(Creator creator, string hexColor, string text)
             :base(creator, text)
         {
             textColor = Calculate.HexToColor(hexColor);
@@ -20,7 +20,7 @@ namespace JuliHelper.Markup
             return $"#{textColor.ColorToHex()} {base.ToString()}";
         }
 
-        public override IEnumerable<ILeaf> IterateOverLeaves(DrawSettings settings)
+        public override IEnumerable<ILeaf> IterateOverLeaves(MarkupSettings settings)
         {
             Color temp = settings.TextColor;
             settings.TextColor = textColor;

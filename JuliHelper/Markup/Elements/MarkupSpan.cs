@@ -3,9 +3,9 @@
 namespace JuliHelper.Markup
 {
     [CreatorShortcut("span")]
-    public class SpanElement : TextElement
+    public class MarkupSpan : MarkupText
     {
-        public SpanElement(string str)
+        public MarkupSpan(string str)
             : base(new ScriptReader(str))
         {
         }

@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace JuliHelper.Markup
 {
     [CreatorShortcut("tex")]
-    public class TextureElement : BlockLeaf
+    public class MarkupTexture : MarkupBlock
     {
         public Rectangle BoundingRectangle { get; }
 
@@ -15,12 +15,12 @@ namespace JuliHelper.Markup
         public Color Color { get; set; } = Color.White;
         public Rectangle? SourceRectangle { get; set; } = null;
 
-        public TextureElement(ContentManager content, string texName)
+        public MarkupTexture(ContentManager content, string texName)
         {
             Texture = content.Load<Texture2D>("Textures/" + texName);
         }
 
-        protected override Vector2 GetSizeChild(DrawSettings settings)
+        protected override Vector2 GetSizeChild(MarkupSettings settings)
         {
             if (SourceRectangle == null)
                 return Texture.GetSize();
@@ -28,7 +28,7 @@ namespace JuliHelper.Markup
                 return SourceRectangle.Value.Size.ToVector2();
         }
 
-        protected override void DrawChild(DrawSettings settings)
+        protected override void DrawChild(MarkupSettings settings)
         {
             Texture.Draw(settings.Anchor, Color, SourceRectangle, settings.Scale, settings.Rotation, settings.Effects);
         }

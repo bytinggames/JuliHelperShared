@@ -2,11 +2,11 @@
 
 namespace JuliHelper.Markup
 {
-    public class NewLineElement : ILeaf
+    public class MarkupNewLine : ILeaf
     {
-        public void Draw(DrawSettings settings) { }
+        public void Draw(MarkupSettings settings) { }
 
-        public Vector2 GetSize(DrawSettings settings)
+        public Vector2 GetSize(MarkupSettings settings)
         {
             return new Vector2(0, settings.MyFont.Font.LineSpacing);
         }

@@ -5,21 +5,21 @@ using System.Linq;
 
 namespace JuliHelper.Markup
 {
-    public class ElementContainer
+    public class MarkupRoot
     {
-        ElementCollection Root { get; }
+        MarkupCollection Root { get; }
 
-        public ElementContainer(Creator creator, string text)
+        public MarkupRoot(Creator creator, string text)
         {
-            Root = new ElementCollection(creator, text);
+            Root = new MarkupCollection(creator, text);
         }
 
-        public void Draw(DrawSettings _settings)
+        public void Draw(MarkupSettings _settings)
         {
             (Vector2 totalSize, Vector2[] lineSizes) = GetSizes(_settings);
             Vector2 topLeft = _settings.Anchor.Rectangle(totalSize.X, totalSize.Y).TopLeft;
             Vector2 topLeftOfLine = topLeft;
-            DrawSettings settings = _settings.CloneDrawSettings(); // clone to modify the anchor
+            MarkupSettings settings = _settings.CloneDrawSettings(); // clone to modify the anchor
 
             int lineIndex = 0;
 
@@ -48,7 +48,7 @@ namespace JuliHelper.Markup
             }
         }
 
-        public Vector2 GetSize(DrawSettings settings)
+        public Vector2 GetSize(MarkupSettings settings)
         {
             Vector2 totalSize = new Vector2();
             foreach (var size in GetLinesSizes(settings))
@@ -60,7 +60,7 @@ namespace JuliHelper.Markup
             return totalSize;
         }
 
-        public (Vector2 totalSize, Vector2[] lineSizes) GetSizes(DrawSettings settings)
+        public (Vector2 totalSize, Vector2[] lineSizes) GetSizes(MarkupSettings settings)
         {
             Vector2 totalSize = new Vector2();
             Vector2[] lineSizes = GetLinesSizes(settings).ToArray();
@@ -85,7 +85,7 @@ namespace JuliHelper.Markup
             }
         }
 
-        public IEnumerable<Vector2> GetLinesSizes(DrawSettings settings)
+        public IEnumerable<Vector2> GetLinesSizes(MarkupSettings settings)
         {
             bool firstLine = true;
             foreach (var line in GetLinesOfLeaves(settings))
@@ -108,7 +108,7 @@ namespace JuliHelper.Markup
             }
         }
 
-        public IEnumerable<IEnumerable<ILeaf>> GetLinesOfLeaves(DrawSettings settings)
+        public IEnumerable<IEnumerable<ILeaf>> GetLinesOfLeaves(MarkupSettings settings)
         {
             IEnumerator<ILeaf> enumerator = Root.IterateOverLeaves(settings).GetEnumerator();
             
@@ -122,7 +122,7 @@ namespace JuliHelper.Markup
         {
             do
             {
-                if (enumerator.Current is NewLineElement)
+                if (enumerator.Current is MarkupNewLine)
                 {
                     yield return enumerator.Current;
                     yield break;

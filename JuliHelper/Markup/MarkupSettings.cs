@@ -6,7 +6,7 @@ using System.Text;
 
 namespace JuliHelper.Markup
 {
-    public class DrawSettings : ICloneable
+    public class MarkupSettings : ICloneable
     {
         public MyFont MyFont { get; set; }
         public Anchor Anchor { get; set; }
@@ -20,7 +20,7 @@ namespace JuliHelper.Markup
         public float MinLineHeight { get; set; }
         public float VerticalSpaceBetweenLines { get; set; }
 
-        public DrawSettings(MyFont myFont, Anchor anchor, Color? textColor = null, float align = 0.5f, Vector2? scale = null, float rotation = 0f, SpriteEffects effects = SpriteEffects.None)
+        public MarkupSettings(MyFont myFont, Anchor anchor, Color? textColor = null, float align = 0.5f, Vector2? scale = null, float rotation = 0f, SpriteEffects effects = SpriteEffects.None)
         {
             MyFont = myFont;
             Anchor = anchor;
@@ -31,9 +31,9 @@ namespace JuliHelper.Markup
             Effects = effects;
         }
 
-        public DrawSettings CloneDrawSettings()
+        public MarkupSettings CloneDrawSettings()
         {
-            DrawSettings clone = (DrawSettings)this.MemberwiseClone();
+            MarkupSettings clone = (MarkupSettings)this.MemberwiseClone();
             clone.Anchor = Anchor.Clone();
             return clone;
         }

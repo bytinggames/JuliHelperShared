@@ -4,11 +4,11 @@ using System.Collections.Generic;
 
 namespace JuliHelper.Markup
 {
-    public class ElementCollection : IBranch
+    public class MarkupCollection : IBranch
     {
         public List<INode> Children { get; } = new List<INode>();
 
-        public virtual IEnumerable<ILeaf> IterateOverLeaves(DrawSettings settings)
+        public virtual IEnumerable<ILeaf> IterateOverLeaves(MarkupSettings settings)
         {
             foreach (var child in Children)
             {
@@ -24,7 +24,7 @@ namespace JuliHelper.Markup
             }
         }
 
-        public ElementCollection(Creator creator, string text)
+        public MarkupCollection(Creator creator, string text)
         {
             ScriptReader reader = new ScriptReader(text);
 
@@ -49,10 +49,10 @@ namespace JuliHelper.Markup
 
                 case '\n':
                     reader.ReadChar(); // read in '\n'
-                    return new NewLineElement();
+                    return new MarkupNewLine();
 
                 default:
-                    return new TextElement(reader);
+                    return new MarkupText(reader);
             }
         }
     }
