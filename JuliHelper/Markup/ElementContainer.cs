@@ -26,6 +26,13 @@ namespace JuliHelper.Markup
             foreach (var line in GetLinesOfLeaves(settings))
             {
                 Vector2 lineSize = lineSizes[lineIndex];
+
+                if (settings.VerticalSpaceBetweenLines != 0 && lineIndex > 0 /* first line doesn't have that top space */)
+                {
+                    lineSize.Y -= settings.VerticalSpaceBetweenLines;
+                    topLeftOfLine.Y += settings.VerticalSpaceBetweenLines;
+                }
+
                 float emptyHorizontalSpace = totalSize.X - lineSize.X;
                 M_Rectangle lineBounds = new M_Rectangle(topLeftOfLine.X + settings.HorizontalAlignInLine * emptyHorizontalSpace, topLeftOfLine.Y, lineSize.X, lineSize.Y);
                 settings.Anchor = new Anchor(lineBounds.X, lineBounds.Y + settings.VerticalAlignInLine * lineSize.Y, 0, settings.VerticalAlignInLine);
@@ -80,6 +87,7 @@ namespace JuliHelper.Markup
 
         public IEnumerable<Vector2> GetLinesSizes(DrawSettings settings)
         {
+            bool firstLine = true;
             foreach (var line in GetLinesOfLeaves(settings))
             {
                 Vector2 lineSize = new Vector2(0, settings.MinLineHeight);
@@ -90,6 +98,12 @@ namespace JuliHelper.Markup
                     if (size.Y > lineSize.Y)
                         lineSize.Y = size.Y;
                 }
+
+                if (firstLine)
+                    firstLine = false;
+                else
+                    lineSize.Y += settings.VerticalSpaceBetweenLines;
+
                 yield return lineSize;
             }
         }

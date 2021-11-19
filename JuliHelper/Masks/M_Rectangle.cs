@@ -317,6 +317,15 @@ namespace JuliHelper
             return this;
         }
 
+        public M_Rectangle ApplyPadding(float left, float right, float top, float bottom)
+        {
+            size.X -= left + right;
+            size.Y -= top + bottom;
+            X += left;
+            Y += top;
+            return this;
+        }
+
         public void SetCenter(Vector2 center)
         {
             pos = center - size / 2f;

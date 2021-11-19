@@ -13,6 +13,16 @@ namespace JuliHelper.Markup
         public float MarginTop { get; set; }
         public float MarginBottom { get; set; }
 
+        // for sub element
+        /// <summary>No PaddingRight support for SubSizeUnion yet.</summary>
+        public float PaddingRight { get; set; }
+        /// <summary>No PaddingLeft support for SubSizeUnion yet.</summary>
+        public float PaddingLeft { get; set; }
+        /// <summary>No PaddingTop support for SubSizeUnion yet.</summary>
+        public float PaddingTop { get; set; }
+        /// <summary>No PaddingBottom support for SubSizeUnion yet.</summary>
+        public float PaddingBottom { get; set; }
+
         private ElementContainer subContainer;
 
         public bool SubSizeUnion { get; set; } = false;
@@ -55,13 +65,18 @@ namespace JuliHelper.Markup
                 Vector2 subSize = subContainer.GetSize(settings);
                 Vector2 larger = subSize - thisSize;
                 if (larger.X > 0)
-                    settings.Anchor.X += larger.X * SubAnchorX; // TODO: depends on anchor
+                    settings.Anchor.X += larger.X * SubAnchorX;
             }
             DrawChild(settings);
+
+            //settings.Anchor.Rectangle(GetSize(settings)).Draw(Color.Red * 0.5f);
+
             if (subContainer != null)
             {
                 var settingsClone = settings.CloneDrawSettings();
-                settingsClone.Anchor = settings.Anchor.Rectangle(GetSizeChild(settingsClone)).GetAnchor(SubAnchorX, SubAnchorY);
+                M_Rectangle ownRect = settings.Anchor.Rectangle(GetSizeChild(settingsClone));
+                ownRect.ApplyPadding(PaddingLeft, PaddingRight, PaddingTop, PaddingBottom);
+                settingsClone.Anchor = ownRect.GetAnchor(SubAnchorX, SubAnchorY);
                 subContainer.Draw(settingsClone);
             }
 

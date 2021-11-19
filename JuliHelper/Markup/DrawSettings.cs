@@ -18,6 +18,7 @@ namespace JuliHelper.Markup
         public SpriteEffects Effects { get; }
         public long Time { get; set; }
         public float MinLineHeight { get; set; }
+        public float VerticalSpaceBetweenLines { get; set; }
 
         public DrawSettings(MyFont myFont, Anchor anchor, Color? textColor = null, float align = 0.5f, Vector2? scale = null, float rotation = 0f, SpriteEffects effects = SpriteEffects.None)
         {
