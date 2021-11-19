@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace JuliHelper.Markup
 {
-    [CreatorShortcut("tex")]
+    [MarkupShortcut("tex")]
     public class MarkupTexture : MarkupBlock
     {
         public Rectangle BoundingRectangle { get; }

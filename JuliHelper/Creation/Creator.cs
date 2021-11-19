@@ -1,10 +1,8 @@
-﻿using Microsoft.Xna.Framework.Content;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace JuliHelper.Creation
 {
@@ -15,24 +13,44 @@ namespace JuliHelper.Creation
         public const char setterSeparator = '_';
         public const char parameterSeparator = '|';
 
-        Dictionary<Type, object> autoParameters = new Dictionary<Type, object>();
+        public Dictionary<Type, object> AutoParameters { get; } = new Dictionary<Type, object>();
 
         Dictionary<string, Type> shortcuts = new Dictionary<string, Type>();
 
-        public Creator(ContentManager content)
+        private readonly string defaultNamespace;
+        private readonly Assembly[] assemblies;
+
+        public Creator(string defaultNamespace, Assembly[] assemblies = null, object[] _autoParameters = null, Type shortcutAttributeType = null)
         {
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            foreach (Type type in assembly.GetTypes())
+            this.defaultNamespace = defaultNamespace;
+            this.assemblies = assemblies;
+
+            if (assemblies == null)
+                assemblies = new Assembly[] { Assembly.GetCallingAssembly() };
+
+            AutoParameters.Add(GetType(), this);
+            if (_autoParameters != null)
             {
-                var attributes = type.GetCustomAttributes<CreatorShortcutAttribute>(false);
-                foreach (var attr in attributes)
+                for (int i = 0; i < _autoParameters.Length; i++)
                 {
-                    shortcuts.Add(attr.ShortcutName, type);
+                    AutoParameters.Add(_autoParameters[i].GetType(), _autoParameters[i]);
                 }
             }
 
-            autoParameters.Add(GetType(), this);
-            autoParameters.Add(content.GetType(), content);
+            if (shortcutAttributeType != null)
+            {
+                foreach (var assembly in assemblies)
+                {
+                    foreach (Type type in assembly.GetTypes())
+                    {
+                        var attributes = type.GetCustomAttributes(shortcutAttributeType, false).Cast<CreatorShortcutAttribute>();
+                        foreach (var attr in attributes)
+                        {
+                            shortcuts.Add(attr.ShortcutName, type);
+                        }
+                    }
+                }
+            }
         }
 
         public object CreateObject(ScriptReader reader)
@@ -53,17 +71,24 @@ namespace JuliHelper.Creation
         {
             string typeStr = reader.ReadToChar(open);
 
-            Type type;
+            Type type = null;
             if (shortcuts.ContainsKey(typeStr))
             {
                 type = shortcuts[typeStr];
             }
             else
             {
-                string fullTypeName = "JuliHelper." + typeStr;
-                type = Type.GetType(fullTypeName);
+                string fullTypeName = defaultNamespace + "." + typeStr;
+
+                for (int i = 0; i < assemblies.Length; i++)
+                {
+                    type = assemblies[i].GetType(fullTypeName);
+                    if (type != null)
+                        break;
+                }
+
                 if (type == null)
-                    throw new Exception("type " + fullTypeName + " not found");
+                    throw new Exception("type " + fullTypeName + " not found in given assemblies");
             }
 
             if (!objectBaseType.IsAssignableFrom(type))
@@ -157,7 +182,7 @@ namespace JuliHelper.Creation
                 int parametersForSplitArray = 0;
                 for (int i = firstCtorParamValuesCount; i < parameters.Length; i++)
                 {
-                    if (!autoParameters.ContainsKey(parameters[i].ParameterType))
+                    if (!AutoParameters.ContainsKey(parameters[i].ParameterType))
                         parametersForSplitArray++;
                 }
 
@@ -179,8 +204,8 @@ namespace JuliHelper.Creation
             int splitIndex = 0;
             for (int i = 0; i < expectedTypes.Length; i++)
             {
-                if (autoParameters.ContainsKey(expectedTypes[i]))
-                    output[i] = autoParameters[expectedTypes[i]];
+                if (AutoParameters.ContainsKey(expectedTypes[i]))
+                    output[i] = AutoParameters[expectedTypes[i]];
                 else
                     output[i] = GetParameters(split[splitIndex++], expectedTypes[i]);
             }
@@ -211,6 +236,10 @@ namespace JuliHelper.Creation
                 string para = reader.ReadToCharOrEndConsiderOpenCloseBraces(new char[] { close, parameterSeparator }, open, close);
                 splits.Add(para);
             } while (reader.Peek(-1) == parameterSeparator);
+
+            // clear list if paramters look like this: () <- empty
+            if (splits.Count == 1 && splits[0] == "")
+                splits.Clear();
 
             if (reader.Peek(-1) != close)
                 throw new Exception($"close expected, but {reader.Peek(-1)} read instead");

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace JuliHelper.Markup
 {
-    [CreatorShortcut("c")]
+    [MarkupShortcut("c")]
     public class MarkupColor : MarkupCollection
     {
         Color textColor;

@@ -2,7 +2,7 @@
 
 namespace JuliHelper.Markup
 {
-    [CreatorShortcut("span")]
+    [MarkupShortcut("span")]
     public class MarkupSpan : MarkupText
     {
         public MarkupSpan(string str)

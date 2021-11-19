@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace JuliHelper.Markup
 {
-    [CreatorShortcut("outline")]
+    [MarkupShortcut("outline")]
     public class MarkupOutline : MarkupCollection
     {
         Color color;

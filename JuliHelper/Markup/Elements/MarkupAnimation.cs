@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace JuliHelper.Markup
 {
-    [CreatorShortcut("anim")]
+    [MarkupShortcut("anim")]
     public class MarkupAnimation : MarkupTexture
     {
         private readonly AnimationData animationData;
