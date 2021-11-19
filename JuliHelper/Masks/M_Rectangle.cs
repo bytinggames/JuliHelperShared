@@ -346,6 +346,15 @@ namespace JuliHelper
             return new Anchor(GetCenter());
         }
 
+        public Anchor GetAnchor(float anchorX, float anchorY)
+        {
+            return new Anchor(GetPos(anchorX, anchorY), new Vector2(anchorX, anchorY));
+        }
+        public Anchor GetAnchor(Vector2 anchor)
+        {
+            return new Anchor(GetPos(anchor), anchor);
+        }
+
         public M_Rectangle Move(Vector2 moveBy)
         {
             pos += moveBy;

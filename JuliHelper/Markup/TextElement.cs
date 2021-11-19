@@ -2,7 +2,7 @@
 
 namespace JuliHelper.Markup
 {
-    public class TextElement : ILeaf
+    public class TextElement : BlockLeaf
     {
         public string Text { get; }
 
@@ -13,12 +13,12 @@ namespace JuliHelper.Markup
                 reader.Move(-1);
         }
 
-        public Vector2 GetSize(DrawSettings settings)
+        protected override Vector2 GetSizeChild(DrawSettings settings)
         {
             return settings.MyFont.Font.MeasureString(Text).CeilVector();
         }
 
-        public void Draw(DrawSettings settings)
+        protected override void DrawChild(DrawSettings settings)
         {
             settings.MyFont.Font.Draw(Text, settings.Anchor, settings.TextColor, settings.Scale, settings.Rotation, settings.Effects);
         }

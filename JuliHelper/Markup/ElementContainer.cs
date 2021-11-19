@@ -5,11 +5,11 @@ using System.Linq;
 
 namespace JuliHelper.Markup
 {
-    public class ElementBlock
+    public class ElementContainer
     {
         ElementCollection Root { get; }
 
-        public ElementBlock(Creator creator, string text)
+        public ElementContainer(Creator creator, string text)
         {
             Root = new ElementCollection(creator, text);
         }
@@ -82,7 +82,7 @@ namespace JuliHelper.Markup
         {
             foreach (var line in GetLinesOfLeaves(settings))
             {
-                Vector2 lineSize = Vector2.Zero;
+                Vector2 lineSize = new Vector2(0, settings.MinLineHeight);
                 foreach (var element in line)
                 {
                     Vector2 size = element.GetSize(settings);

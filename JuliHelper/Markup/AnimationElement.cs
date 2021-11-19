@@ -24,15 +24,15 @@ namespace JuliHelper.Markup
             frameTag = animationData.GetFrameTag(animationTagName);
         }
 
-        public override Vector2 GetSize(DrawSettings settings)
+        protected override Vector2 GetSizeChild(DrawSettings settings)
         {
             return animationData.GetSourceRectangle(settings.Time, frameTag).Size.ToVector2();
         }
 
-        public override void Draw(DrawSettings settings)
+        protected override void DrawChild(DrawSettings settings)
         {
             SourceRectangle = animationData.GetSourceRectangle(settings.Time, frameTag);
-            base.Draw(settings);
+            base.DrawChild(settings);
         }
     }
 }

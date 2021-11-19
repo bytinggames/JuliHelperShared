@@ -101,6 +101,7 @@ namespace JuliHelper.Creation
                 var method = type.GetMethod(setterName);
                 if (method != null)
                 {
+                    reader.Move(-1);
                     object[] args = GetParameters(StringSplitConsiderOpenCloseBraces(reader), method.GetParameters().Select(f => f.ParameterType).ToArray());
                     method.Invoke(obj, args);
                 }
