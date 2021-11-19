@@ -123,7 +123,10 @@ namespace JuliHelper.Markup
             do
             {
                 if (enumerator.Current is NewLineElement)
+                {
+                    yield return enumerator.Current;
                     yield break;
+                }
                 yield return enumerator.Current;
             }
             while (enumerator.MoveNext());
