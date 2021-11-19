@@ -19,6 +19,22 @@ namespace JuliHelper.Markup
         public long Time { get; set; }
         public float MinLineHeight { get; set; }
         public float VerticalSpaceBetweenLines { get; set; }
+        public Line Outline { get; set; }
+
+        public class Line : ICloneable
+        {
+            public Color color = Color.Black;
+            public float thickness = 1f;
+
+            public Line(Color color, float thickness)
+            {
+                this.color = color;
+                this.thickness = thickness;
+            }
+
+            public Line CloneLine() => (Line)this.MemberwiseClone();
+            public object Clone() => CloneLine();
+        }
 
         public MarkupSettings(MyFont myFont, Anchor anchor, Color? textColor = null, float align = 0.5f, Vector2? scale = null, float rotation = 0f, SpriteEffects effects = SpriteEffects.None)
         {
@@ -34,7 +50,8 @@ namespace JuliHelper.Markup
         public MarkupSettings CloneDrawSettings()
         {
             MarkupSettings clone = (MarkupSettings)this.MemberwiseClone();
-            clone.Anchor = Anchor.Clone();
+            clone.Anchor = Anchor?.Clone();
+            clone.Outline = Outline?.CloneLine();
             return clone;
         }
         public object Clone() => CloneDrawSettings();
