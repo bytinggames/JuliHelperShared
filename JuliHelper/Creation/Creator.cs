@@ -13,6 +13,7 @@ namespace JuliHelper.Creation
         public const char open = '(';
         public const char close = ')';
         public const char setterSeparator = '_';
+        public const char parameterSeparator = '|';
 
         Dictionary<Type, object> autoParameters = new Dictionary<Type, object>();
 
@@ -51,7 +52,6 @@ namespace JuliHelper.Creation
         private object CreateObject(ScriptReader reader, Type objectBaseType, object[] firstCtorParamValues = null)
         {
             string typeStr = reader.ReadToChar(open);
-            reader.Move(-1); // move infront of open again
 
             Type type;
             if (shortcuts.ContainsKey(typeStr))
@@ -101,8 +101,7 @@ namespace JuliHelper.Creation
                 var method = type.GetMethod(setterName);
                 if (method != null)
                 {
-                    reader.Move(-1);
-                    object[] args = GetParameters(StringSplitConsiderOpenCloseBraces(reader), method.GetParameters().Select(f => f.ParameterType).ToArray());
+                    object[] args = GetParameters(GetParameterStrings(reader), method.GetParameters().Select(f => f.ParameterType).ToArray());
                     method.Invoke(obj, args);
                 }
                 else
@@ -139,7 +138,7 @@ namespace JuliHelper.Creation
 
             var ctors = constructorType.GetConstructors();
 
-            string[] split = StringSplitConsiderOpenCloseBraces(reader);
+            string[] split = GetParameterStrings(reader);
 
             ConstructorInfo ctorInfo = GetMatchingConstructor(firstCtorParamValues.Length, ctors, split);
             if (ctorInfo == null)
@@ -203,16 +202,18 @@ namespace JuliHelper.Creation
                 return Convert.ChangeType(argStr, expectedType, CultureInfo.InvariantCulture);
         }
 
-        private string[] StringSplitConsiderOpenCloseBraces(ScriptReader reader)
+        private string[] GetParameterStrings(ScriptReader reader)
         {
             List<string> splits = new List<string>();
 
-            char? peek;
-            while ((peek = reader.Peek()) == open)
+            do
             {
-                reader.ReadChar(); // skip open
-                splits.Add(reader.ReadToCharOrEndConsiderOpenCloseBraces(close, open, close));
-            }
+                string para = reader.ReadToCharOrEndConsiderOpenCloseBraces(new char[] { close, parameterSeparator }, open, close);
+                splits.Add(para);
+            } while (reader.Peek(-1) == parameterSeparator);
+
+            if (reader.Peek(-1) != close)
+                throw new Exception($"close expected, but {reader.Peek(-1)} read instead");
 
             return splits.ToArray();
         }

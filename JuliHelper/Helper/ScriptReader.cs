@@ -102,7 +102,11 @@ namespace JuliHelper
         }
 
         public char? Peek() => i < str.Length ? (char?)str[i] : null;
-
+        public char? Peek(int relative)
+        {
+            relative += i;
+            return relative >= 0 && relative < str.Length ? (char?)str[relative] : null;
+        }
         public void Insert(string v)
         {
             str = str.Insert(i, v);
@@ -115,6 +119,25 @@ namespace JuliHelper
             while ((c = ReadChar()) != null)
             {
                 if (c.Value == untilChar)
+                {
+                    int end = i - 1;
+                    return str.Substring(start, end - start);
+                }
+                else if (c.Value == open)
+                {
+                    ReadUntilClosed(open, close);
+                }
+            }
+            return str.Substring(start);
+        }
+
+        public string ReadToCharOrEndConsiderOpenCloseBraces(char[] untilChar, char open, char close)
+        {
+            int start = i;
+            char? c;
+            while ((c = ReadChar()) != null)
+            {
+                if (untilChar.Contains(c.Value))
                 {
                     int end = i - 1;
                     return str.Substring(start, end - start);
