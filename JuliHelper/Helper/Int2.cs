@@ -11,6 +11,11 @@ namespace JuliHelper
     {
         public int X, Y;
 
+        public static Int2 Zero { get; } = new Int2(0, 0);
+        public static Int2 One { get; } = new Int2(1);
+        public static Int2 UnitX { get; } = new Int2(1,0);
+        public static Int2 UnitY { get; } = new Int2(0,1);
+
         public Int2(int xy)
         {
             this.X = this.Y = xy;
@@ -25,6 +30,12 @@ namespace JuliHelper
         {
             this.X = (int)vec.X;
             this.Y = (int)vec.Y;
+        }
+
+        public Int2(Point point)
+        {
+            this.X = point.X;
+            this.Y = point.Y;
         }
 
         public Vector2 ToVector2()

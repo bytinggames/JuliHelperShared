@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework.Content;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace JuliHelper.Creating
+namespace JuliHelper.Creation
 {
     public class Creator
     {
@@ -17,7 +18,7 @@ namespace JuliHelper.Creating
 
         Dictionary<string, Type> shortcuts = new Dictionary<string, Type>();
 
-        public Creator()
+        public Creator(ContentManager content)
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
             foreach (Type type in assembly.GetTypes())
@@ -28,6 +29,9 @@ namespace JuliHelper.Creating
                     shortcuts.Add(attr.ShortcutName, type);
                 }
             }
+
+            autoParameters.Add(GetType(), this);
+            autoParameters.Add(content.GetType(), content);
         }
 
         public object CreateObject(ScriptReader reader)
@@ -72,7 +76,10 @@ namespace JuliHelper.Creating
             while ((c = reader.ReadChar()).HasValue)
             {
                 if (c != setterSeparator)
+                {
+                    reader.Move(-1); // move back the wrongly read in char
                     return obj;
+                }
 
                 string setterName = reader.ReadToChar(open);
 

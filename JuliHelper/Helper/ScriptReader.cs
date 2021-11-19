@@ -128,5 +128,13 @@ namespace JuliHelper
         }
 
         public bool EndOfString() => i >= str.Length;
+
+        public override string ToString()
+        {
+            char? c = Peek();
+            if (c == null)
+                return "END";
+            return $"{i}: '{c.Value}'";
+        }
     }
 }
