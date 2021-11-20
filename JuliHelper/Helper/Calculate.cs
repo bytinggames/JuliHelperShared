@@ -563,6 +563,9 @@ namespace JuliHelper
             return new Vector3(MathF.Sqrt(v.X), MathF.Sqrt(v.Y), MathF.Sqrt(v.Z));
         }
 
+        public static float Average(this Vector2 v) => (v.X + v.Y) / 2f;
+        public static float Average(this Vector3 v) => (v.X + v.Y + v.Z) / 3f;
+
         #endregion
 
         #region Rectangles
@@ -822,12 +825,15 @@ namespace JuliHelper
             if (hex.Length == 3)
                 hex = hex.Insert(0, hex[0].ToString()).Insert(2, hex[1].ToString()).Insert(4, hex[2].ToString());
 
-            byte r, g, b;
+            byte r, g, b, a = 255;
             byte.TryParse(hex.Substring(0, 2), System.Globalization.NumberStyles.HexNumber, new System.Globalization.CultureInfo("en-GB"), out r);
             byte.TryParse(hex.Substring(2, 2), System.Globalization.NumberStyles.HexNumber, new System.Globalization.CultureInfo("en-GB"), out g);
             byte.TryParse(hex.Substring(4, 2), System.Globalization.NumberStyles.HexNumber, new System.Globalization.CultureInfo("en-GB"), out b);
 
-            return new Color(r, g, b);
+            if (hex.Length == 8)
+                byte.TryParse(hex.Substring(6, 2), System.Globalization.NumberStyles.HexNumber, new System.Globalization.CultureInfo("en-GB"), out a);
+
+            return new Color(r, g, b, a);
         }
         public static Color HexToColor(int hex)
         {
@@ -844,6 +850,8 @@ namespace JuliHelper
             hex += color.R.ToString("X2");
             hex += color.G.ToString("X2");
             hex += color.B.ToString("X2");
+            if (color.A != 255)
+                hex += color.A.ToString("X2");
             return hex;
         }
 
@@ -1716,6 +1724,14 @@ namespace JuliHelper
     {
         private float _hue, _saturation, _value;
         public byte alpha;
+
+        public HSVColor(float hue, float saturation, float value, byte alpha = 255)
+        {
+            this._hue = hue;
+            this._saturation = saturation;
+            this._value = value;
+            this.alpha = alpha;
+        }
 
 		public HSVColor SetHSVA(float _h, float _s, float _v, byte _a)
 		{

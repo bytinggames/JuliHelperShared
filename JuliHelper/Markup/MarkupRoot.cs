@@ -1,5 +1,6 @@
 ﻿using JuliHelper.Creation;
 using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -135,6 +136,30 @@ namespace JuliHelper.Markup
         public override string ToString()
         {
             return string.Join(" ", Root.Children.Select(f => f.ToString()));
+        }
+
+        public M_Rectangle GetRectangle(MarkupSettings markupSettings)
+        {
+            return markupSettings.Anchor.Rectangle(GetSize(markupSettings));
+        }
+        public M_Rectangle GetRectangle(MarkupSettings markupSettings, float enlarge)
+        {
+            var rect = markupSettings.Anchor.Rectangle(GetSize(markupSettings));
+            return rect.Enlarge(enlarge);
+        }
+        public M_Rectangle GetRectangle(MarkupSettings markupSettings, float enlargeX, float enlargeY)
+        {
+            var rect = markupSettings.Anchor.Rectangle(GetSize(markupSettings));
+            return rect.Enlarge(enlargeX, enlargeY);
+        }
+        public M_Rectangle GetRectangleEnlargeRelative(MarkupSettings markupSettings, float enlargeRelative)
+        {
+            var rect = markupSettings.Anchor.Rectangle(GetSize(markupSettings));
+            return rect.Enlarge(rect.size * enlargeRelative);
+        }
+        public M_Rectangle GetRectangleFontBased(MarkupSettings markupSettings)
+        {
+            return GetRectangle(markupSettings, markupSettings.MyFont.Font.LineSpacing - markupSettings.MyFont.DefaultCharacterHeight);
         }
     }
 }

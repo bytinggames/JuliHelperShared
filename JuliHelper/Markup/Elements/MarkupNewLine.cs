@@ -8,7 +8,12 @@ namespace JuliHelper.Markup
 
         public Vector2 GetSize(MarkupSettings settings)
         {
-            return new Vector2(0, settings.MyFont.Font.LineSpacing);
+            return new Vector2(0, settings.MyFont.Font.LineSpacing * settings.Scale.X);
+        }
+
+        public override string ToString()
+        {
+            return "\\n";
         }
     }
 }

@@ -139,7 +139,7 @@ namespace JuliHelper.Creation
                     }
                     else
                     {
-                        throw new Exception("couldn't find property, method or field " + setterName);
+                        throw new Exception("couldn't find property, method or field " + setterName + " of type " + type.FullName);
                     }
                 }
             }

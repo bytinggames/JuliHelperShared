@@ -20,7 +20,7 @@ namespace JuliHelper.Markup
             Texture = content.Load<Texture2D>("Textures/" + texName);
         }
 
-        protected override Vector2 GetSizeChild(MarkupSettings settings)
+        protected override Vector2 GetSizeChildUnscaled(MarkupSettings settings)
         {
             if (SourceRectangle == null)
                 return Texture.GetSize();

@@ -24,7 +24,7 @@ namespace JuliHelper.Markup
             frameTag = animationData.GetFrameTag(animationTagName);
         }
 
-        protected override Vector2 GetSizeChild(MarkupSettings settings)
+        protected override Vector2 GetSizeChildUnscaled(MarkupSettings settings)
         {
             return animationData.GetSourceRectangle(settings.Time, frameTag).Size.ToVector2();
         }

@@ -10,6 +10,8 @@ namespace JuliHelper.Markup
         Color color;
         float thickness;
 
+        public bool SizeUnion { get; set; }
+
         public MarkupOutline(Creator creator, string hexColor, string text)
             : base(creator, text)
         {
@@ -31,7 +33,7 @@ namespace JuliHelper.Markup
         public override IEnumerable<ILeaf> IterateOverLeaves(MarkupSettings settings)
         {
             var temp = settings.Outline?.CloneLine();
-            settings.Outline = new MarkupSettings.Line(color, thickness);
+            settings.Outline = new MarkupSettings.Line(color, thickness, SizeUnion);
 
             foreach (var leaf in base.IterateOverLeaves(settings))
                 yield return leaf;

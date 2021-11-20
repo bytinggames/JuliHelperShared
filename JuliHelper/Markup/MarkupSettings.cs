@@ -23,13 +23,16 @@ namespace JuliHelper.Markup
 
         public class Line : ICloneable
         {
-            public Color color = Color.Black;
-            public float thickness = 1f;
+            public Color Color = Color.Black;
+            public float Thickness = 1f;
+            /// <summary>Wether the outline is considered when calculating the positioning (only horizontally).</summary>
+            public bool SizeUnion = true;
 
-            public Line(Color color, float thickness)
+            public Line(Color color, float thickness, bool sizeUnion)
             {
-                this.color = color;
-                this.thickness = thickness;
+                this.Color = color;
+                this.Thickness = thickness;
+                this.SizeUnion = sizeUnion;
             }
 
             public Line CloneLine() => (Line)this.MemberwiseClone();

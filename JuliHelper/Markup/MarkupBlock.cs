@@ -50,8 +50,8 @@ namespace JuliHelper.Markup
             else
             {
                 Vector2 temp = settings.Anchor.pos;
-                settings.Anchor.pos.X += MarginLeft;
-                settings.Anchor.pos.Y += MarginTop;
+                settings.Anchor.pos.X += MarginLeft * settings.Scale.X;
+                settings.Anchor.pos.Y += MarginTop * settings.Scale.Y;
                 InnerDraw(settings);
                 settings.Anchor.pos = temp;
             }
@@ -75,7 +75,7 @@ namespace JuliHelper.Markup
             {
                 var settingsClone = settings.CloneDrawSettings();
                 M_Rectangle ownRect = settings.Anchor.Rectangle(GetSizeChild(settingsClone));
-                ownRect.ApplyPadding(PaddingLeft, PaddingRight, PaddingTop, PaddingBottom);
+                ownRect.ApplyPadding(PaddingLeft * settings.Scale.X, PaddingRight * settings.Scale.X, PaddingTop * settings.Scale.Y, PaddingBottom * settings.Scale.Y);
                 settingsClone.Anchor = ownRect.GetAnchor(SubAnchorX, SubAnchorY);
                 subContainer.Draw(settingsClone);
             }
@@ -95,11 +95,13 @@ namespace JuliHelper.Markup
                 size = Vector2.Max(size, subSize);
             }
 
-            size.X += MarginRight + MarginLeft;
-            size.Y += MarginTop + MarginBottom;
+            size.X += (MarginRight + MarginLeft) * settings.Scale.X;
+            size.Y += (MarginTop + MarginBottom) * settings.Scale.Y;
             return size;
         }
 
-        protected abstract Vector2 GetSizeChild(MarkupSettings settings);
+        protected Vector2 GetSizeChild(MarkupSettings settings) => GetSizeChildUnscaled(settings) * settings.Scale;
+
+        protected abstract Vector2 GetSizeChildUnscaled(MarkupSettings settings);
     }
 }
