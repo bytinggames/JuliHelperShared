@@ -103,9 +103,9 @@ namespace JuliHelper
             int x1 = (int)Math.Floor(boundingBox.Min.X / FieldSize.X);
             int y1 = (int)Math.Floor(boundingBox.Min.Y / FieldSize.Y);
             int z1 = (int)Math.Floor(boundingBox.Min.Z / FieldSize.Z);
-            int x2 = (int)Math.Ceiling(boundingBox.Max.X / FieldSize.X);
-            int y2 = (int)Math.Ceiling(boundingBox.Max.Y / FieldSize.Y);
-            int z2 = (int)Math.Ceiling(boundingBox.Max.Z / FieldSize.Z);
+            int x2 = (int)Math.Floor(boundingBox.Max.X / FieldSize.X) + 1;
+            int y2 = (int)Math.Floor(boundingBox.Max.Y / FieldSize.Y) + 1;
+            int z2 = (int)Math.Floor(boundingBox.Max.Z / FieldSize.Z) + 1;
 
             Int3 c = new Int3(x1, y1, z1);
             for (; c.Z < z2; c.Z++)
