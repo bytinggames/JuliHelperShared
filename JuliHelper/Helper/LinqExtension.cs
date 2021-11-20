@@ -84,6 +84,7 @@ namespace JuliHelper
             return source.MaxBy(selector, null);
         }
 
+
         public static TSource MaxBy<TSource, TKey>(this IEnumerable<TSource> source,
             Func<TSource, TKey> selector, IComparer<TKey> comparer)
         {
@@ -110,6 +111,84 @@ namespace JuliHelper
                     }
                 }
                 return max;
+            }
+        }
+
+        public static int IndexOfMaxBy<TSource, TKey>(this IEnumerable<TSource> source,
+            Func<TSource, TKey> selector)
+        {
+            return source.IndexOfMaxBy(selector, null);
+        }
+
+        public static int IndexOfMaxBy<TSource, TKey>(this IEnumerable<TSource> source,
+            Func<TSource, TKey> selector, IComparer<TKey> comparer)
+        {
+            if (source == null) throw new ArgumentNullException("source");
+            if (selector == null) throw new ArgumentNullException("selector");
+            comparer ??= Comparer<TKey>.Default;
+
+            int index = 0;
+            using (var sourceIterator = source.GetEnumerator())
+            {
+                if (!sourceIterator.MoveNext())
+                {
+                    throw new InvalidOperationException("Sequence contains no elements");
+                }
+                var max = sourceIterator.Current;
+                int maxIndex = index;
+                var maxKey = selector(max);
+                while (sourceIterator.MoveNext())
+                {
+                    index++;
+                    var candidate = sourceIterator.Current;
+                    var candidateProjected = selector(candidate);
+                    if (comparer.Compare(candidateProjected, maxKey) > 0)
+                    {
+                        max = candidate;
+                        maxIndex = index;
+                        maxKey = candidateProjected;
+                    }
+                }
+                return maxIndex;
+            }
+        }
+
+        public static int IndexOfMinBy<TSource, TKey>(this IEnumerable<TSource> source,
+            Func<TSource, TKey> selector)
+        {
+            return source.IndexOfMinBy(selector, null);
+        }
+
+        public static int IndexOfMinBy<TSource, TKey>(this IEnumerable<TSource> source,
+            Func<TSource, TKey> selector, IComparer<TKey> comparer)
+        {
+            if (source == null) throw new ArgumentNullException("source");
+            if (selector == null) throw new ArgumentNullException("selector");
+            comparer ??= Comparer<TKey>.Default;
+
+            int index = 0;
+            using (var sourceIterator = source.GetEnumerator())
+            {
+                if (!sourceIterator.MoveNext())
+                {
+                    throw new InvalidOperationException("Sequence contains no elements");
+                }
+                var max = sourceIterator.Current;
+                int maxIndex = index;
+                var maxKey = selector(max);
+                while (sourceIterator.MoveNext())
+                {
+                    index++;
+                    var candidate = sourceIterator.Current;
+                    var candidateProjected = selector(candidate);
+                    if (comparer.Compare(candidateProjected, maxKey) < 0)
+                    {
+                        max = candidate;
+                        maxIndex = index;
+                        maxKey = candidateProjected;
+                    }
+                }
+                return maxIndex;
             }
         }
     }
