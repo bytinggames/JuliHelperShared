@@ -138,6 +138,30 @@ namespace JuliHelper
                 return val;
             }
         }
+        public static Vector2 MoveTo(Vector2 val, Vector2 goal, float speed)
+        {
+            if (val == goal)
+                return val;
+
+            Vector2 dist = goal - val;
+            float distLength = dist.Length();
+            if (distLength < speed)
+                return goal;
+            else
+                return val + dist * speed / distLength;
+        }
+        public static float MoveToAngle(float val, float goal, float speed)
+        {
+            if (val == goal)
+                return val;
+
+            float dist = Calculate.AngleDistance(val, goal);
+
+            if (speed > Math.Abs(dist))
+                return goal;
+            else
+                return val + MathF.Sign(dist) * speed;
+        }
 
         #endregion
 

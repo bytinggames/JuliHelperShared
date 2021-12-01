@@ -136,6 +136,8 @@ namespace JuliHelper
             
             pixel = new Texture2D(_spriteBatch.GraphicsDevice, 1, 1);
             pixel.SetData<Color>(new Color[] { Color.White });
+
+            circleTex = DrawM.Sprite.CreateCircleTexture(128, Color.White, Color.White);
         }
 
         #region Texture
@@ -784,52 +786,95 @@ namespace JuliHelper
 
         #region Rectangle
 
-        public static void Draw(this M_Rectangle _rect, Color _color)
+        public static void Draw(this M_Rectangle rect, Color color)
         {
-            batch.Draw(pixel, _rect.pos, new Rectangle(0, 0, 1, 1), _color, 0f, Vector2.Zero, _rect.size, SpriteEffects.None, depth);
+            batch.Draw(pixel, rect.pos, null, color, 0f, Vector2.Zero, rect.size, SpriteEffects.None, depth);
         }
-        public static void DrawOutline(this M_Rectangle _rect, Color _color, float _thickness = 1f)
+        public static void DrawOutline(this M_Rectangle rect, Color color, float thickness = 1f)
         {
-            float t = _thickness / 2f;
-            if (_rect.size.X <= _thickness || _rect.size.Y <= _thickness)
-                new M_Rectangle(_rect.pos - new Vector2(t), _rect.size + new Vector2(_thickness)).Draw(_color);
+            float t = thickness / 2f;
+            if (rect.size.X <= thickness || rect.size.Y <= thickness)
+                new M_Rectangle(rect.pos - new Vector2(t), rect.size + new Vector2(thickness)).Draw(color);
             else
             {
-                batch.Draw(pixel, _rect.pos + new Vector2(t, -t), null, _color, 0f, Vector2.Zero, new Vector2(_rect.size.X, _thickness), SpriteEffects.None, depth);
-                batch.Draw(pixel, _rect.pos + new Vector2(_rect.size.X - t, t), null, _color, 0f, Vector2.Zero, new Vector2(_thickness, _rect.size.Y), SpriteEffects.None, depth);
-                batch.Draw(pixel, _rect.pos + new Vector2(-t, _rect.size.Y - t), null, _color, 0f, Vector2.Zero, new Vector2(_rect.size.X, _thickness), SpriteEffects.None, depth);
-                batch.Draw(pixel, _rect.pos + new Vector2(-t), null, _color, 0f, Vector2.Zero, new Vector2(_thickness, _rect.size.Y), SpriteEffects.None, depth);
+                batch.Draw(pixel, rect.pos + new Vector2(t, -t), null, color, 0f, Vector2.Zero, new Vector2(rect.size.X, thickness), SpriteEffects.None, depth);
+                batch.Draw(pixel, rect.pos + new Vector2(rect.size.X - t, t), null, color, 0f, Vector2.Zero, new Vector2(thickness, rect.size.Y), SpriteEffects.None, depth);
+                batch.Draw(pixel, rect.pos + new Vector2(-t, rect.size.Y - t), null, color, 0f, Vector2.Zero, new Vector2(rect.size.X, thickness), SpriteEffects.None, depth);
+                batch.Draw(pixel, rect.pos + new Vector2(-t), null, color, 0f, Vector2.Zero, new Vector2(thickness, rect.size.Y), SpriteEffects.None, depth);
             }
         }
-        public static void DrawOutlineInside(this M_Rectangle _rect, Color _color, float _thickness = 1f)
+        public static void DrawOutlineInside(this M_Rectangle rect, Color color, float thickness = 1f)
         {
-            if (_rect.size.X <= _thickness * 2f || _rect.size.Y <= _thickness * 2f)
-                _rect.Draw(_color);
+            if (rect.size.X <= thickness * 2f || rect.size.Y <= thickness * 2f)
+                rect.Draw(color);
             else
             {
-                batch.Draw(pixel, _rect.pos + new Vector2(_thickness, 0), null, _color, 0f, Vector2.Zero, new Vector2(_rect.size.X - _thickness, _thickness), SpriteEffects.None, depth);
-                batch.Draw(pixel, _rect.pos + new Vector2(_rect.size.X - _thickness, _thickness), null, _color, 0f, Vector2.Zero, new Vector2(_thickness, _rect.size.Y - _thickness), SpriteEffects.None, depth);
-                batch.Draw(pixel, _rect.pos + new Vector2(0, _rect.size.Y - _thickness), null, _color, 0f, Vector2.Zero, new Vector2(_rect.size.X - _thickness, _thickness), SpriteEffects.None, depth);
-                batch.Draw(pixel, _rect.pos, null, _color, 0f, Vector2.Zero, new Vector2(_thickness, _rect.size.Y - _thickness), SpriteEffects.None, depth);
+                batch.Draw(pixel, rect.pos + new Vector2(thickness, 0), null, color, 0f, Vector2.Zero, new Vector2(rect.size.X - thickness, thickness), SpriteEffects.None, depth);
+                batch.Draw(pixel, rect.pos + new Vector2(rect.size.X - thickness, thickness), null, color, 0f, Vector2.Zero, new Vector2(thickness, rect.size.Y - thickness), SpriteEffects.None, depth);
+                batch.Draw(pixel, rect.pos + new Vector2(0, rect.size.Y - thickness), null, color, 0f, Vector2.Zero, new Vector2(rect.size.X - thickness, thickness), SpriteEffects.None, depth);
+                batch.Draw(pixel, rect.pos, null, color, 0f, Vector2.Zero, new Vector2(thickness, rect.size.Y - thickness), SpriteEffects.None, depth);
             }
         }
-        public static void DrawOutlineOutside(this M_Rectangle _rect, Color _color, float _thickness = 1f)
+        public static void DrawOutlineOutside(this M_Rectangle rect, Color color, float thickness = 1f)
         {
-            batch.Draw(pixel, _rect.pos + new Vector2(0, -_thickness), null, _color, 0f, Vector2.Zero, new Vector2(_rect.size.X + _thickness, _thickness), SpriteEffects.None, depth);
-            batch.Draw(pixel, _rect.pos + new Vector2(_rect.size.X, 0), null, _color, 0f, Vector2.Zero, new Vector2(_thickness, _rect.size.Y + _thickness), SpriteEffects.None, depth);
-            batch.Draw(pixel, _rect.pos + new Vector2(-_thickness, _rect.size.Y), null, _color, 0f, Vector2.Zero, new Vector2(_rect.size.X + _thickness, _thickness), SpriteEffects.None, depth);
-            batch.Draw(pixel, _rect.pos + new Vector2(-_thickness), null, _color, 0f, Vector2.Zero, new Vector2(_thickness, _rect.size.Y + _thickness), SpriteEffects.None, depth);
+            batch.Draw(pixel, rect.pos + new Vector2(0, -thickness), null, color, 0f, Vector2.Zero, new Vector2(rect.size.X + thickness, thickness), SpriteEffects.None, depth);
+            batch.Draw(pixel, rect.pos + new Vector2(rect.size.X, 0), null, color, 0f, Vector2.Zero, new Vector2(thickness, rect.size.Y + thickness), SpriteEffects.None, depth);
+            batch.Draw(pixel, rect.pos + new Vector2(-thickness, rect.size.Y), null, color, 0f, Vector2.Zero, new Vector2(rect.size.X + thickness, thickness), SpriteEffects.None, depth);
+            batch.Draw(pixel, rect.pos + new Vector2(-thickness), null, color, 0f, Vector2.Zero, new Vector2(thickness, rect.size.Y + thickness), SpriteEffects.None, depth);
+        }
+
+        #endregion
+
+        #region Circle
+
+        static Texture2D circleTex;
+
+        public static void Draw(this M_Circle circle, Color color)
+        {
+            batch.Draw(circleTex, circle.pos - new Vector2(circle.radius), null, color, 0f, Vector2.Zero, circle.radius * 2f / circleTex.Width, SpriteEffects.None, depth);
+        }
+
+        public static void DrawOutline(this M_Circle circle, Color color, float thickness = 1f, int vertexCount = -1)
+        {
+            DrawOutlineInside(new M_Circle(circle.pos, circle.radius + thickness / 2f), color, thickness, vertexCount);
+        }
+
+        public static void DrawOutlineOutside(this M_Circle circle, Color color, float thickness = 1f, int vertexCount = -1)
+        {
+            DrawOutlineInside(new M_Circle(circle.pos, circle.radius + thickness), color, thickness, vertexCount);
+        }
+
+        public static void DrawOutlineInside(this M_Circle circle, Color color, float thickness = 1f, int vertexCount = -1)
+        {
+            if (vertexCount == -1)
+                vertexCount = RadiusToVertexCount(circle.radius);
+
+            Vector2[] vertices = circle.ToPrimitiveLine(vertexCount).Vertices;
+            DrawM.Sprite.DrawPolygonLineInner(batch, vertices, color, true, thickness, depth);
+        }
+
+        private static int RadiusToVertexCount(float radius)
+        {
+            return Math.Max(4, (int)(3.7f * MathF.Pow(1.45f, MathF.Log(radius, 2)))); // see desmos
         }
 
         #endregion
 
         #region Line
 
-        public static void DrawLine(Vector2 _pos1, Vector2 _pos2, Color _color, float _thickness = 1f) => DrawLineRelative(_pos1, _pos2 - _pos1, _color, _thickness);
-        public static void DrawLineRelative(Vector2 _pos, Vector2 _size, Color _color, float _thickness = 1f)
+        public static void DrawLine(Vector2 pos1, Vector2 pos2, Color color, float thickness = 1f) => DrawLineRelative(pos1, pos2 - pos1, color, thickness);
+        public static void DrawLineRelative(Vector2 pos, Vector2 size, Color color, float thickness = 1f)
         {
-            float angle = (float)Math.Atan2(_size.Y, _size.X);
-            batch.Draw(pixel, _pos, new Rectangle(0, 0, 1, 1), _color, angle, new Vector2(0, 0.5f), new Vector2(_size.Length(), _thickness), SpriteEffects.None, depth);
+            float angle = (float)Math.Atan2(size.Y, size.X);
+            batch.Draw(pixel, pos, null, color, angle, new Vector2(0, 0.5f), new Vector2(size.Length(), thickness), SpriteEffects.None, depth);
+        }
+        public static void DrawLineRounded(Vector2 pos1, Vector2 pos2, Color color, float thickness = 1f) => DrawLineRoundedRelative(pos1, pos2 - pos1, color, thickness);
+        public static void DrawLineRoundedRelative(Vector2 pos, Vector2 size, Color color, float thickness = 1f)
+        {
+            float angle = (float)Math.Atan2(size.Y, size.X);
+            batch.Draw(pixel, pos, null, color, angle, new Vector2(0, 0.5f), new Vector2(size.Length(), thickness), SpriteEffects.None, depth);
+            new M_Circle(pos, thickness / 2f).Draw(color);
+            new M_Circle(pos + size, thickness / 2f).Draw(color);
         }
 
         #endregion

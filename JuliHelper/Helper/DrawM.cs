@@ -221,12 +221,39 @@ namespace JuliHelper
             {
                 Vector2 size = pos2 - pos1;
                 float angle = (float)Math.Atan2(size.Y, size.X);
-                spriteBatch.Draw(pixel, pos1, new Rectangle(0, 0, 1, 1), color, angle, new Vector2(0, 0.5f), new Vector2(size.Length(), thickness), SpriteEffects.None, depth);
+                spriteBatch.Draw(pixel, pos1, null, color, angle, new Vector2(0, 0.5f), new Vector2(size.Length(), thickness), SpriteEffects.None, depth);
+            }
+            public static void DrawLineInner(SpriteBatch spriteBatch, Vector2 pos1, Vector2 pos2, Color color, float thickness = 1f, float depth = 0f)
+            {
+                Vector2 size = pos2 - pos1;
+                float angle = (float)Math.Atan2(size.Y, size.X);
+                spriteBatch.Draw(pixel, pos1, null, color, angle, Vector2.Zero, new Vector2(size.Length(), thickness), SpriteEffects.None, depth);
             }
             public static void DrawLineSize(SpriteBatch spriteBatch, Vector2 pos, Vector2 size, Color color, float thickness = 1f, float depth = 0f)
             {
                 float angle = (float)Math.Atan2(size.Y, size.X);
-                spriteBatch.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), color, angle, new Vector2(0, 0.5f), new Vector2(size.Length(), thickness), SpriteEffects.None, depth);
+                spriteBatch.Draw(pixel, pos, null, color, angle, new Vector2(0, 0.5f), new Vector2(size.Length(), thickness), SpriteEffects.None, depth);
+            }
+
+            public static void DrawPolygonLine(SpriteBatch spriteBatch, Vector2[] vertices, Color color, bool closed = true, float thickness = 1f, float depth = 0f)
+            {
+                int count = vertices.Length - 1;
+                for (int i = 0; i < count; i++)
+                {
+                    DrawLine(spriteBatch, vertices[i], vertices[i + 1], color, thickness, depth);
+                }
+                if (closed)
+                    DrawLine(spriteBatch, vertices[count], vertices[0], color, thickness, depth);
+            }
+            public static void DrawPolygonLineInner(SpriteBatch spriteBatch, Vector2[] vertices, Color color, bool closed = true, float thickness = 1f, float depth = 0f)
+            {
+                int count = vertices.Length - 1;
+                for (int i = 0; i < count; i++)
+                {
+                    DrawLineInner(spriteBatch, vertices[i], vertices[i + 1], color, thickness, depth);
+                }
+                if (closed)
+                    DrawLineInner(spriteBatch, vertices[count], vertices[0], color, thickness, depth);
             }
 
             public static void DrawTexture(SpriteBatch spriteBatch, Texture2D tex, M_Rectangle rect, Color color, float depth = 0f)

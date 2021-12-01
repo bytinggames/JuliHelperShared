@@ -14,6 +14,7 @@ string[] soundsWav = GetFiles("Sounds", "wav");
 string[] soundsOgg = GetFiles("Sounds", "ogg");
 string[] songs = GetFiles("Music", "ogg");
 string[] fonts = GetFiles("Fonts", "spritefont");
+string[] effects = GetFiles("Effects", "fx");
 
 List<string> copies = new List<string>();
 copies.AddRange(GetFiles("Fonts", "xnb"));
@@ -29,7 +30,7 @@ string[] GetFiles(string name, string extension)
 
 
 string[][] filesArray = new string[][]{
-    pngs, soundsWav, soundsOgg, songs, fonts, copies.ToArray()
+    pngs, soundsWav, soundsOgg, songs, fonts, effects, copies.ToArray()
 };
 
 
@@ -137,6 +138,18 @@ using (StreamWriter sw = new StreamWriter(fs))
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:{font}
+");
+    }
+
+
+    foreach (var effect in effects)
+    {
+        sw.WriteLine($@"
+#begin {effect}
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:{effect}
 ");
     }
 

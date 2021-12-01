@@ -69,7 +69,7 @@ namespace JuliHelper
         public virtual void Draw(SpriteBatch spriteBatch, Color color, float depth = 0f)
         {
             M_Rectangle rect = GetBoundingRectangle();
-            spriteBatch.Draw(DrawM.pixel, rect.pos, new Rectangle(0, 0, 1, 1), color, 0f, Vector2.Zero, rect.size, SpriteEffects.None, depth);
+            spriteBatch.Draw(DrawM.pixel, rect.pos, null, color, 0f, Vector2.Zero, rect.size, SpriteEffects.None, depth);
         }
 
         //public void Draw(SpriteBatch spriteBatch, Vector2 drawPos, Color color, float depth = 0f)

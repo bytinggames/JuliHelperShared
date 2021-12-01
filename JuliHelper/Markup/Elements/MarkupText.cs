@@ -9,6 +9,7 @@ namespace JuliHelper.Markup
         public MarkupText(ScriptReader reader)
         {
             Text = reader.ReadToCharOrEnd(out char? until, '#', '\n');
+
             if (until != null)
                 reader.Move(-1);
         }
