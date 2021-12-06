@@ -15,12 +15,25 @@ namespace JuliHelper.Markup
         public Color Color { get; set; } = Color.White;
         public Rectangle? SourceRectangle { get; set; } = null;
 
+        public Vector2 ScaleXY { get; set; } = Vector2.One;
+
+        public float Scale
+        {
+            get => ScaleXY.X;
+            set => ScaleXY = new Vector2(value);
+        }
+
         public MarkupTexture(ContentManager content, string texName)
         {
             Texture = content.Load<Texture2D>("Textures/" + texName);
         }
 
         protected override Vector2 GetSizeChildUnscaled(MarkupSettings settings)
+        {
+            return GetSizeChildUnscaledInternal(settings) * ScaleXY;
+        }
+
+        private Vector2 GetSizeChildUnscaledInternal(MarkupSettings settings)
         {
             if (SourceRectangle == null)
                 return Texture.GetSize();
@@ -30,7 +43,7 @@ namespace JuliHelper.Markup
 
         protected override void DrawChild(MarkupSettings settings)
         {
-            Texture.Draw(settings.Anchor, Color, SourceRectangle, settings.Scale, settings.Rotation, settings.Effects);
+            Texture.Draw(settings.Anchor, Color, SourceRectangle, settings.Scale * ScaleXY, settings.Rotation, settings.Effects);
         }
 
         public override string ToString()
