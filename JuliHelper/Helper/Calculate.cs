@@ -590,6 +590,29 @@ namespace JuliHelper
         public static float Average(this Vector2 v) => (v.X + v.Y) / 2f;
         public static float Average(this Vector3 v) => (v.X + v.Y + v.Z) / 3f;
 
+        public static Vector3 Slerp(Vector3 start, Vector3 end, float amount)
+        {
+            // source: https://stackoverflow.com/a/67920029/6866837
+            // Dot product - the cosine of the angle between 2 vectors.
+            float dot = Vector3.Dot(start, end);
+
+            // Clamp it to be in the range of Acos()
+            // This may be unnecessary, but floating point
+            // precision can be a fickle mistress.
+            dot = MathF.Min(1f, MathF.Max(-1f, dot));
+
+            // Acos(dot) returns the angle between start and end,
+            // And multiplying that by percent returns the angle between
+            // start and the final result.
+            float theta = MathF.Acos(dot) * amount;
+            Vector3 RelativeVec = end - start * dot;
+            RelativeVec.Normalize();
+
+            // Orthonormal basis
+            // The final result.
+            return ((start * MathF.Cos(theta)) + (RelativeVec * MathF.Sin(theta)));
+        }
+
         #endregion
 
         #region Rectangles
