@@ -150,6 +150,18 @@ namespace JuliHelper
             else
                 return val + dist * speed / distLength;
         }
+        public static Vector3 MoveTo(Vector3 val, Vector3 goal, float speed)
+        {
+            if (val == goal)
+                return val;
+
+            Vector3 dist = goal - val;
+            float distLength = dist.Length();
+            if (distLength < speed)
+                return goal;
+            else
+                return val + dist * speed / distLength;
+        }
         public static float MoveToAngle(float val, float goal, float speed)
         {
             if (val == goal)
@@ -592,6 +604,9 @@ namespace JuliHelper
 
         public static Vector3 Slerp(Vector3 start, Vector3 end, float amount)
         {
+            if (start == end)
+                return end;
+
             // source: https://stackoverflow.com/a/67920029/6866837
             // Dot product - the cosine of the angle between 2 vectors.
             float dot = Vector3.Dot(start, end);
