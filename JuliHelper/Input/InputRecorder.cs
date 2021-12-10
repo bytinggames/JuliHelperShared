@@ -10,7 +10,7 @@ namespace JuliHelper
 {
     public class InputRecorder
     {
-        private bool _recording, _playing, mouseInput;
+        private bool _recording, _playing, mouseInput, mousePosInput;
         public bool removeLastFrame;
 
         class Future
@@ -19,6 +19,7 @@ namespace JuliHelper
             public List<KeyP> pressed = new List<KeyP>(), released = new List<KeyP>();
             public Vector2? mbPos;
             public int mbWheel;
+            public Vector2 mouseMovement;
 
             public void Play()
             {
@@ -44,6 +45,7 @@ namespace JuliHelper
                     Input.mbPos = mbPos.Value;
                 }
                 Input.mbWheel = mbWheel;
+                Input.mouseMovement = mouseMovement;
             }
 
             public void PlayPast()
@@ -102,7 +104,7 @@ namespace JuliHelper
         Action<BinaryWriter> writeSave;
         Action<BinaryReader> readSave;
 
-        public InputRecorder(bool removeLastFrame, bool mouseInput, string gameVersion, Action<BinaryWriter> writeSave, Action<BinaryReader> readSave)
+        public InputRecorder(bool removeLastFrame, bool mouseInput, bool mousePosInput, string gameVersion, Action<BinaryWriter> writeSave, Action<BinaryReader> readSave)
         {
             this.removeLastFrame = removeLastFrame;
             this.mouseInput = mouseInput;
@@ -142,6 +144,7 @@ namespace JuliHelper
             MouseWheel = 3,
             KeyPressed = 4,
             KeyReleased = 5,
+            MouseMovement = 6,
         }
 
         enum CodeHead : byte
@@ -153,12 +156,15 @@ namespace JuliHelper
             InrVersion = 5,
         }
 
+        long prevStreamPos;
+
         public void Update()
         {
             if (playing)
             {
                 Input.mbPos = mbPosPast;
                 Input.mbWheel = 0;
+                Input.mouseMovement = Vector2.Zero;
 
                 if (past != null && past.frame == _frame - 1)
                 {
@@ -195,6 +201,9 @@ namespace JuliHelper
                                         break;
                                     case CodeBody.KeyReleased:
                                         future.released.Add(Input.keys[reader.ReadInt16()]);
+                                        break;
+                                    case CodeBody.MouseMovement:
+                                        future.mouseMovement = reader.ReadVector2();
                                         break;
                                     default:
                                         throw new Exception();
@@ -245,17 +254,20 @@ namespace JuliHelper
                 // 5(byte): key released
                 //      id(short)
 
-                long prevStreamPos = writer.BaseStream.Position;
+                prevStreamPos = writer.BaseStream.Position;
 
                 if (mouseInput)
                 {
                     #region Mouse
 
-                    if (Input.mbPos != mbPosPast)
+                    if (mousePosInput)
                     {
-                        writer.Write((byte)CodeBody.MousePos);
-                        writer.Write(Input.mbPos);
-                        mbPosPast = Input.mbPos;
+                        if (Input.mbPos != mbPosPast)
+                        {
+                            writer.Write((byte)CodeBody.MousePos);
+                            writer.Write(Input.mbPos);
+                            mbPosPast = Input.mbPos;
+                        }
                     }
 
                     if (Input.mbWheel != 0)
@@ -285,7 +297,15 @@ namespace JuliHelper
 
                 #endregion
 
-                if (prevStreamPos != writer.BaseStream.Position)
+            }
+
+        }
+
+        public void UpdateEnd()
+        {
+            if (recording)
+            {
+                if (prevStreamPos != writer.BaseStream.Position) // was something written, then end that with a "frame"
                 {
                     writer.Write((byte)CodeBody.Frame);
                     writer.Write(_frame - lastFrameWrittenToStream);
@@ -297,6 +317,12 @@ namespace JuliHelper
 
             if (recording || playing)
                 _frame++;
+        }
+
+        public void WriteMouseMovement(Vector2 mouseMovement)
+        {
+            writer.Write((byte)CodeBody.MouseMovement);
+            writer.Write(mouseMovement);
         }
 
         public void UpdateControl()

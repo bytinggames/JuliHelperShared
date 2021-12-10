@@ -163,6 +163,8 @@ namespace JuliHelper
 
         public static Vector2 mbPos;
         public static Vector2 mbPosPast;
+        /// <summary>Experimential.</summary>
+        public static Vector2 mouseMovement;
         /// <summary>
         /// how long the mouse hasn't been moved in frames
         /// </summary>
