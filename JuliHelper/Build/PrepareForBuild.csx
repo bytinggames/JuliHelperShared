@@ -16,11 +16,14 @@ string[] songs = GetFiles("Music", "ogg");
 string[] fonts = GetFiles("Fonts", "spritefont");
 string[] effects = GetFiles("Effects", "fx");
 
-List<string> copies = new List<string>();
-copies.AddRange(GetFiles("Fonts", "xnb"));
-copies.AddRange(GetFiles("Textures", "json"));
+List<string> copiesList = new List<string>();
+copiesList.AddRange(GetFiles("Fonts", "xnb"));
+copiesList.AddRange(GetFiles("Textures", "json"));
+AddIfExists(copiesList, "Sounds\\settings.txt");
 
-string[] GetFiles(string name, string extension)
+string[] copies = copiesList.ToArray();
+
+string[] GetFiles(string name, string extension, SearchOption searchOption = SearchOption.AllDirectories)
 {
     string dir = Path.Combine(contentDir, name);
     if (!Directory.Exists(dir))
@@ -28,9 +31,16 @@ string[] GetFiles(string name, string extension)
     return Directory.GetFiles(dir, "*." + extension, SearchOption.AllDirectories);
 }
 
+void AddIfExists(List<string> list, string file)
+{
+    file = Path.Combine(contentDir, file);
+    if (File.Exists(file))
+        list.Add(file);
+}
+
 
 string[][] filesArray = new string[][]{
-    pngs, soundsWav, soundsOgg, songs, fonts, effects, copies.ToArray()
+    pngs, soundsWav, soundsOgg, songs, fonts, effects, copies
 };
 
 
@@ -67,9 +77,9 @@ using (StreamWriter sw = new StreamWriter(fs))
     sw.WriteLine(@"
 #----------------------------- Global Properties ----------------------------#
 
-/outputDir:bin
-/intermediateDir:obj
-/platform:Windows
+/outputDir:bin/$(Platform)
+/intermediateDir:obj/$(Platform)
+/platform:DesktopGL
 /config:
 /profile:Reach
 /compress:False
