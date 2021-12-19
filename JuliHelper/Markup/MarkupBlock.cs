@@ -45,13 +45,13 @@ namespace JuliHelper.Markup
 
         public void Draw(MarkupSettings settings)
         {
-            if (MarginLeft == 0 && MarginRight == 0)
+            if (MarginLeft == 0 && MarginTop == 0 && MarginRight == 0 && MarginBottom == 0)
                 InnerDraw(settings);
             else
             {
                 Vector2 temp = settings.Anchor.pos;
-                settings.Anchor.pos.X += MarginLeft * settings.Scale.X;
-                settings.Anchor.pos.Y += MarginTop * settings.Scale.Y;
+                settings.Anchor.pos.X += (MarginLeft * (1f - settings.Anchor.OX) - MarginRight * settings.Anchor.OX) * settings.Scale.X;
+                settings.Anchor.pos.Y += (MarginTop * (1f - settings.Anchor.OY) - MarginBottom * settings.Anchor.OY) * settings.Scale.Y;
                 InnerDraw(settings);
                 settings.Anchor.pos = temp;
             }
@@ -67,9 +67,8 @@ namespace JuliHelper.Markup
                 if (larger.X > 0)
                     settings.Anchor.X += larger.X * SubAnchorX;
             }
-            DrawChild(settings);
 
-            //settings.Anchor.Rectangle(GetSize(settings)).Draw(Color.Red * 0.5f);
+            DrawChild(settings);
 
             if (subContainer != null)
             {

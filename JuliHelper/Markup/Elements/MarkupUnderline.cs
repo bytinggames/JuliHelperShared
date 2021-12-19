@@ -4,51 +4,49 @@ using System.Collections.Generic;
 
 namespace JuliHelper.Markup
 {
-    [MarkupShortcut("outline")]
-    public class MarkupOutline : MarkupCollection
+    [MarkupShortcut("underline")]
+    public class MarkupUnderline : MarkupCollection
     {
         Color color;
         float thickness;
-        /// <summary>Negative for online bottom outline (used for drawing over the underline).</summary>
-        int quality;
+        float offset;
 
         public bool SizeUnion { get; set; }
 
-        public MarkupOutline(Creator creator, string hexColor, string text)
+        public MarkupUnderline(Creator creator, string hexColor, string text)
             : base(creator, text)
         {
             color = Calculate.HexToColor(hexColor);
             thickness = 1f;
         }
-        public MarkupOutline(Creator creator, string hexColor, float thickness, string text)
+        public MarkupUnderline(Creator creator, string hexColor, float thickness, string text)
             : base(creator, text)
         {
             color = Calculate.HexToColor(hexColor);
             this.thickness = thickness;
         }
-
-        public MarkupOutline(Creator creator, string hexColor, float thickness, int quality, string text)
+        public MarkupUnderline(Creator creator, string hexColor, float thickness, float offset, string text)
             : base(creator, text)
         {
             color = Calculate.HexToColor(hexColor);
             this.thickness = thickness;
-            this.quality = quality;
+            this.offset = offset;
         }
 
         public override string ToString()
         {
-            return $"Outline #{color.ColorToHex()} {base.ToString()}";
+            return $"Underline #{color.ColorToHex()} {base.ToString()}";
         }
 
         public override IEnumerable<ILeaf> IterateOverLeaves(MarkupSettings settings)
         {
-            var temp = settings.TextOutline?.CloneOutline();
-            settings.TextOutline = new MarkupSettings.Outline(color, thickness, SizeUnion, quality);
+            var temp = settings.TextUnderline?.CloneUnderline();
+            settings.TextUnderline = new MarkupSettings.Underline(color, thickness, SizeUnion, offset);
 
             foreach (var leaf in base.IterateOverLeaves(settings))
                 yield return leaf;
 
-            settings.TextOutline = temp;
+            settings.TextUnderline = temp;
         }
     }
 }

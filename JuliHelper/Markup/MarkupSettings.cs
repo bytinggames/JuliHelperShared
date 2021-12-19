@@ -19,7 +19,8 @@ namespace JuliHelper.Markup
         public long Time { get; set; }
         public float MinLineHeight { get; set; }
         public float VerticalSpaceBetweenLines { get; set; }
-        public Line Outline { get; set; }
+        public Outline TextOutline { get; set; }
+        public Underline TextUnderline { get; set; }
 
         public class Line : ICloneable
         {
@@ -39,6 +40,30 @@ namespace JuliHelper.Markup
             public object Clone() => CloneLine();
         }
 
+        public class Outline : Line
+        {
+            public int Quality;
+
+            public Outline(Color color, float thickness, bool sizeUnion, int quality) : base(color, thickness, sizeUnion)
+            {
+                this.Quality = quality;
+            }
+
+            public Outline CloneOutline() => (Outline)this.Clone();
+        }
+
+        public class Underline : Line
+        {
+            public float Offset;
+
+            public Underline(Color color, float thickness, bool sizeUnion, float offset) : base(color, thickness, sizeUnion)
+            {
+                this.Offset = offset;
+            }
+
+            public Underline CloneUnderline() => (Underline)this.Clone();
+        }
+
         public MarkupSettings(MyFont myFont, Anchor anchor, Color? textColor = null, float align = 0.5f, Vector2? scale = null, float rotation = 0f, SpriteEffects effects = SpriteEffects.None)
         {
             MyFont = myFont;
@@ -54,7 +79,8 @@ namespace JuliHelper.Markup
         {
             MarkupSettings clone = (MarkupSettings)this.MemberwiseClone();
             clone.Anchor = Anchor?.Clone();
-            clone.Outline = Outline?.CloneLine();
+            clone.TextOutline = TextOutline?.CloneOutline();
+            clone.TextUnderline = TextUnderline?.CloneUnderline();
             return clone;
         }
         public object Clone() => CloneDrawSettings();

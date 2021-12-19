@@ -28,8 +28,8 @@ namespace JuliHelper
         private static Texture2D pixel;
         private static Texture2D Pixel => pixel;
 
-        public static Line outline;
-        public static Line underline;
+        public static Outline outline;
+        public static Underline underline;
 
         private static int fat;
 
@@ -39,37 +39,63 @@ namespace JuliHelper
 
         public class Line
         {
-            public Color color = Color.Black;
-            public float thickness = 1f;
+            public Color Color = Color.Black;
+            public float Thickness = 1f;
+        }
+
+        public class Outline : Line
+        {
+            /// <summary>How often the text is drawn to generate the outline.</summary>
+            public int Quality = 4;
+        }
+
+        public class Underline : Line
+        {
+            public float Offset = 0f;
         }
 
         public static void TextOutline(Color _outlineColor, Action _action)
         {
-            Line previousOutline = outline;
-            outline = new Line() { color = _outlineColor };
+            Outline previousOutline = outline;
+            outline = new Outline() { Color = _outlineColor };
             _action();
             outline = previousOutline;
         }
 
         public static void TextOutline(Color _outlineColor, float _thickness, Action _action)
         {
-            Line previousOutline = outline;
-            outline = new Line() { color = _outlineColor, thickness = _thickness };
+            Outline previousOutline = outline;
+            outline = new Outline() { Color = _outlineColor, Thickness = _thickness };
+            _action();
+            outline = previousOutline;
+        }
+
+        public static void TextOutline(Color _outlineColor, float _thickness, int _quality, Action _action)
+        {
+            Outline previousOutline = outline;
+            outline = new Outline() { Color = _outlineColor, Thickness = _thickness, Quality = _quality };
             _action();
             outline = previousOutline;
         }
 
         public static void TextUnderline(Color _underlineColor, Action _action)
         {
-            Line previousUnderline = underline;
-            underline = new Line() { color = _underlineColor };
+            Underline previousUnderline = underline;
+            underline = new Underline() { Color = _underlineColor };
             _action();
             underline = previousUnderline;
         }
         public static void TextUnderline(Color _underlineColor, float _thickness, Action _action)
         {
-            Line previousUnderline = underline;
-            underline = new Line() { color = _underlineColor, thickness = _thickness };
+            Underline previousUnderline = underline;
+            underline = new Underline() { Color = _underlineColor, Thickness = _thickness };
+            _action();
+            underline = previousUnderline;
+        }
+        public static void TextUnderline(Color _underlineColor, float _thickness, float _offset, Action _action)
+        {
+            Underline previousUnderline = underline;
+            underline = new Underline() { Color = _underlineColor, Thickness = _thickness, Offset = _offset };
             _action();
             underline = previousUnderline;
         }
@@ -240,13 +266,44 @@ namespace JuliHelper
                 }
             }
 
+            if (underline != null)
+            {
+                M_Rectangle underlineRect = _anchor.Rectangle(textSize);
+                underlineRect.Y += underlineRect.Height + underline.Thickness / 2f + underline.Offset;
+                underlineRect.Y = MathF.Floor(underlineRect.Y);
+                underlineRect.Height = underline.Thickness;
+                underlineRect.Draw(batch, GetRelativeColor(underline.Color), depth);
+            }
+
             if (outline != null)
             {
-                Color c = GetRelativeColor(outline.color);
-                batch.DrawString(_font, _text, pos + new Vector2(outline.thickness, 0), c, _rotation, origin, scale, _effects, depth);
-                batch.DrawString(_font, _text, pos + new Vector2(0, -outline.thickness), c, _rotation, origin, scale, _effects, depth);
-                batch.DrawString(_font, _text, pos + new Vector2(-outline.thickness, 0), c, _rotation, origin, scale, _effects, depth);
-                batch.DrawString(_font, _text, pos + new Vector2(0, outline.thickness), c, _rotation, origin, scale, _effects, depth);
+                Color c = GetRelativeColor(outline.Color);
+                if (outline.Quality == 4)
+                {
+                    batch.DrawString(_font, _text, pos + new Vector2(outline.Thickness, 0), c, _rotation, origin, scale, _effects, depth);
+                    batch.DrawString(_font, _text, pos + new Vector2(0, -outline.Thickness), c, _rotation, origin, scale, _effects, depth);
+                    batch.DrawString(_font, _text, pos + new Vector2(-outline.Thickness, 0), c, _rotation, origin, scale, _effects, depth);
+                    batch.DrawString(_font, _text, pos + new Vector2(0, outline.Thickness), c, _rotation, origin, scale, _effects, depth);
+                }
+                else
+                {
+                    float totalArc;
+                    int count = outline.Quality;
+                    if (count > 0)
+                    {
+                        totalArc = MathHelper.TwoPi;
+                    }
+                    else
+                    {
+                        totalArc = MathHelper.Pi;
+                        count = -count;
+                    }
+                    for (int i = 0; i < count; i++)
+                    {
+                        float angle = i * totalArc / count;
+                        batch.DrawString(_font, _text, pos + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * outline.Thickness, c, _rotation, origin, scale, _effects, depth);
+                    }
+                }
             }
 
             Color color = _color ?? Color.White;
@@ -261,11 +318,6 @@ namespace JuliHelper
                 }
             }
 
-            if (underline != null)
-            {
-                pixel.Draw(new M_Rectangle(pos.X, pos.Y + textSize.Y - 3f, textSize.X, underline.thickness), GetRelativeColor(underline.color));
-            }
-
             batch.DrawString(_font, _text, pos, color, _rotation, origin, scale, _effects, depth);
         }
 
@@ -277,8 +329,8 @@ namespace JuliHelper
         }
         public static void DrawCoded(this MyFont _font, string _text, Vector2 _position, float align = 0f, Color? _color = null, Vector2? _scale = null, float _rotation = 0f, SpriteEffects _effects = SpriteEffects.None, long time = 0)
         {
-            Line outlineSave = outline;
-            Line underlineSave = underline;
+            Outline outlineSave = outline;
+            Underline underlineSave = underline;
 
             if (_color == null)
                 RealDraw();
@@ -356,18 +408,18 @@ namespace JuliHelper
                                     case 'b'://background
                                         if (!closeCommand)
                                         {
-                                            outline = new Line();
+                                            outline = new Outline();
                                             if (split[i][1] != '>')
                                             {
                                                 if (split[i][2] == '>')
-                                                    outline.color = Calculate.HexToColor(split[i].Substring(1, 1));
+                                                    outline.Color = Calculate.HexToColor(split[i].Substring(1, 1));
                                                 else if (split[i][4] == '>')
-                                                    outline.color = Calculate.HexToColor(split[i].Substring(1, 3));
+                                                    outline.Color = Calculate.HexToColor(split[i].Substring(1, 3));
                                                 else
-                                                    outline.color = Calculate.HexToColor(split[i].Substring(1, 6));
+                                                    outline.Color = Calculate.HexToColor(split[i].Substring(1, 6));
                                             }
                                             else
-                                                outline.color = baseTextColor;
+                                                outline.Color = baseTextColor;
                                         }
                                         else
                                             outline = null;
@@ -375,18 +427,18 @@ namespace JuliHelper
                                     case 'u'://background
                                         if (!closeCommand)
                                         {
-                                            underline = new Line();
+                                            underline = new Underline();
                                             if (split[i][1] != '>')
                                             {
                                                 if (split[i][2] == '>')
-                                                    underline.color = Calculate.HexToColor(split[i].Substring(1, 1));
+                                                    underline.Color = Calculate.HexToColor(split[i].Substring(1, 1));
                                                 else if (split[i][4] == '>')
-                                                    underline.color = Calculate.HexToColor(split[i].Substring(1, 3));
+                                                    underline.Color = Calculate.HexToColor(split[i].Substring(1, 3));
                                                 else
-                                                    underline.color = Calculate.HexToColor(split[i].Substring(1, 6));
+                                                    underline.Color = Calculate.HexToColor(split[i].Substring(1, 6));
                                             }
                                             else
-                                                underline.color = baseTextColor;
+                                                underline.Color = baseTextColor;
                                         }
                                         else
                                             underline = null;

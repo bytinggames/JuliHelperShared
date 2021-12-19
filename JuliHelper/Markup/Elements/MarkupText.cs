@@ -17,10 +17,10 @@ namespace JuliHelper.Markup
         protected override Vector2 GetSizeChildUnscaled(MarkupSettings settings)
         {
             Vector2 size = settings.MyFont.Font.MeasureString(Text).CeilVector();
-            if (settings.Outline != null
-                && settings.Outline.SizeUnion)
+            if (settings.TextOutline != null
+                && settings.TextOutline.SizeUnion)
             {
-                size.X += settings.Outline.Thickness * 2f * settings.Scale.X;
+                size.X += settings.TextOutline.Thickness * 2f * settings.Scale.X;
                 // modifying size.Y would mess with vertical positioning (if top aligned f.ex.)
             }
             return size;
@@ -28,16 +28,24 @@ namespace JuliHelper.Markup
 
         protected override void DrawChild(MarkupSettings settings)
         {
-            if (settings.Outline == null)
+            if (settings.TextUnderline == null)
+                DrawJau(settings);
+            else
+                Drawer.TextUnderline(settings.TextUnderline.Color, settings.TextUnderline.Thickness, settings.TextUnderline.Offset, () => DrawJau(settings));
+        }
+
+        private void DrawJau(MarkupSettings settings)
+        {
+            if (settings.TextOutline == null)
             {
                 DrawChildInner(settings);
             }
             else
             {
-                if (settings.Outline.SizeUnion)
+                if (settings.TextOutline.SizeUnion)
                 {
                     float xTemp = settings.Anchor.X;
-                    settings.Anchor.X += settings.Outline.Thickness * settings.Scale.X;
+                    settings.Anchor.X += settings.TextOutline.Thickness * settings.Scale.X;
                     DrawChildInnerOutline(settings);
                     settings.Anchor.X = xTemp;
                 }
@@ -47,7 +55,7 @@ namespace JuliHelper.Markup
                 }
                 void DrawChildInnerOutline(MarkupSettings settings)
                 {
-                    Drawer.TextOutline(settings.Outline.Color, settings.Outline.Thickness * settings.Scale.Average(), () =>
+                    Drawer.TextOutline(settings.TextOutline.Color, settings.TextOutline.Thickness * settings.Scale.Average(), settings.TextOutline.Quality, () =>
                     {
                         DrawChildInner(settings);
                     });
