@@ -19,6 +19,13 @@ namespace JuliHelperShared
 
         public abstract bool Play();
         public abstract bool Play(float relativeVolume, float relativePitch, float relativePan);
+
+        public void ResetVolumePitchPan()
+        {
+            volume = 0.5f;
+            pitch = 0f;
+            pan = 0f;
+        }
     }
 
     public static class SoundMaster
@@ -37,7 +44,7 @@ namespace JuliHelperShared
             get => soundEffect;
             set
             {
-                soundEffect?.Dispose();
+                // TODO: instead of Dispose(), make sure this getter is called the right way
                 soundEffect = value;
             }
         }
