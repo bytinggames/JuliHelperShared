@@ -72,7 +72,7 @@ namespace JuliHelper.Markup
 
             if (subContainer != null)
             {
-                var settingsClone = settings.CloneDrawSettings();
+                var settingsClone = settings.CloneMarkupSettings();
                 M_Rectangle ownRect = settings.Anchor.Rectangle(GetSizeChild(settingsClone));
                 ownRect.ApplyPadding(PaddingLeft * settings.Scale.X, PaddingRight * settings.Scale.X, PaddingTop * settings.Scale.Y, PaddingBottom * settings.Scale.Y);
                 settingsClone.Anchor = ownRect.GetAnchor(SubAnchorX, SubAnchorY);
@@ -102,5 +102,23 @@ namespace JuliHelper.Markup
         protected Vector2 GetSizeChild(MarkupSettings settings) => GetSizeChildUnscaled(settings) * settings.Scale;
 
         protected abstract Vector2 GetSizeChildUnscaled(MarkupSettings settings);
+
+        public void MarginTopBottom(float val)
+        {
+            MarginTop = val;
+            MarginBottom = val;
+        }
+        public void MarginLeftRight(float val)
+        {
+            MarginLeft = val;
+            MarginRight = val;
+        }
+        public void Margin(float val)
+        {
+            MarginTop = val;
+            MarginBottom = val;
+            MarginLeft = val;
+            MarginRight = val;
+        }
     }
 }

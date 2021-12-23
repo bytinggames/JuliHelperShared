@@ -20,7 +20,7 @@ namespace JuliHelper.Markup
             (Vector2 totalSize, Vector2[] lineSizes) = GetSizes(_settings);
             Vector2 topLeft = _settings.Anchor.Rectangle(totalSize.X, totalSize.Y).TopLeft;
             Vector2 topLeftOfLine = topLeft;
-            MarkupSettings settings = _settings.CloneDrawSettings(); // clone to modify the anchor
+            MarkupSettings settings = _settings.CloneMarkupSettings(); // clone to modify the anchor
 
             int lineIndex = 0;
 

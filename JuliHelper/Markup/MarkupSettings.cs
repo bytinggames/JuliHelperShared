@@ -75,7 +75,7 @@ namespace JuliHelper.Markup
             Effects = effects;
         }
 
-        public MarkupSettings CloneDrawSettings()
+        public MarkupSettings CloneMarkupSettings()
         {
             MarkupSettings clone = (MarkupSettings)this.MemberwiseClone();
             clone.Anchor = Anchor?.Clone();
@@ -83,6 +83,6 @@ namespace JuliHelper.Markup
             clone.TextUnderline = TextUnderline?.CloneUnderline();
             return clone;
         }
-        public object Clone() => CloneDrawSettings();
+        public object Clone() => CloneMarkupSettings();
     }
 }
