@@ -43,7 +43,7 @@ namespace JuliHelper.Markup
 
         protected override void DrawChild(MarkupSettings settings)
         {
-            Texture.Draw(settings.Anchor, Color, SourceRectangle, settings.Scale * ScaleXY, settings.Rotation, settings.Effects);
+            Texture.Draw(settings.Anchor, Calculate.MultiplyColors(settings.TextureColor, Color), SourceRectangle, settings.Scale * ScaleXY, settings.Rotation, settings.Effects);
         }
 
         public override string ToString()

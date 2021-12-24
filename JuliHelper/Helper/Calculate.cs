@@ -713,6 +713,15 @@ namespace JuliHelper
             return new Color(c1.R + c2.R, c1.G + c2.G, c1.B + c2.B, c1.A + c2.A);
         }
 
+        public static Color MultiplyColors(Color c1, Color c2)
+        {
+            c1.R = (byte)(c1.R * c2.R / 255);
+            c1.R = (byte)(c1.G * c2.G / 255);
+            c1.B = (byte)(c1.B * c2.B / 255);
+            c1.A = (byte)(c1.A * c2.A / 255);
+            return c1;
+        }
+
         public static Color AverageColor(Color c1, Color c2)
         {
             return new Color((c1.R + c2.R) / 2, (c1.G + c2.G) / 2, (c1.B + c2.B) / 2, (c1.A + c2.A) / 2);

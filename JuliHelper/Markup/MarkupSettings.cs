@@ -11,6 +11,7 @@ namespace JuliHelper.Markup
         public MyFont MyFont { get; set; }
         public Anchor Anchor { get; set; }
         public Color TextColor { get; set; }
+        public Color TextureColor { get; set; } = Color.White;
         public float HorizontalAlignInLine { get; set; }
         public float VerticalAlignInLine { get; set; } = 0.5f;
         public Vector2 Scale { get; set; }
