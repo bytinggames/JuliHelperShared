@@ -1,9 +1,12 @@
+# v1.1
+
 # get to solution level
 cd ..;
 
-$ide = $args[0];
-$ide = $ide.Remove($ide.Length - 1);
-# echo $ide;
+$arguments = $args.Split('"'); # split arguments by "
+$ide = $arguments[0];
+$references = $arguments[1];
+
 $csi = (get-item $ide).Parent.Parent.FullName;
 $csi += "\MSBuild\Current\Bin\Roslyn\csi.exe";
 
@@ -28,4 +31,4 @@ $path += "\Build\PrepareForBuild.csx";
 $projectName = (get-item $PSScriptRoot).Name;
 # echo "project name: $projectName";
 
-. "$csi" $path $projectName;
+. "$csi" $path $projectName $references;

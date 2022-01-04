@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 
 string projectName = Args[0];
+string reference = "";
+if (Args.Count > 1)
+    reference = Args[1];
+string[] references = reference.Split(new char[] { '|' }, System.StringSplitOptions.RemoveEmptyEntries);
 
 string contentDir = Path.Combine(Environment.CurrentDirectory, projectName, "Content");
 
@@ -15,6 +19,7 @@ string[] soundsOgg = GetFiles("Sounds", "ogg");
 string[] songs = GetFiles("Music", "ogg");
 string[] fonts = GetFiles("Fonts", "spritefont");
 string[] effects = GetFiles("Effects", "fx");
+string[] models = GetFiles("Models", "fbx");
 
 List<string> copiesList = new List<string>();
 copiesList.AddRange(GetFiles("Fonts", "xnb"));
@@ -83,12 +88,17 @@ using (StreamWriter sw = new StreamWriter(fs))
 /config:
 /profile:Reach
 /compress:False
-
-#-------------------------------- References --------------------------------#
-
-
-#---------------------------------- Content ---------------------------------#
 ");
+
+    if (references.Length > 0)
+    {
+        sw.WriteLine("#-------------------------------- References --------------------------------#");
+        for (int i = 0; i < references.Length; i++)
+        {
+            sw.WriteLine("/reference:" + references[i]);
+        }
+    }
+    sw.WriteLine("#---------------------------------- Content ---------------------------------#");
 
     foreach (var png in pngs)
     {
@@ -160,6 +170,16 @@ using (StreamWriter sw = new StreamWriter(fs))
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
 /build:{effect}
+");
+    }
+
+    foreach (var model in models)
+    {
+        sw.WriteLine($@"
+#begin {model}
+/importer:FbxImporter
+/processor:MyModelProcessor
+/build:{model}
 ");
     }
 
