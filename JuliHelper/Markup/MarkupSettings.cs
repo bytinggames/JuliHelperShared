@@ -65,12 +65,12 @@ namespace JuliHelper.Markup
             public Underline CloneUnderline() => (Underline)this.Clone();
         }
 
-        public MarkupSettings(MyFont myFont, Anchor anchor, Color? textColor = null, float align = 0.5f, Vector2? scale = null, float rotation = 0f, SpriteEffects effects = SpriteEffects.None)
+        public MarkupSettings(MyFont myFont, Anchor anchor, Color? textColor = null, float horizontalAlignInLine = 0.5f, Vector2? scale = null, float rotation = 0f, SpriteEffects effects = SpriteEffects.None)
         {
             MyFont = myFont;
             Anchor = anchor;
             TextColor = textColor ?? Color.Black;
-            HorizontalAlignInLine = align;
+            HorizontalAlignInLine = horizontalAlignInLine;
             Scale = scale ?? Vector2.One;
             Rotation = rotation;
             Effects = effects;
