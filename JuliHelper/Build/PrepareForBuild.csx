@@ -1,5 +1,9 @@
 ﻿using System.IO;
 using System.Collections.Generic;
+using System.Threading;
+using System.Linq;
+using System;
+
 
 string projectName = Args[0];
 string reference = "";
@@ -12,6 +16,7 @@ string contentDir = Path.Combine(Environment.CurrentDirectory, projectName, "Con
 string mgcbPath = Path.Combine(contentDir, "ContentGenerated_do-not-edit.mgcb");
 string contentListPath = Path.Combine(contentDir, "ContentListGenerated_do-not-edit.txt");
 
+WaitUntilExportingModelsFinished();
 
 string[] pngs = GetFiles("Textures", "png");
 string[] soundsWav = GetFiles("Sounds", "wav");
@@ -192,5 +197,18 @@ using (StreamWriter sw = new StreamWriter(fs))
     }
 }
 
+void WaitUntilExportingModelsFinished()
+{
+    string currentlyExporting;
+    while ((currentlyExporting = Directory.EnumerateFiles(Path.Combine(contentDir, "Models"), "*.exporting", SearchOption.AllDirectories).FirstOrDefault())
+        != null)
+    {
+        do
+        {
+            Console.WriteLine("waiting for *.exporting files to disappear...");
+            Thread.Sleep(500);
+        } while (File.Exists(currentlyExporting));
+    }
+}
 
 // TODO: delete generated content file after release?
