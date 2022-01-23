@@ -66,7 +66,7 @@ namespace JuliHelper
                     return str.Substring(start, end - start);
                 }
             }
-            throw new ScriptReaderException("char " + untilChar + " not found in " + str + " after position " + start);
+            throw new ScriptReaderException("char '" + untilChar + "' not found in " + str + " after position " + start);
         }
 
         public string ReadToChar(out char? foundChar, params char[] chars)
@@ -74,7 +74,7 @@ namespace JuliHelper
             int start = i;
             string str = ReadToCharOrEnd(out foundChar, chars);
             if (foundChar == null)
-                throw new ScriptReaderException("chars " + string.Join(", ", chars) + " not found in " + str + " after position " + start);
+                throw new ScriptReaderException("chars '" + string.Join(", ", chars) + "' not found in " + str + " after position " + start);
             return str;
         }
 

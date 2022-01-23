@@ -66,6 +66,31 @@ namespace JuliHelper.Creation
             return (T)entity;
         }
 
+        public void ExecuteOnObject(object obj, ScriptReader reader)
+        {
+            Type type = obj.GetType();
+
+            ExecuteOnObjectInner(obj, type, reader);
+        }
+
+        private void ExecuteOnObjectInner(object obj, Type type, ScriptReader reader)
+        {
+            char? c;
+
+            while ((c = reader.ReadChar()).HasValue)
+            {
+                if (c != setterSeparator)
+                {
+                    reader.Move(-1); // move back the wrongly read in char
+                    return;
+                }
+
+                string setterName = reader.ReadToChar(open);
+
+                SetPropertyMethodOrField(type, obj, setterName, reader);
+            }
+        }
+
         /// <summary>"Type(ctorArg1)(ctorArg2)_Prop(val)_Method(arg1)(arg2)"</summary>
         private object CreateObject(ScriptReader reader, Type objectBaseType)
         {
@@ -96,20 +121,7 @@ namespace JuliHelper.Creation
             
             object obj = CreateObject(type, reader);
 
-            char? c;
-
-            while ((c = reader.ReadChar()).HasValue)
-            {
-                if (c != setterSeparator)
-                {
-                    reader.Move(-1); // move back the wrongly read in char
-                    return obj;
-                }
-
-                string setterName = reader.ReadToChar(open);
-
-                SetPropertyMethodOrField(type, obj, setterName, reader);
-            }
+            ExecuteOnObjectInner(obj, type, reader);
 
             return obj;
         }
