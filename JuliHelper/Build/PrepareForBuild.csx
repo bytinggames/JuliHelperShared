@@ -21,6 +21,7 @@ WaitUntilExportingModelsFinished();
 string[] pngs = GetFiles("Textures", "png");
 string[] soundsWav = GetFiles("Sounds", "wav");
 string[] soundsOgg = GetFiles("Sounds", "ogg");
+string[] soundsMp3 = GetFiles("Sounds", "mp3");
 string[] songs = GetFiles("Music", "ogg");
 string[] fonts = GetFiles("Fonts", "spritefont");
 string[] effects = GetFiles("Effects", "fx");
@@ -137,6 +138,17 @@ using (StreamWriter sw = new StreamWriter(fs))
         sw.WriteLine($@"
 #begin {ogg}
 /importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:{ogg}
+");
+    }
+
+    foreach (var ogg in soundsMp3)
+    {
+        sw.WriteLine($@"
+#begin {ogg}
+/importer:Mp3Importer
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:{ogg}
