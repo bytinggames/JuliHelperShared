@@ -51,7 +51,7 @@ void AddIfExists(List<string> list, string file)
 
 
 string[][] filesArray = new string[][]{
-    pngs, soundsWav, soundsOgg, songs, fonts, effects, copies
+    pngs, soundsWav, soundsOgg, soundsMp3, songs, fonts, effects, models, copies
 };
 
 

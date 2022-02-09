@@ -66,6 +66,14 @@ namespace JuliHelper
             return !anyFail;
         }
 
+        public void Clear()
+        {
+            Grid.Clear();
+            BoundsSet = false;
+            min = default;
+            max = default;
+        }
+
         public Int3 GetCoord(Vector3 pos)
         {
             return new Int3(

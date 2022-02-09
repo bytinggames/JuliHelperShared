@@ -58,5 +58,7 @@ namespace JuliHelper
                 nearestInBox.Z = pos.Z;
             return nearestInBox;
         }
+
+        public static Vector3 GetCenter(this BoundingBox box) => (box.Max + box.Min) / 2f;
     }
 }

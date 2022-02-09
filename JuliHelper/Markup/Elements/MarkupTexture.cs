@@ -22,7 +22,6 @@ namespace JuliHelper.Markup
 
         public float Scale
         {
-            get => ScaleXY.X;
             set => ScaleXY = new Vector2(value);
         }
 
