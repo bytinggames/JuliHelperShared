@@ -7,14 +7,14 @@ namespace JuliHelper
 {
     public class EntityMap3DList<T> : EntityMap3D<T> where T : IBoundingBox
     {
+        public List<T> Entities { get; private set; } = new List<T>();
+
         public EntityMap3DList(float fieldSize) : base(fieldSize)
         {
         }
         public EntityMap3DList(Vector3 fieldSize) : base(fieldSize)
         {
         }
-
-        public List<T> Entities { get; private set; } = new List<T>();
 
         public override void Add(T entity)
         {

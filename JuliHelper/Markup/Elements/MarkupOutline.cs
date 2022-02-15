@@ -9,8 +9,8 @@ namespace JuliHelper.Markup
     {
         Color color;
         float thickness;
-        /// <summary>Negative for online bottom outline (used for drawing over the underline).</summary>
-        int quality;
+        /// <summary>Negative for only bottom outline (used for drawing over the underline).</summary>
+        int quality = 4;
 
         public bool SizeUnion { get; set; }
 
