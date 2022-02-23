@@ -7,11 +7,18 @@ using Microsoft.Xna.Framework.Graphics;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Runtime.InteropServices;
+using System.Globalization;
 
 namespace JuliHelper
 {
     public static partial class Calculate
     {
+        #region private variables
+
+        private static CultureInfo cultureInfoENGB = new CultureInfo("en-GB");
+
+        #endregion
+
         #region Math
 
         public static float MinAbs(float val1, float val2)
@@ -897,12 +904,12 @@ namespace JuliHelper
                 hex = hex.Insert(0, hex[0].ToString()).Insert(2, hex[1].ToString()).Insert(4, hex[2].ToString());
 
             byte r, g, b, a = 255;
-            byte.TryParse(hex.Substring(0, 2), System.Globalization.NumberStyles.HexNumber, new System.Globalization.CultureInfo("en-GB"), out r);
-            byte.TryParse(hex.Substring(2, 2), System.Globalization.NumberStyles.HexNumber, new System.Globalization.CultureInfo("en-GB"), out g);
-            byte.TryParse(hex.Substring(4, 2), System.Globalization.NumberStyles.HexNumber, new System.Globalization.CultureInfo("en-GB"), out b);
+            byte.TryParse(hex.Substring(0, 2), NumberStyles.HexNumber, cultureInfoENGB, out r);
+            byte.TryParse(hex.Substring(2, 2), NumberStyles.HexNumber, cultureInfoENGB, out g);
+            byte.TryParse(hex.Substring(4, 2), NumberStyles.HexNumber, cultureInfoENGB, out b);
 
             if (hex.Length == 8)
-                byte.TryParse(hex.Substring(6, 2), System.Globalization.NumberStyles.HexNumber, new System.Globalization.CultureInfo("en-GB"), out a);
+                byte.TryParse(hex.Substring(6, 2), NumberStyles.HexNumber, cultureInfoENGB, out a);
 
             return new Color(r, g, b, a);
         }
@@ -1725,6 +1732,26 @@ namespace JuliHelper
         public static float NextFloat(this Random rand, float min, float max) => (float)rand.NextDouble() * (max - min) + min;
         public static Vector2 NextVector2Box(this Random rand) => new Vector2((float)rand.NextDouble() * 2f - 1f, (float)rand.NextDouble() * 2f - 1f);
         public static Vector3 NextVector3Box(this Random rand) => new Vector3((float)rand.NextDouble() * 2f - 1f, (float)rand.NextDouble() * 2f - 1f, (float)rand.NextDouble() * 2f - 1f);
+        public static Vector2 NextVector2UniformSphere(this Random rand)
+        {
+            Vector2 v;
+            do
+            {
+                v = rand.NextVector2Box();
+            }
+            while (v.LengthSquared() > 1f);
+            return v;
+        }
+        public static Vector3 NextVector3UniformSphere(this Random rand)
+        {
+            Vector3 v;
+            do
+            {
+                v = rand.NextVector3Box();
+            }
+            while (v.LengthSquared() > 1f);
+            return v;
+        }
         public static Color NextColor(this Random rand)
         {
             return new Color(rand.Next(256), rand.Next(256), rand.Next(256));
