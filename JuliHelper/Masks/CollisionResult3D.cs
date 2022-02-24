@@ -184,5 +184,12 @@ namespace JuliHelper
             }
             return false;
         }
+
+        public bool IsDistanceBetween0And1()
+        {
+            if (!distance.HasValue)
+                return false;
+            return distance.Value >= 0f && distance.Value <= 1f;
+        }
     }
 }
