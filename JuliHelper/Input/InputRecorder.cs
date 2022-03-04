@@ -13,6 +13,9 @@ namespace JuliHelper
         private bool _recording, _playing, mouseInput, mousePosInput;
         public bool removeLastFrame;
 
+        /// <summary>Null for any keys. Items for only the inserted keys.</summary>
+        public List<KeyP> PlayableKeys { get; set; } = null;
+
         class Future
         {
             public int frame;
@@ -21,12 +24,14 @@ namespace JuliHelper
             public int mbWheel;
             public Vector2 mouseMovement;
 
-            public void Play()
+            public void Play(List<KeyP> playableKeys)
             {
                 #region Keys
 
                 for (int i = 0; i < pressed.Count; i++)
                 {
+                    if (!playableKeys.Contains(pressed[i]))
+                        continue;
                     pressed[i].pressed = true;
                     pressed[i].down = true;
                     if (changeBlock)
@@ -34,6 +39,8 @@ namespace JuliHelper
                 }
                 for (int i = 0; i < released.Count; i++)
                 {
+                    if (!playableKeys.Contains(released[i]))
+                        continue;
                     released[i].released = true;
                     released[i].down = false;
                 }
@@ -229,7 +236,7 @@ namespace JuliHelper
 
                 if (future.frame == _frame)
                 {
-                    future.Play();
+                    future.Play(PlayableKeys);
                     past = future;
                     future = null;
                 }
