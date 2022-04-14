@@ -470,17 +470,17 @@ namespace JuliHelper
             return (float)Math.Atan2(vec.Y, vec.X);
         }
 
-        public static float AngleDistance(float angle1, float angle2)
+        public static float AngleDistance(float angleFrom, float angleTo)
         {
-            angle1 = angle1 % MathHelper.TwoPi;
-            if (angle1 < 0)
-                angle1 += MathHelper.TwoPi;
+            angleFrom = angleFrom % MathHelper.TwoPi;
+            if (angleFrom < 0)
+                angleFrom += MathHelper.TwoPi;
 
-            angle2 = angle2 % MathHelper.TwoPi;
-            if (angle2 < 0)
-                angle2 += MathHelper.TwoPi;
+            angleTo = angleTo % MathHelper.TwoPi;
+            if (angleTo < 0)
+                angleTo += MathHelper.TwoPi;
 
-            float dist = angle2 - angle1;
+            float dist = angleTo - angleFrom;
             if (Math.Abs(dist) <= Math.PI)
                 return dist;
             else
@@ -579,6 +579,7 @@ namespace JuliHelper
         public static Vector2 ZY(this Vector3 v) => new Vector2(v.Z, v.Y);
 
         public static void SetXY(ref this Vector3 v, Vector2 xy) { v.X = xy.X; v.Y = xy.Y; }
+        public static void SetXZ(ref this Vector3 v, Vector2 xz) { v.X = xz.X; v.Z = xz.Y; }
 
         public static Vector3 GetNonParallelVector(this Vector3 v)
         {
