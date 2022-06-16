@@ -208,14 +208,6 @@ namespace JuliHelper
             batch.Draw(_texture, _rectangle, _sourceRectangle, _color ?? Color.White, _rotation, Vector2.Zero, _effects, depth);
         }
 
-        public static void SetBaseTextColor(Color _color, Action _action)
-        {
-            Color remember = baseTextColor;
-            baseTextColor = _color;
-            _action();
-            baseTextColor = remember;
-        }
-
         public static void Draw(this Texture2D _texture, M_Rectangle _rectangle, Color? _color = null, Rectangle? _sourceRectangle = null, float _rotation = 0f, SpriteEffects _effects = SpriteEffects.None)
         {
             Vector2 scale = _rectangle.size / _texture.GetSize();
@@ -225,7 +217,15 @@ namespace JuliHelper
         #endregion
 
         #region String
-        
+
+        public static void SetBaseTextColor(Color _color, Action _action)
+        {
+            Color remember = baseTextColor;
+            baseTextColor = _color;
+            _action();
+            baseTextColor = remember;
+        }
+
         public static void Draw(this SpriteFont _font, string _text, Vector2 _position, Color? _color = null, Vector2? _scale = null, float _rotation = 0f, SpriteEffects _effects = SpriteEffects.None)
         {
             Draw(_font, _text, new Anchor(_position, Vector2.Zero), _color, _scale, _rotation, _effects);

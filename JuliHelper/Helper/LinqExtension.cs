@@ -43,10 +43,10 @@ namespace JuliHelper
             }
         }
 
-        public static TSource MinBy<TSource, TKey>(this IEnumerable<TSource> source,
+        public static TSource MinBy_<TSource, TKey>(this IEnumerable<TSource> source,
             Func<TSource, TKey> selector)
         {
-            return source.MinBy(selector, null);
+            return source.MinBy_(selector, null);
         }
 
         /// <summary>Returns null if source is empty.</summary>
@@ -55,7 +55,7 @@ namespace JuliHelper
         {
             try
             {
-                return source.MinBy(selector, null);
+                return source.MinBy_(selector, null);
             }
             catch (InvalidOperationException)
             {
@@ -63,7 +63,7 @@ namespace JuliHelper
             }
         }
 
-        public static TSource MinBy<TSource, TKey>(this IEnumerable<TSource> source,
+        public static TSource MinBy_<TSource, TKey>(this IEnumerable<TSource> source,
             Func<TSource, TKey> selector, IComparer<TKey> comparer)
         {
             if (source == null) throw new ArgumentNullException("source");
