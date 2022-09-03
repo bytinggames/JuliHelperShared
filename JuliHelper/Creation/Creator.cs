@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -230,6 +231,8 @@ namespace JuliHelper.Creation
                 ScriptReader reader = new ScriptReader(argStr);
                 return CreateObject(reader, expectedType);
             }
+            else if (expectedType == typeof(Color))
+                return Calculate.HexToColor(argStr);
             else
                 return Convert.ChangeType(argStr, expectedType, CultureInfo.InvariantCulture);
         }

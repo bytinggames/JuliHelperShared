@@ -724,7 +724,7 @@ namespace JuliHelper
         public static Color MultiplyColors(Color c1, Color c2)
         {
             c1.R = (byte)(c1.R * c2.R / 255);
-            c1.R = (byte)(c1.G * c2.G / 255);
+            c1.G = (byte)(c1.G * c2.G / 255);
             c1.B = (byte)(c1.B * c2.B / 255);
             c1.A = (byte)(c1.A * c2.A / 255);
             return c1;
@@ -903,6 +903,8 @@ namespace JuliHelper
                 hex = new string(hex[0], 6);
             if (hex.Length == 3)
                 hex = hex.Insert(0, hex[0].ToString()).Insert(2, hex[1].ToString()).Insert(4, hex[2].ToString());
+            else if (hex.Length == 4)
+                hex = hex[0].ToString() + hex[0] + hex[1] + hex[1] + hex[2] + hex[2] + hex[3] + hex[3];
 
             byte r, g, b, a = 255;
             byte.TryParse(hex.Substring(0, 2), NumberStyles.HexNumber, cultureInfoENGB, out r);
