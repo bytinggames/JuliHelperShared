@@ -38,7 +38,7 @@ namespace JuliHelperShared
             }
         }
 
-        private SoundEffect GetRandomSoundEffect() => soundEffects[rand.Next(soundEffects.Length)];
+        public SoundEffect GetRandomSoundEffect() => soundEffects[rand.Next(soundEffects.Length)];
 
         public override bool Play()
         {

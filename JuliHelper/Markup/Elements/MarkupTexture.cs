@@ -45,7 +45,7 @@ namespace JuliHelper.Markup
 
         protected override Vector2 GetSizeChildUnscaled(MarkupSettings settings)
         {
-            return GetSizeChildUnscaledInternal(settings) * ScaleXY;
+            return GetSizeChildUnscaledInternal(settings) * ScaleXY * settings.TextureScale;
         }
 
         private Vector2 GetSizeChildUnscaledInternal(MarkupSettings settings)
@@ -88,7 +88,7 @@ namespace JuliHelper.Markup
                     }
                     break;
             }
-            Texture.Draw(settings.Anchor, Calculate.MultiplyColors(settings.TextureColor, Color), SourceRectangle, settings.Scale * ScaleXY, settings.Rotation, flip);
+            Texture.Draw(settings.Anchor, Calculate.MultiplyColors(settings.TextureColor, Color), SourceRectangle, settings.Scale * ScaleXY * settings.TextureScale, settings.Rotation, flip);
         }
 
         public override string ToString()

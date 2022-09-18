@@ -15,6 +15,7 @@ namespace JuliHelper.Markup
         public float HorizontalAlignInLine { get; set; }
         public float VerticalAlignInLine { get; set; } = 0.5f;
         public Vector2 Scale { get; set; }
+        public Vector2 TextureScale { get; set; } = Vector2.One;
         public float Rotation { get; }
         public SpriteEffects Effects { get; }
         public long Time { get; set; }
